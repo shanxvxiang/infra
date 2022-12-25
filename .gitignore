@@ -1,5 +1,8 @@
 /CMakeFiles/
-/generate/
+/include/parse/*.cpp
+/include/parse/*.h
+/include/parse/*.interp
+/include/parse/*.tokens
 /cmake_install.cmake
 /CMakeCache.txt
 /Makefile
