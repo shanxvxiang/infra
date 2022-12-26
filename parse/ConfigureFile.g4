@@ -1,5 +1,25 @@
 grammar ConfigureFile;
 
+/*
+// this is sample for esc char
+@members {
+StringBuilder buf = new StringBuilder(); // can't make locals in lexer rules
+}
+STR :   '"'
+        (   '\\'
+            (   'r'     {buf.append('\r');}
+            |   'n'     {buf.append('\n');}
+            |   't'     {buf.append('\t');}
+            |   '\\'    {buf.append('\\');}
+            |   '"'     {buf.append('"');}
+            )
+        |   ~('\\'|'"') {buf.append((char)_input.LA(-1));}
+        )*
+        '"'
+        {setText(buf.toString()); buf.setLength(0); System.out.println(getText());}
+    ;
+*/
+
 fragment ESCCHAR    
     : '\\\''
     | '\\"'
@@ -21,17 +41,23 @@ fragment ESCCHAR
 KEYWORD
     : [a-zA-Z_][a-zA-Z0-9_]*;
     
-INT 
-    : [0-9]+;
-HEXINT
+INT
+    : DECINT
+    | HEXINT;
+fragment DECINT 
+    : ('-')? DECDIGIT+;
+fragment HEXINT
     : '0' ('x'|'X') HEXDIGIT+;
-
-HEXDIGIT
+fragment DECDIGIT
+    : [0-9];
+fragment HEXDIGIT
     : [0-9a-fA-F];
+    
 STRING    
     : '"' (~["\\] | ESCCHAR )*? '"'
     | '\'' (~['\\] | ESCCHAR )*? '\'';
     
+
 IPADDRESS
     : INT '.' INT '.' INT '.' INT (':' INT)?;
     
@@ -42,11 +68,12 @@ COMMENT
 MULCOMMENT
     : '/*' .*? '*/' -> skip;
 
-allConfig 
-    : oneLine*;
-oneLine   
-    : KEYWORD '=' INT (',' INT)* ';'                       # AssignInt
-    | KEYWORD '=' STRING ';'                             # AssignString
+allConfigFile 
+    : oneConfigLine*;
+oneConfigLine   
+    : KEYWORD '=' INT (',' INT)* ';'                           # AssignInt
+    | KEYWORD '=' STRING (',' STRING)* ';'                     # AssignString
+    | KEYWORD '=' IPADDRESS (',' IPADDRESS)* ';'               # AssignIpAddress
     ;
           
 

@@ -34,10 +34,9 @@ macro(generate_parse g4file)
     set(ALL_ANTLR_OUTPUT_FILES ${ALL_ANTLR_OUTPUT_FILES} ${ANTLR_OUTPUT_FILES})
 endmacro()
 
-generate_parse(Expr)
 generate_parse(ConfigureFile)
 
-add_executable(infra infra.cpp ${ALL_ANTLR_OUTPUT_FILES} include/parse/EvalVisitor.cpp) 
+add_executable(infra infra.cpp ${ALL_ANTLR_OUTPUT_FILES} ) 
 
 target_link_libraries(
         infra antlr4-runtime

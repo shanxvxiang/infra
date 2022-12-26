@@ -1,0 +1,62 @@
+* username
+github  shanxvxiang foxmail.com I6!
+github  otc-tech qq.com I6!
+mail.otc-tech.cn shanxuxiang I6!
+express https://www.exp2links2.net/login qq.com I6!
+exmail.qq.com
+
+
+* install antlr4
+2022/12/09
+
+** cmake
+https://zhuanlan.zhihu.com/p/519732843
+https://cmake.org/download/
+
+** antlr4-tools
+pip3 install antlr4-tools  || download antlr4-4.11.1-complete.jar and jre
+https://github.com/antlr/antlr4/blob/master/doc/getting-started.md
+
+/home/raymon/.m2/repository/org/antlr/antlr4/4.11.1/antlr4-4.11.1-complete.jar
+/home/raymon/.local/bin/antlr4
+
+** antlr4 cpp demo
+https://github.com/antlr/antlr4/blob/master/runtime/Cpp/README.md
+
+2022/12/10
+cd /home/raymon/Downloads/antlr4-master/runtime/Cpp
+mkdir build && mkdir run && cd build
+cmake .. -DANTLR_JAR_LOCATION=/home/raymon/.m2/repository/org/antlr/antlr4/4.11.1/antlr4-4.11.1-complete.jar -DWITH_DEMO=True
+make
+DESTDIR=/home/raymon/Downloads/antlr4-master/runtime/Cpp/run make install
+
+cd ....../Cpp/demo
+
+LOCATION=/home/raymon/.m2/repository/org/antlr/antlr4/4.11.1/antlr4-4.11.1-complete.jar
+java -jar $LOCATION -Dlanguage=Cpp -listener -visitor -o generated/ -package antlrcpptest TLexer.g4 TParser.g4
+
+multi g4 files
+https://stackoverflow.com/questions/2354473/cmake-add-custom-command/2362222
+https://blog.csdn.net/MacKendy/article/details/122693478  cmake add_custom_target
+
+2022/12/11
+antlr cpp sample https://www.jianshu.com/p/a7261e53035f
+
+2022/12/16
+https://github.com/antlr/antlr4/blob/fcab02cfd0dedd3b091c8758173b14cbbf4178cf/doc/faq/lexical.md
+How do I replace escape characters in string tokens?
+
+* useful command
+sudo nautilus
+linux lost eth0 after clone  https://blog.csdn.net/m0_52468077/article/details/127838314
+
+java -jar /home/raymon/CLionProjects/parse/antlr4/antlr4-4.11.1-complete.jar -Dlanguage=Cpp -visitor -o /home/raymon/CLionProjects/parse/src/antlrgen/ /home/raymon/CLionProjects/parse/antlr4/Expr.g4
+
+java -jar antlr4-4.11.1-complete.jar -Dlanguage=Cpp -visitor -o ../src/antlrgen/ Expr.g4
+add_executable(parse main.cpp)
+
+* other learn
+** regular expression https://www.runoob.com/regexp/regexp-syntax.html
+** puml https://www.kancloud.cn/daleboy/blockchain/1993967
+        https://plantuml.com/zh/class-diagram
+
