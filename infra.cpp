@@ -12,10 +12,13 @@ int main(int argc, char **argv) {
     ConfigureFileParser cfgparser(&cfgtokens);
     antlr4::tree::ParseTree* cfgtree = cfgparser.allConfigFile();
 
-    infra::ConfigureFileParseImplement cfg;
-    cfg.visit(cfgtree);
+    infra::ConfigureFileParseImplement cfgimpl;
+    cfgimpl.visit(cfgtree);
+    cfgimpl.IteratorParameter();
     cfgbuf.close();
   }
+
+
   return 0;
 }
 

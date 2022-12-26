@@ -71,9 +71,9 @@ MULCOMMENT
 allConfigFile 
     : oneConfigLine*;
 oneConfigLine   
-    : KEYWORD '=' INT (',' INT)* ';'                           # AssignInt
-    | KEYWORD '=' STRING (',' STRING)* ';'                     # AssignString
-    | KEYWORD '=' IPADDRESS (',' IPADDRESS)* ';'               # AssignIpAddress
+    : KEYWORD '=' INT ';'                           # AssignInt
+    | KEYWORD '=' STRING ';'                     # AssignString
+    | KEYWORD '=' IPADDRESS ';'               # AssignIpAddress
     ;
           
 
