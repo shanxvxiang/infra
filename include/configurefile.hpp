@@ -4,29 +4,27 @@
 #include "infra.hpp"
 
 class ConfigureFileParameter {
-  struct stringWithType {
-    std::type_info *stringType;
-    std::string stringValue;
-  };
-  std::multimap<std::string, stringWithType> configureFileMap;
-
+  std::multimap<std::string, std::any> configureFileMap;
 public:
-  bool InsertConfigureMap(std::string key, std::type_info &type, std::string value) {
-    stringWithType swt;
-    swt.stringType = &type;
-    swt.stringValue = value;
-    configureFileMap.insert(std::pair<std::string, stringWithType>(key, swt));
+  bool InsertConfigureMap(std::string key, std::any value) {
+    configureFileMap.insert(std::pair<std::string, std::any>(key, value));
+
+    std::cout << "in insert" << typeid(value).name() << std::endl;
     return true;
   }
   void IteratorConfigureMap() {
-    for (auto elem : configureFileMap)
-      std::cout << elem.first << " " << elem.second.stringValue << std::endl;    
+    for (auto elem : configureFileMap) {
+      std::cout << elem.first << " ";
+      if (elem.second.type() == typeid(int))
+	std::cout << std::any_cast<int>(elem.second) << std::endl;
+      else
+	std::cout << typeid(elem.second).name() << std::endl;
+    }
   }
   // struct sockaddr
 };
 
 class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
-
   class ConfigureFileParameter para;
   
   antlrcpp::Any visitAllConfigFile(ConfigureFileParser::AllConfigFileContext* ctx) {
@@ -34,25 +32,19 @@ class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
   };
   
   antlrcpp::Any visitAssignInt(ConfigureFileParser::AssignIntContext* ctx) {
-    para.InsertConfigureMap(ctx->KEYWORD()->getText(),
-			   (std::type_info &)typeid(int),
-			   ctx->INT()->getText());
-    //    std::cout << "size: " << ctx->INT().size() << std::endl;
-    //    for (auto oneint: ctx->INT()) std::cout << oneint->getText() << ",";
-    return 0;
+    std::string key = ctx->KEYWORD()->getText();
+    int value = stoi(ctx->INT()->getText());
+    para.InsertConfigureMap(key, value);
+    return value;
   };
   
   antlrcpp::Any visitAssignString(ConfigureFileParser::AssignStringContext* ctx) {
-    para.InsertConfigureMap(ctx->KEYWORD()->getText(),
-			   (std::type_info &)typeid(std::string),
-			   ctx->STRING()->getText());    
+    para.InsertConfigureMap(ctx->KEYWORD()->getText(), ctx->STRING());
     return 0;
   };
 
   antlrcpp::Any visitAssignIpAddress(ConfigureFileParser::AssignIpAddressContext* ctx) {
-    para.InsertConfigureMap(ctx->KEYWORD()->getText(),
-			   (std::type_info &)typeid(sockaddr),
-			   ctx->IPADDRESS()->getText());   
+    para.InsertConfigureMap(ctx->KEYWORD()->getText(), ctx->IPADDRESS());   
     return 0;
   };
   

@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     ConfigureFileParser cfgparser(&cfgtokens);
     antlr4::tree::ParseTree* cfgtree = cfgparser.allConfigFile();
 
-    infra::ConfigureFileParseImplement cfgimpl;
+    infraapp::ConfigureFileParseImplement cfgimpl;
     cfgimpl.visit(cfgtree);
     cfgimpl.IteratorParameter();
     cfgbuf.close();

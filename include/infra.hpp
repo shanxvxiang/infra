@@ -13,7 +13,8 @@
 
 namespace infra { 
   #include "raymoncommon.hpp"
+}
 
+namespace infraapp { 
   #include "configurefile.hpp"
-
 }
