@@ -18,7 +18,6 @@ int main(int argc, char **argv) {
     cfgbuf.close();
   }
 
-
   return 0;
 }
 

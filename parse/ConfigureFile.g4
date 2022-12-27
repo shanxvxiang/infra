@@ -47,7 +47,7 @@ INT
 fragment DECINT 
     : ('-')? DECDIGIT+;
 fragment HEXINT
-    : '0' ('x'|'X') HEXDIGIT+;
+    : '0x' HEXDIGIT+;
 fragment DECDIGIT
     : [0-9];
 fragment HEXDIGIT
@@ -59,14 +59,16 @@ STRING
     
 
 IPADDRESS
-    : INT '.' INT '.' INT '.' INT (':' INT)?;
+    : INT '.' INT '.' INT '.' INT ':' INT;
     
 SAPCE     
     : [ \t\r\n]+ -> skip;
 COMMENT   
     : '//' .*? '\n' -> skip;
-MULCOMMENT
+MULTICOMMENT
     : '/*' .*? '*/' -> skip;
+SEGMENTNOTE
+    : '[' KEYWORD ']' -> skip;
 
 allConfigFile 
     : oneConfigLine*;
