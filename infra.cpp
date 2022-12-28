@@ -24,17 +24,22 @@ char second[] = "SECOND";
 
 int main(int /*argc*/, char **/*argv*/) {
 
-  infra::ThreadInfo *gThreadInfo = new(infra::ThreadInfo);
+  infra::ThreadInfo *gThreadInfo = new infra::ThreadInfo;
+  infra::LogDirectly *gLogDirectly = new infra::LogDirectly(LEVEL_LOG_TRAC);
 
+  delete gLogDirectly;
   delete gThreadInfo;
 
-  infra::LogDirectly::SetLogTermLevel(6);
-  _LOG_TERM_OUT("INFO", "%s", "asdfsdf");
-  _LOG_INFO("%d %s", 333, "fdsafdsfd");
+
+  _LOG_CRIT("fdsafdsfd");
+  _LOG_EROR("fdsafdsfd");
+  _LOG_WARN("fdsafdsfd");
+  _LOG_INFO("fdsafdsfd");
+  _LOG_DBUG("fdsafdsfd");  
+  _LOG_TRAC("fdsafdsfd");
 
   return 0;
 
-  
   std::filebuf cfgbuf;
   
   if (cfgbuf.open("infra.conf", std::ios::in)) {
