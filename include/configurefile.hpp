@@ -11,9 +11,7 @@ public:
     return true;
   }
   
-  void IteratorConfigureMap() {
-    configureFileMap.insert(std::pair<std::string, std::any>("kkkk", NULL));
-    
+  void IteratorConfigureMap(void) {
     for (auto elem : configureFileMap) {
       std::cout << elem.first << " ";
       if (elem.second.type() == typeid(int))
@@ -25,12 +23,15 @@ public:
 	std::cout << inet_ntoa(addr.sin_addr) << ":" << ntohs(addr.sin_port) << std::endl;
       }
       else if (elem.second.type() == typeid(NULL))
-	std::cout << "NULL LLL" << std::endl;
+	std::cout << "NULL" << std::endl;
       else
 	std::cout << elem.second.type().name() << std::endl;
     }
   }
-  // struct sockaddr_in
+
+  bool GetSingleConfigureParameter (std::string key, std::any &value) {
+    return true;
+  }
 };
 
 class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {

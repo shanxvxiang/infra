@@ -3,14 +3,13 @@ project(infra)
 
 set(ANTLR_JAR_LOCATION ${PROJECT_SOURCE_DIR}/lib/antlr4-4.11.1-complete.jar)
 set(PARSE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/parse)
-set(PARSE_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/include/parse)
+set(PARSE_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/third/antlr)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-std=c++17 -O2 -lpthread -Wno-deprecated")
 
 include_directories(
-    ${PROJECT_SOURCE_DIR}/third/antlr_include
-    ${PARSE_OUTPUT_DIR}
+    ${PROJECT_SOURCE_DIR}/third/antlr
 )
 
 link_directories(

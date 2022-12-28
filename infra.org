@@ -51,10 +51,16 @@ https://www.manongdao.com/article-1621166.html antlr4 parsing sample
 sudo nautilus
 linux lost eth0 after clone  https://blog.csdn.net/m0_52468077/article/details/127838314
 
+find .|xargs grep -ri "STRING"  find in files  https://www.cnblogs.com/liujx2019/p/10310163.html
+
 java -jar /home/raymon/CLionProjects/parse/antlr4/antlr4-4.11.1-complete.jar -Dlanguage=Cpp -visitor -o /home/raymon/CLionProjects/parse/src/antlrgen/ /home/raymon/CLionProjects/parse/antlr4/Expr.g4
 
 java -jar antlr4-4.11.1-complete.jar -Dlanguage=Cpp -visitor -o ../src/antlrgen/ Expr.g4
 add_executable(parse main.cpp)
+
+useful emacs flycheck command  http://t.zoukankan.com/cobbliu-p-7468620.html , include path
+
+
 
 * other learn
 ** regular expression https://www.runoob.com/regexp/regexp-syntax.html

@@ -17,6 +17,7 @@ typedef union {
   char **pp_addr;
 }ADDR, *PADDR;
 
+#define NORMAL_CHAR_LENGTH      32
 #define CACHE_LINE_SIZE         64
 
 
