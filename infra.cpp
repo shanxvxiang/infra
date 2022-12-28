@@ -27,11 +27,11 @@ int main(int /*argc*/, char **/*argv*/) {
   infra::ThreadInfo *gThreadInfo = new(infra::ThreadInfo);
 
   delete gThreadInfo;
-  
-  for (int i=0; i<4; i++) {
-    infra::ThreadInfo::CreateThread(first, threadfunc1, first);
-    infra::ThreadInfo::CreateThread(second, threadfunc2, second);
-  }
+
+  infra::LogDirectly::SetLogTermLevel(6);
+  _LOG_TERM_OUT("INFO", "%s", "asdfsdf");
+  _LOG_INFO("%d %s", 333, "fdsafdsfd");
+
   return 0;
 
   
