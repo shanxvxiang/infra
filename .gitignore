@@ -1,8 +1,5 @@
 /CMakeFiles/
-/include/parse/*.cpp
-/include/parse/*.h
-/include/parse/*.interp
-/include/parse/*.tokens
+/third/antlr/ConfigureFile*
 /cmake_install.cmake
 /CMakeCache.txt
 /Makefile

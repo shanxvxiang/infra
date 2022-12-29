@@ -1,61 +1,27 @@
 
 #include "include/infra.hpp"
 
-void *threadfunc1(void *arg)
-{
-  char buffer[1000];
-  sprintf(buffer, "%s %s %s\n",
-	  infra::ThreadInfo::threadInfo.threadName, "first", (char*)arg);
-  std::cout << buffer;
-  return (void *)0;
-}
 
-void *threadfunc2(void *arg)
-{
-  char buffer[1000];
-  sprintf(buffer, "%s %s %s\n",
-	  infra::ThreadInfo::threadInfo.threadName, "second", (char*)arg);
-  std::cout << buffer;
-  return (void *)0;
-}
 
-char first[] = "FIRST";
-char second[] = "SECOND";
+int main(int, char **) {
 
-int main(int /*argc*/, char **/*argv*/) {
-
+  printf("%s  %s Compiled %s %s\n", __MY_PROGRAM, __MY_VERSION,  __DATE__, __TIME__);
+  
   infra::ThreadInfo *gThreadInfo = new infra::ThreadInfo;
   infra::LogDirectly *gLogDirectly = new infra::LogDirectly(LEVEL_LOG_TRAC);
+  infra::ConfigureFile *gConfigureFile = new infra::ConfigureFile((char*)__MY_PROGRAM ".conf");
+  //gLogDirectly->LogFileHandle();
 
+  int LogLevel = 0;
+  std::any ll = LogLevel;
+  char *ret = infra::ConfigureFile::GetSingleConfigureParameter(TOSTRING(LogLevel), ll);
+  std::cout << ret << std::endl;
+  delete gConfigureFile;
   delete gLogDirectly;
   delete gThreadInfo;
 
 
-  _LOG_CRIT("fdsafdsfd");
-  _LOG_EROR("fdsafdsfd");
-  _LOG_WARN("fdsafdsfd");
-  _LOG_INFO("fdsafdsfd");
-  _LOG_DBUG("fdsafdsfd");  
-  _LOG_TRAC("fdsafdsfd");
-
   return 0;
 
-  std::filebuf cfgbuf;
-  
-  if (cfgbuf.open("infra.conf", std::ios::in)) {
-    std::istream cfgfile(&cfgbuf);
-    antlr4::ANTLRInputStream cfginput(cfgfile);
-    ConfigureFileLexer cfglexer(&cfginput);
-    antlr4::CommonTokenStream cfgtokens(&cfglexer);
-    ConfigureFileParser cfgparser(&cfgtokens);
-    antlr4::tree::ParseTree* cfgtree = cfgparser.allConfigFile();
-
-    infraapp::ConfigureFileParseImplement cfgimpl;
-    cfgimpl.visit(cfgtree);
-    cfgimpl.IteratorParameter();
-    cfgbuf.close();
-  }
-
-  return 0;
 }
 

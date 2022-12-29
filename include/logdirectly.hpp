@@ -11,7 +11,7 @@
 #define LEVEL_LOG_DBUG         5
 #define LEVEL_LOG_TRAC         6
 
-#define COLOR_CRIT "\033[7;31m"
+#define COLOR_CRIT "\033[5;31m"
 #define COLOR_EROR "\033[0;31m"
 #define COLOR_WARN "\033[0;33m"
 #define COLOR_INFO "\033[0;32m"
@@ -61,22 +61,18 @@ public:
   }
 };
 
-#define rname(x) strrchr(x,'/')?strrchr(x,'/')+1:x
-
-#define FORMAT "[%s][%8s:%-6d][%s][%16s:%-3d] "
+#define FORMAT "[%s][%8s:%-6d][%s][%18s:%-4d]"
 #define CREND "\n"
 #define CNAME infra::LogDirectly
 #define ARGVS(LEVEL) \
   CNAME::GetTimeBuffer(), CNAME::GetThreadName(), CNAME::GetThreadID(),        \
-    LEVEL, rname(__FILE__), __LINE__
-
-
+    LEVEL, infra::RightOfSlash((char*)__FILE__), __LINE__
 
 #define _LOG_FILE_OUT(LEVEL, format, args...)                                  \
   if (CNAME::GetLogHandle() > 0)                                               \
-    dprintf(CNAME::GetLogHandle(), FORMAT format CREND, ARGVS(LEVEL), ##args);
+    dprintf(CNAME::GetLogHandle(), FORMAT " " format CREND, ARGVS(LEVEL), ##args);
 #define _LOG_TERM_OUT(LEVEL, COLOR, format, args...)	\
-  printf(COLOR FORMAT COLOR_END format CREND, ARGVS(LEVEL), ##args);
+  printf(COLOR FORMAT COLOR_END " " format CREND, ARGVS(LEVEL), ##args);
 
 /*
 #define _LOG_INFO(format, args...)                                             \

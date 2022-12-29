@@ -24,18 +24,16 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 
+#include "ConfigureFileLexer.h"
+#include "ConfigureFileBaseVisitor.h"
+
 namespace infra { 
   #include "raymoncommon.hpp"
+  #include "errormessage.hpp"
   #include "stringtools.hpp"
   #include "lockers.hpp"
   #include "threadinfo.hpp"
   #include "logdirectly.hpp"
-}
-
-#include "ConfigureFileLexer.h"
-#include "ConfigureFileBaseVisitor.h"
-
-namespace infraapp { 
   #include "configurefile.hpp"
 }
 

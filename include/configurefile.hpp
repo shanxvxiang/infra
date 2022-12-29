@@ -29,14 +29,31 @@ public:
     }
   }
 
-  bool GetSingleConfigureParameter (std::string key, std::any &value) {
-    return true;
+  char* GetSingleConfigureParameter (std::string key, std::any &value) {
+    int valuecount = configureFileMap.count(key);
+    std::multimap<std::string, std::any>::iterator found;
+	
+    if (valuecount == 0) {
+      return (char*)ERROR_NO_KEY;
+    } else if (valuecount > 1) {
+      return (char*)ERROR_TOO_MORE_KEY;
+    }
+    found = configureFileMap.find(key);
+    if (found->second.type() != value.type()) {
+      return (char*)ERROR_INVALID_TYPE_KEY;
+    }
+    value = found->second;
+    return NULL;
   }
 };
 
 class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
-  class ConfigureFileParameter para;
-  
+
+  ConfigureFileParameter *parameter;
+public:
+  ConfigureFileParseImplement(ConfigureFileParameter *para) {
+    parameter = para;    
+  };
   antlrcpp::Any visitAllConfigFile(ConfigureFileParser::AllConfigFileContext* ctx) {
     return visitChildren(ctx);
   };
@@ -44,7 +61,7 @@ class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
   antlrcpp::Any visitAssignInt(ConfigureFileParser::AssignIntContext* ctx) {
     std::string key = ctx->KEYWORD()->getText();
     int value = infra::StoI(ctx->INT()->getText());
-    para.InsertConfigureMap(key, value);
+    parameter->InsertConfigureMap(key, value);
     return value;
   };
   
@@ -52,7 +69,7 @@ class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
     std::string key = ctx->KEYWORD()->getText();
     std::string value = std::any_cast<std::string>(ctx->STRING()->getText());
     infra::RemoveEscapeChar(value);
-    para.InsertConfigureMap(key, value);  
+    parameter->InsertConfigureMap(key, value);  
     return value;
   };
 
@@ -65,14 +82,52 @@ class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr(value.substr(0, pos).c_str());
     addr.sin_port = htons(stoi(value.substr(pos+1)));
-    para.InsertConfigureMap(ctx->KEYWORD()->getText(), addr);
+    parameter->InsertConfigureMap(ctx->KEYWORD()->getText(), addr);
     return addr;
   };
   
 public:
-  void IteratorParameter (void) {
-    para.IteratorConfigureMap();
-  }
+
 };
 
+class ConfigureFile {
+  static ConfigureFileParameter parameter;  
+
+public:
+  void IteratorParameter (void) {
+    parameter.IteratorConfigureMap();
+  };
+  
+  ConfigureFile(char *name) {
+    std::filebuf cfgbuf;
+    if (!cfgbuf.open(name, std::ios::in)) {
+      _LOG_CRIT(ERROR_NO_CONFIGURE ":%s", name);
+      exit(1);
+    } else {
+      std::istream *cfgfile = new std::istream(&cfgbuf);
+      antlr4::ANTLRInputStream *cfginput = new antlr4::ANTLRInputStream(*cfgfile);
+      ConfigureFileLexer *cfglexer = new ConfigureFileLexer(cfginput);
+      antlr4::CommonTokenStream *cfgtokens = new antlr4::CommonTokenStream(cfglexer);
+      ConfigureFileParser *cfgparser = new ConfigureFileParser(cfgtokens);
+      antlr4::tree::ParseTree *cfgtree = cfgparser->allConfigFile();
+      ConfigureFileParseImplement *cfgimpl = new ConfigureFileParseImplement(&parameter);
+      cfgimpl->visit(cfgtree);
+      IteratorParameter();
+      
+      cfgbuf.close();
+      delete cfgimpl;
+      delete cfgparser;
+      delete cfgtokens;
+      delete cfglexer;
+      delete cfginput;
+      delete cfgfile;
+    }
+  };
+
+  static char* GetSingleConfigureParameter (std::string key, std::any &value) {
+    return parameter.GetSingleConfigureParameter(key, value);
+  };
+};
+
+ConfigureFileParameter ConfigureFile::parameter;  
 #endif  // __RAYMON_SHAN_PARSE_CONFIGURE_FILE_HPP

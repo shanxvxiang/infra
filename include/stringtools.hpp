@@ -18,17 +18,21 @@ int ToHex(std::string str) {
   int result = 0;
   const char *now = str.c_str() + 2;            // remove 0x
   while (*now)
-    result = result * 16 + tohex[*now++];
+    result = result * 16 + tohex[(int)*now++];
   return result;
 }
 
 char ToHex(char a, char b) {
-  return (tohex[a] << 4) + tohex[b];
+  return (tohex[(int)a] << 4) + tohex[(int)b];
 }
 
 int StoI(std::string str) {
   if (str.compare(0, 2, "0x")) return stoi(str);
   else return ToHex(str);
+}
+
+char* RightOfSlash(char *str) {
+  return strrchr(str,'/')?strrchr(str,'/')+1:str;
 }
 // the input string following the lexer
 /*

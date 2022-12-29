@@ -1,8 +1,8 @@
 #ifndef __RAYMON_SHAN_COMMON_HPP
 #define __RAYMON_SHAN_COMMON_HPP
 
-#define __MY__PROGRAM__         "INFRA"
-#define __MY__VERSION__         "V0.1"
+#define __MY_PROGRAM            "infra"
+#define __MY_VERSION            "v0.1"
 
 #define _TOSTRING(x)            #x
 #define TOSTRING(x)             _TOSTRING(x)
