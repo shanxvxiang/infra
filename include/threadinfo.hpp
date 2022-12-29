@@ -4,7 +4,7 @@
 #include "infra.hpp"
 
 struct threadStartInfo {
-  char threadName[NORMAL_CHAR_LENGTH];
+  char threadName[SMALL_CHAR_LENGTH];
   void *(*threadFunc)(void *);
   void *threadArg;
 };
@@ -15,10 +15,10 @@ void *InitializeThread(void *arg);
 class ThreadInfo {
 public:
   ThreadInfo() {
-    strncpy(threadInfo.threadName, "MAIN", NORMAL_CHAR_LENGTH - 1);
+    strncpy(threadInfo.threadName, "MAIN", SMALL_CHAR_LENGTH - 1);
     threadID = syscall(SYS_gettid);
   };
-  static infra::MutexLock serializeMutex;
+  static MutexLock serializeMutex;
   
   static thread_local threadStartInfo threadInfo;
   static thread_local unsigned int threadID;
@@ -28,7 +28,7 @@ public:
     threadStartInfo startInfo;
 
     serializeMutex++;
-    strncpy(startInfo.threadName, tname, NORMAL_CHAR_LENGTH - 1);
+    strncpy(startInfo.threadName, tname, SMALL_CHAR_LENGTH - 1);
     startInfo.threadFunc = func;
     startInfo.threadArg = arg;
     pthread_create(&tid, NULL, InitializeThread, &startInfo);
@@ -48,7 +48,7 @@ void *InitializeThread(void *arg)
   return ThreadInfo::threadInfo.threadFunc(ThreadInfo::threadInfo.threadArg);
 }
 
-infra::MutexLock ThreadInfo::serializeMutex;
+MutexLock ThreadInfo::serializeMutex;
 threadStartInfo thread_local ThreadInfo::threadInfo;
 unsigned int thread_local ThreadInfo::threadID;
 

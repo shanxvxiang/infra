@@ -67,4 +67,5 @@ useful emacs flycheck command  http://t.zoukankan.com/cobbliu-p-7468620.html , i
 ** puml https://www.kancloud.cn/daleboy/blockchain/1993967
         https://plantuml.com/zh/class-diagram
 
-** colorful termail 
+** colorful termail https://blog.csdn.net/u014470361/article/details/81512330
+** readable typeid https://www.jb51.net/article/263999.htm <cxxabi.h>

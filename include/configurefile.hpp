@@ -29,7 +29,8 @@ public:
     }
   }
 
-  char* GetSingleConfigureParameter (std::string key, std::any &value) {
+  template<typename T>
+  char* GetSingleConfigureParameter (std::string key, T &value) {
     int valuecount = configureFileMap.count(key);
     std::multimap<std::string, std::any>::iterator found;
 	
@@ -39,10 +40,10 @@ public:
       return (char*)ERROR_TOO_MORE_KEY;
     }
     found = configureFileMap.find(key);
-    if (found->second.type() != value.type()) {
+    if (found->second.type() != typeid(T)) {
       return (char*)ERROR_INVALID_TYPE_KEY;
     }
-    value = found->second;
+    value = std::any_cast<T>(found->second);
     return NULL;
   }
 };
@@ -60,7 +61,7 @@ public:
   
   antlrcpp::Any visitAssignInt(ConfigureFileParser::AssignIntContext* ctx) {
     std::string key = ctx->KEYWORD()->getText();
-    int value = infra::StoI(ctx->INT()->getText());
+    int value = StoI(ctx->INT()->getText());
     parameter->InsertConfigureMap(key, value);
     return value;
   };
@@ -68,7 +69,7 @@ public:
   antlrcpp::Any visitAssignString(ConfigureFileParser::AssignStringContext* ctx) {
     std::string key = ctx->KEYWORD()->getText();
     std::string value = std::any_cast<std::string>(ctx->STRING()->getText());
-    infra::RemoveEscapeChar(value);
+    RemoveEscapeChar(value);
     parameter->InsertConfigureMap(key, value);  
     return value;
   };
@@ -85,9 +86,6 @@ public:
     parameter->InsertConfigureMap(ctx->KEYWORD()->getText(), addr);
     return addr;
   };
-  
-public:
-
 };
 
 class ConfigureFile {
@@ -101,7 +99,9 @@ public:
   ConfigureFile(char *name) {
     std::filebuf cfgbuf;
     if (!cfgbuf.open(name, std::ios::in)) {
-      _LOG_CRIT(ERROR_NO_CONFIGURE ":%s", name);
+//    configurefile.hpp is ahead, then logdirectly.hpp
+//    _LOG_CRIT(ERROR_NO_CONFIGURE ":%s", name);      
+      printf("%s:%s\n", ERROR_NO_CONFIGURE, name);
       exit(1);
     } else {
       std::istream *cfgfile = new std::istream(&cfgbuf);
@@ -112,7 +112,6 @@ public:
       antlr4::tree::ParseTree *cfgtree = cfgparser->allConfigFile();
       ConfigureFileParseImplement *cfgimpl = new ConfigureFileParseImplement(&parameter);
       cfgimpl->visit(cfgtree);
-      IteratorParameter();
       
       cfgbuf.close();
       delete cfgimpl;
@@ -124,10 +123,15 @@ public:
     }
   };
 
-  static char* GetSingleConfigureParameter (std::string key, std::any &value) {
+  template<typename T>
+  static char* GetSingleConfigureParameter (std::string key, T &value) {
     return parameter.GetSingleConfigureParameter(key, value);
   };
+
 };
+
+#define  GetSingleConfig(value)                                                \
+  ConfigureFile::GetSingleConfigureParameter(TOSTRING(value), value);
 
 ConfigureFileParameter ConfigureFile::parameter;  
 #endif  // __RAYMON_SHAN_PARSE_CONFIGURE_FILE_HPP
