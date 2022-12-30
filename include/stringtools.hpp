@@ -31,7 +31,7 @@ int StoI(std::string str) {
   else return ToHex(str);
 }
 
-char* RightOfSlash(char *str) {
+const char* RightOfSlash(const char *str) {
   return strrchr(str,'/')?strrchr(str,'/')+1:str;
 }
 // the input string following the lexer

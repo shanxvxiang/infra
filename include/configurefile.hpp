@@ -30,18 +30,18 @@ public:
   }
 
   template<typename T>
-  char* GetSingleConfigureParameter (std::string key, T &value) {
+  const char* GetSingleConfigureParameter (std::string key, T &value) {
     int valuecount = configureFileMap.count(key);
     std::multimap<std::string, std::any>::iterator found;
 	
     if (valuecount == 0) {
-      return (char*)ERROR_NO_KEY;
+      return ERROR_NO_KEY;
     } else if (valuecount > 1) {
-      return (char*)ERROR_TOO_MORE_KEY;
+      return ERROR_TOO_MORE_KEY;
     }
     found = configureFileMap.find(key);
     if (found->second.type() != typeid(T)) {
-      return (char*)ERROR_INVALID_TYPE_KEY;
+      return ERROR_INVALID_TYPE_KEY;
     }
     value = std::any_cast<T>(found->second);
     return NULL;
@@ -96,7 +96,7 @@ public:
     parameter.IteratorConfigureMap();
   };
   
-  ConfigureFile(char *name) {
+  ConfigureFile(const char *name) {
     std::filebuf cfgbuf;
     if (!cfgbuf.open(name, std::ios::in)) {
 //    configurefile.hpp is ahead, then logdirectly.hpp
@@ -124,7 +124,7 @@ public:
   };
 
   template<typename T>
-  static char* GetSingleConfigureParameter (std::string key, T &value) {
+  static const char* GetSingleConfigureParameter (std::string key, T &value) {
     return parameter.GetSingleConfigureParameter(key, value);
   };
 

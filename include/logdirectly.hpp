@@ -70,7 +70,7 @@ public:
 #define CNAME LogDirectly
 #define ARGVS(LEVEL) \
   CNAME::GetTimeBuffer(), CNAME::GetThreadName(), CNAME::GetThreadID(),        \
-    LEVEL, RightOfSlash((char*)__FILE__), __LINE__
+    LEVEL, RightOfSlash(__FILE__), __LINE__
 
 #define _LOG_FILE_OUT(LEVEL, format, args...)                                  \
   if (CNAME::GetLogHandle() > 0) {					       \
@@ -140,7 +140,7 @@ void LogDirectly::ShouldOpenLogFile() {
 }
 
 void LogDirectly::SetLogFileParameter() {
-  char *ret;
+  const char *ret;
 
   GetSingleConfigSegment(ret, LogPath, "string");
   GetSingleConfigSegment(ret, LogFileLines, "int");

@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.24)
 project(infra)
 
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 set(ANTLR_JAR_LOCATION ${PROJECT_SOURCE_DIR}/lib/antlr4-4.11.1-complete.jar)
 set(PARSE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/parse)
 set(PARSE_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/third/antlr)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-std=c++17 -rdynamic -g -lpthread")
+set(CMAKE_CXX_FLAGS "-std=c++17 -rdynamic -g -lpthread -no-pie")
 # set(CMAKE_CXX_FLAGS "-std=c++17 -O2 -lpthread -Wno-deprecated")
 
 include_directories(
