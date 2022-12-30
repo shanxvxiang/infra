@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.24)
 project(infra)
 
-set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 set(ANTLR_JAR_LOCATION ${PROJECT_SOURCE_DIR}/lib/antlr4-4.11.1-complete.jar)
 set(PARSE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/parse)
 set(PARSE_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/third/antlr)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-std=c++17 -rdynamic -g -lpthread -no-pie")
-# set(CMAKE_CXX_FLAGS "-std=c++17 -O2 -lpthread -Wno-deprecated")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -lpthread -rdynamic -g -no-pie")
+# -rdynamic -g -no-pie for debug with addr2line
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/third/antlr
@@ -36,9 +35,12 @@ macro(generate_parse g4file)
 endmacro()
 
 generate_parse(ConfigureFile)
+generate_parse(puml)
+
 
 add_executable(infra infra.cpp ${ALL_ANTLR_OUTPUT_FILES} ) 
 
 target_link_libraries(
         infra antlr4-runtime
 )
+

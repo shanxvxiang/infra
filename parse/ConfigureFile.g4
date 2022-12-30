@@ -61,12 +61,12 @@ STRING
 IPADDRESS
     : INT '.' INT '.' INT '.' INT ':' INT;
     
-SAPCE     
-    : [ \t\r\n]+ -> skip;
 COMMENT   
     : '//' .*? '\n' -> skip;
 MULTICOMMENT
     : '/*' .*? '*/' -> skip;
+SAPCE     
+    : [ \t\r\n]+ -> skip;
 SEGMENTNOTE
     : '[' KEYWORD ']' -> skip;
 

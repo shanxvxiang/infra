@@ -38,5 +38,6 @@
 #include "logdirectly.hpp"
 #include "signalhandle.hpp"
 
+#include "datafiletype.hpp"
 
 #endif  // __RAYMON_SHAN_INFRA_HPP
