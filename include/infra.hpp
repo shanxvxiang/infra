@@ -28,6 +28,8 @@
 
 #include "ConfigureFileLexer.h"
 #include "ConfigureFileBaseVisitor.h"
+#include "PumlLexer.h"
+#include "PumlBaseVisitor.h"
 
 #include "raymoncommon.hpp"
 #include "errormessage.hpp"
@@ -37,7 +39,9 @@
 #include "configurefile.hpp"
 #include "logdirectly.hpp"
 #include "signalhandle.hpp"
+#include "classdefine.hpp"
 
 #include "datafiletype.hpp"
 
 #endif  // __RAYMON_SHAN_INFRA_HPP
+

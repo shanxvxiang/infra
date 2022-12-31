@@ -1,0 +1,9 @@
+@startuml
+class Area {
+  String name
+  String abbr
+  sss : String
+  bbb : Int
+}
+
+@enduml

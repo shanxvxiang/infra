@@ -10,6 +10,8 @@
 #define ERROR_INVALID_LOGLINES      "Invalid LogFileLines"
 #define ERROR_INVALID_LOGFILELEVEL  "Invalid LogFileLevel"
 
+#define ERROR_INVALID_CLASSFILE     "Could NOT open class define file"
+
 #endif  // __RAYMON_SHAN_ERROR_MESSAGE_HPP
 
 

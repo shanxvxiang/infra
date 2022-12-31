@@ -26,10 +26,6 @@ public:
   };
   static thread_local char timeBuffer[SMALL_CHAR_LENGTH];
   static int LogFileHandle;
-  static std::string LogPath;
-  static int LogFileLines;                      // open new log file for overload
-  static int LogFileLevel;
-  static int LogTermLevel;
 
   static void SetLogFileLevel(int level) {
     LogFileLevel = level;
@@ -97,18 +93,7 @@ public:
 #define _LOG_TRAC(format, args...)     _LOG_COMMAND(TRAC, format, ##args)
 
 int LogDirectly::LogFileHandle = 0;
-std::string LogDirectly::LogPath;
-int LogDirectly::LogFileLines;
-int LogDirectly::LogFileLevel = 0;
-int LogDirectly::LogTermLevel = 6;              // start value
 char thread_local LogDirectly::timeBuffer[SMALL_CHAR_LENGTH];
-
-#define GetSingleConfigSegment(ret, keyword, type)	                       \
-  ret = GetSingleConfig(keyword);                                              \
-  if (ret) {                                                                   \
-    _LOG_CRIT("%s <%s:%s>", ret, TOSTRING(keyword), type);                     \
-    exit(1);                                                                   \
-  }
 
 void LogDirectly::ShouldOpenLogFile() {
   static int linenow = 0;

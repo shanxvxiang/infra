@@ -10,12 +10,10 @@ int main(int, char **) {
   LogDirectly *gLogDirectly = new LogDirectly();
   SignalHandle *gSignalHandle = new SignalHandle();
 
-  usleep(10);
-  int a = 0;
-  int b = 100 /a;
+  ClassDefine *gClassDefine = new ClassDefine();
 
-  std::cout << b << std::endl;
- 
+
+  delete gClassDefine;
   delete gSignalHandle;
   delete gConfigureFile;
   delete gLogDirectly;

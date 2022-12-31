@@ -89,7 +89,8 @@ public:
 };
 
 class ConfigureFile {
-  static ConfigureFileParameter parameter;  
+public:
+  static ConfigureFileParameter parameter;
 
 public:
   void IteratorParameter (void) {
@@ -130,8 +131,21 @@ public:
 
 };
 
-#define  GetSingleConfig(value)                                                \
-  ConfigureFile::GetSingleConfigureParameter(TOSTRING(value), value);
+#define GetSingleConfigSegment(ret, keyword, type) {                           \
+  ret = ConfigureFile::GetSingleConfigureParameter(TOSTRING(keyword), keyword);\
+  if (ret) {                                                                   \
+    _LOG_CRIT("%s <%s:%s>", ret, TOSTRING(keyword), type);                     \
+    exit(1);                                                                   \
+  }                                                                            \
+}
 
-ConfigureFileParameter ConfigureFile::parameter;  
+ConfigureFileParameter ConfigureFile::parameter;
+
+std::string LogPath;
+int LogFileLines;
+int LogFileLevel;
+int LogTermLevel;
+
+std::string DataDefineFile;
+
 #endif  // __RAYMON_SHAN_PARSE_CONFIGURE_FILE_HPP

@@ -35,7 +35,7 @@ macro(generate_parse g4file)
 endmacro()
 
 generate_parse(ConfigureFile)
-generate_parse(puml)
+generate_parse(Puml)
 
 
 add_executable(infra infra.cpp ${ALL_ANTLR_OUTPUT_FILES} ) 
