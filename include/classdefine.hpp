@@ -15,9 +15,11 @@ public:
   }
 
   std::any visitDefineClass(PumlParser::DefineClassContext *ctx) {
-    std::string classname = ctx->IDENTIFIER()->getText();
+    std::string classname = ctx->IDENTIFIER(0)->getText();
     std::cout << "class:" << classname << std::endl;
-    return visitChildren(ctx);    
+    visitChildren(ctx);
+    std::cout << "end of " << classname << std::endl;
+    return 0;
   }
 
   std::any visitDefineAttribute(PumlParser::DefineAttributeContext *ctx) {

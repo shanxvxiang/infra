@@ -1,9 +1,8 @@
-@startuml
-class Area {
-  String name
-  String abbr
-  sss : String
-  bbb : Int
+class 行政区划 {
+  String 区域名称
+  String 区域简称
 }
 
-@enduml
+class 地址 base 行政区划 {
+  String 具体地址
+}

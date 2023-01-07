@@ -2,6 +2,8 @@
 /log/
 /third/antlr/ConfigureFile*
 /third/antlr/Puml*
+/parse/*.c
+/parse/*.h
 /cmake_install.cmake
 /CMakeCache.txt
 /Makefile

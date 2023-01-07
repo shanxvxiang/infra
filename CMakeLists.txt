@@ -1,46 +1,39 @@
 cmake_minimum_required(VERSION 3.24)
 project(infra)
 
-set(ANTLR_JAR_LOCATION ${PROJECT_SOURCE_DIR}/lib/antlr4-4.11.1-complete.jar)
-set(PARSE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/parse)
-set(PARSE_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/third/antlr)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -lpthread -rdynamic -g -no-pie")
 # -rdynamic -g -no-pie for debug with addr2line
 
 include_directories(
-    ${PROJECT_SOURCE_DIR}/third/antlr
+#    ${PROJECT_SOURCE_DIR}/third/antlr
 )
 
 link_directories(
-    ${PROJECT_SOURCE_DIR}/lib
+#    ${PROJECT_SOURCE_DIR}/lib
 )
 
-macro(generate_parse g4file)
-    set(ANTLR_G4_LOCATION ${PARSE_SOURCE_DIR}/${g4file}.g4)
-    set(ANTLR_OUTPUT_FILES
-        ${PARSE_OUTPUT_DIR}/${g4file}BaseVisitor.cpp
-        ${PARSE_OUTPUT_DIR}/${g4file}Lexer.cpp
-        ${PARSE_OUTPUT_DIR}/${g4file}Parser.cpp
-        ${PARSE_OUTPUT_DIR}/${g4file}Visitor.cpp
-    )
-    add_custom_command(
-        OUTPUT ${ANTLR_OUTPUT_FILES}
-        COMMAND java -jar ${ANTLR_JAR_LOCATION} -Dlanguage=Cpp -no-listener -visitor -o ${PARSE_OUTPUT_DIR} ${ANTLR_G4_LOCATION}
-        DEPENDS ${ANTLR_G4_LOCATION}
-        VERBATIM
+macro(generate_parse perfix)
+	set(PARSE_FILE_LOCATION ${PROJECT_SOURCE_DIR}/parse/${perfix})
+	add_custom_command(
+		OUTPUT ${PARSE_FILE_LOCATION}.bison.c
+		COMMAND bison -d ${PARSE_FILE_LOCATION}.y -o ${PARSE_FILE_LOCATION}.bison.c
+		DEPENDS ${PARSE_FILE_LOCATION}.y
+		VERBATIM
     )	
-    set(ALL_ANTLR_OUTPUT_FILES ${ALL_ANTLR_OUTPUT_FILES} ${ANTLR_OUTPUT_FILES})
+  add_custom_command(
+		OUTPUT ${PARSE_FILE_LOCATION}.flex.c
+		COMMAND flex --outfile=${PARSE_FILE_LOCATION}.flex.c  ${PARSE_FILE_LOCATION}.l
+		DEPENDS ${PARSE_FILE_LOCATION}.l
+		VERBATIM
+   )	
+	set(ALL_PARSE_FILES ${PARSE_FILE_LOCATION}.bison.c ${PARSE_FILE_LOCATION}.flex.c)
 endmacro()
 
-generate_parse(ConfigureFile)
-generate_parse(Puml)
+generate_parse(configfile)
+# generate_parse(Puml)
 
+add_executable(infra  ${ALL_PARSE_FILES}) 
+# infra.cpp
 
-add_executable(infra infra.cpp ${ALL_ANTLR_OUTPUT_FILES} ) 
-
-target_link_libraries(
-        infra antlr4-runtime
-)
 

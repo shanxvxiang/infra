@@ -70,3 +70,11 @@ useful emacs flycheck command  http://t.zoukankan.com/cobbliu-p-7468620.html , i
 ** colorful termail https://blog.csdn.net/u014470361/article/details/81512330
 ** readable typeid https://www.jb51.net/article/263999.htm <cxxabi.h>
 ** addr2line not working https://blog.csdn.net/kuno_y/article/details/125545762 -no-pie
+** c++11 c++14 C++17 c++20 https://blog.csdn.net/qq_41854911/article/details/119657617
+** GBK https://blog.csdn.net/qwq1503/article/details/125664874
+       https://zhuanlan.zhihu.com/p/537406802
+   change GBK to default http://t.zoukankan.com/vigarbuaa-p-2891102.html
+** flex bison https://blog.51cto.com/u_15127502/3922167    multi impl
+              https://stackoverflow.com/questions/60333666/flex-bison-windows-introduction   c function declare
+       
+
