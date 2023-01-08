@@ -74,7 +74,9 @@ useful emacs flycheck command  http://t.zoukankan.com/cobbliu-p-7468620.html , i
 ** GBK https://blog.csdn.net/qwq1503/article/details/125664874
        https://zhuanlan.zhihu.com/p/537406802
    change GBK to default http://t.zoukankan.com/vigarbuaa-p-2891102.html
-** flex bison https://blog.51cto.com/u_15127502/3922167    multi impl
+** flex bison https://www.jianshu.com/p/5ebbeac9bc9f       detail
+              https://blog.51cto.com/u_15127502/3922167    multi impl
               https://stackoverflow.com/questions/60333666/flex-bison-windows-introduction   c function declare
+              https://www.mianshigee.com/tutorial/pandolia-tinyc/about.md  tiny-c compiler
        
 

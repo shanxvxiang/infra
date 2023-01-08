@@ -1,44 +1,42 @@
-%define api.prefix {cmdline}
+%define api.prefix {configfile}
 %{
 #include <stdio.h>
+#define CONFIGFILESTYPE char*
 
-int cmdlinelex();
-int cmdlinewrap(void);
-void yyerror(char *s);
+int configfilelex();
+int configfilewrap(void);
+void configfileerror(char *s);
 %}
 
-%token NUMBER
-%token ADD SUB MUL DIV ABS
-%token EOL
+%token COMMENT
+%token DIGIT HEXDIGIT	ALPHABET GBK	
+%token ESCONE ESCX ESCU ESCCHAR
+%token INT STRING IDENTIFIER
+%token IS DOT
 
 %%
 
-calclist: 
-    | calclist exp EOL { printf("= %d\n", $2); }
-    ;
+allFile
+	: assign											{ printf("Assgin1 \n"); }
+	| allFile assign							{ printf("Assgin2 \n"); }
+	;
 
-exp: factor { $$ = $1; }
-    | exp ADD factor { $$ = $1 + $3; }
-    | exp SUB factor { $$ = $1 - $3; }
-    ;
 
-factor: term { $$ = $1; }
-    | factor MUL term { $$ = $1 * $3; }
-    | factor DIV term { $$ = $1 / $3; }
-    ;
+assign
+	: IDENTIFIER IS INT					{ printf("Assgin int %s %s \n", $1, $3); free($1); free($3);}
+	| IDENTIFIER IS STRING				{ printf("Assgin string  \n"); }
+	| IDENTIFIER IS INT DOT INT DOT INT DOT INT { printf("Assgin ip %s %s \n", $1, $3); }
+	;
 
-term: NUMBER { $$ = $1; }
-    | ABS term { $$ = $2 >= 0? $2 : -$2; }
-    ;
 %%
 int main(int argc, char **argv) {
-    yyparse();
+    configfileparse();
 }
-void yyerror(char* s) {
+void configfileerror(char* s) {
     fprintf(stderr, "error: %s\n", s);
 }
 
-int cmdlinewrap(void) {
+int configfilewrap(void) {
 	return 1;
 }
 
