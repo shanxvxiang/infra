@@ -7,16 +7,17 @@ int main(int, char **) {
   
   ThreadInfo *gThreadInfo = new ThreadInfo;
   ConfigureFile *gConfigureFile = new ConfigureFile(__MY_PROGRAM ".conf");
-  LogDirectly *gLogDirectly = new LogDirectly();
+  //  LogDirectly *gLogDirectly = new LogDirectly();
   SignalHandle *gSignalHandle = new SignalHandle();
 
-  ClassDefine *gClassDefine = new ClassDefine();
+  //  ClassDefine *gClassDefine = new ClassDefine();
 
-
-  delete gClassDefine;
+  gConfigureFile->IteratorParameter();
+  
+  //  delete gClassDefine;
   delete gSignalHandle;
+  //  delete gLogDirectly;
   delete gConfigureFile;
-  delete gLogDirectly;
   delete gThreadInfo;
 
   return 0;

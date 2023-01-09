@@ -6,32 +6,34 @@
 int configfilelex();
 int configfilewrap(void);
 void configfileerror(char *s);
+
+const char* AssignInt(const char* key, char* value);
+const char* AssignString(const char* key, char* value);
+const char* AssignIpaddress(const char* key, char* value);
 %}
 
-%token COMMENT
+%token COMMENT SEGMENT
 %token DIGIT HEXDIGIT	ALPHABET GBK	
-%token ESCONE ESCX ESCU ESCCHAR
-%token INT STRING IDENTIFIER
-%token IS DOT
+%token ESCONE ESCX ESCU ESCCHAR ALLCHAR
+%token IDENTIFIER INT STRING IPADDRESS
+%token IS DOT SEMI
 
 %%
 
 allFile
-	: assign											{ printf("Assgin1 \n"); }
-	| allFile assign							{ printf("Assgin2 \n"); }
+	: assign											{ }
+	| allFile assign							{ }
 	;
 
 
 assign
-	: IDENTIFIER IS INT					{ printf("Assgin int %s %s \n", $1, $3); free($1); free($3);}
-	| IDENTIFIER IS STRING				{ printf("Assgin string  \n"); }
-	| IDENTIFIER IS INT DOT INT DOT INT DOT INT { printf("Assgin ip %s %s \n", $1, $3); }
+	: IDENTIFIER IS INT	SEMI					{ AssignInt($1, $3); free($1); free($3);}
+	| IDENTIFIER IS STRING SEMI				{ AssignString($1, $3);  free($1); free($3);}
+	| IDENTIFIER IS IPADDRESS SEMI		{ AssignIpaddress($1, $3); free($1); free($3); }
 	;
 
 %%
-int main(int argc, char **argv) {
-    configfileparse();
-}
+
 void configfileerror(char* s) {
     fprintf(stderr, "error: %s\n", s);
 }

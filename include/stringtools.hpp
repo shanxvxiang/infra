@@ -22,6 +22,14 @@ int ToHex(std::string str) {
   return result;
 }
 
+int ToHex(char *str) {
+  int result = 0;
+  const char *now = str + 2;
+  while (*now)
+    result = result * 16 + tohex[(int)*now++];
+  return result;
+}
+
 char ToHex(char a, char b) {
   return (tohex[(int)a] << 4) + tohex[(int)b];
 }
@@ -31,9 +39,15 @@ int StoI(std::string str) {
   else return ToHex(str);
 }
 
+int StoI(char *str) {
+  if (str[0]!='0' || str[1]!='x') return atoi(str);
+  else return ToHex(str);
+}
+
 const char* RightOfSlash(const char *str) {
   return strrchr(str,'/')?strrchr(str,'/')+1:str;
 }
+
 // the input string following the lexer
 /*
 fragment HEXDIGIT

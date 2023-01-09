@@ -3,6 +3,14 @@
 
 #include "infra.hpp"
 
+extern "C" {
+  const char* AssignInt(const char* key, char* value);
+  const char* AssignString(const char* key, char* value);
+  const char* AssignIpaddress(const char* key, char* value);
+}
+
+extern FILE *configfilein;
+
 class ConfigureFileParameter {
   std::multimap<std::string, std::any> configureFileMap;
 public:
@@ -10,8 +18,9 @@ public:
     configureFileMap.insert(std::pair<std::string, std::any>(key, value));
     return true;
   }
-  
+
   void IteratorConfigureMap(void) {
+    std::cout << "Begin iter\n";
     for (auto elem : configureFileMap) {
       std::cout << elem.first << " ";
       if (elem.second.type() == typeid(int))
@@ -27,6 +36,7 @@ public:
       else
 	std::cout << elem.second.type().name() << std::endl;
     }
+    std::cout << "End iter\n";
   }
 
   template<typename T>
@@ -48,46 +58,6 @@ public:
   }
 };
 
-class ConfigureFileParseImplement : public ConfigureFileBaseVisitor {
-
-  ConfigureFileParameter *parameter;
-public:
-  ConfigureFileParseImplement(ConfigureFileParameter *para) {
-    parameter = para;    
-  };
-  antlrcpp::Any visitAllConfigFile(ConfigureFileParser::AllConfigFileContext* ctx) {
-    return visitChildren(ctx);
-  };
-  
-  antlrcpp::Any visitAssignInt(ConfigureFileParser::AssignIntContext* ctx) {
-    std::string key = ctx->KEYWORD()->getText();
-    int value = StoI(ctx->INT()->getText());
-    parameter->InsertConfigureMap(key, value);
-    return value;
-  };
-  
-  antlrcpp::Any visitAssignString(ConfigureFileParser::AssignStringContext* ctx) {
-    std::string key = ctx->KEYWORD()->getText();
-    std::string value = std::any_cast<std::string>(ctx->STRING()->getText());
-    RemoveEscapeChar(value);
-    parameter->InsertConfigureMap(key, value);  
-    return value;
-  };
-
-  antlrcpp::Any visitAssignIpAddress(ConfigureFileParser::AssignIpAddressContext* ctx) {
-    std::string key = ctx->KEYWORD()->getText();
-    std::string value = std::any_cast<std::string>(ctx->IPADDRESS()->getText());
-    int pos = value.find(':');
-
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(value.substr(0, pos).c_str());
-    addr.sin_port = htons(stoi(value.substr(pos+1)));
-    parameter->InsertConfigureMap(ctx->KEYWORD()->getText(), addr);
-    return addr;
-  };
-};
-
 class ConfigureFile {
 public:
   static ConfigureFileParameter parameter;
@@ -98,37 +68,14 @@ public:
   };
   
   ConfigureFile(const char *name) {
-    std::filebuf cfgbuf;
-    if (!cfgbuf.open(name, std::ios::in)) {
-//    configurefile.hpp is ahead, then logdirectly.hpp
-//    _LOG_CRIT(ERROR_NO_CONFIGURE ":%s", name);      
-      printf("%s:%s\n", ERROR_NO_CONFIGURE, name);
-      exit(1);
-    } else {
-      std::istream *cfgfile = new std::istream(&cfgbuf);
-      antlr4::ANTLRInputStream *cfginput = new antlr4::ANTLRInputStream(*cfgfile);
-      ConfigureFileLexer *cfglexer = new ConfigureFileLexer(cfginput);
-      antlr4::CommonTokenStream *cfgtokens = new antlr4::CommonTokenStream(cfglexer);
-      ConfigureFileParser *cfgparser = new ConfigureFileParser(cfgtokens);
-      antlr4::tree::ParseTree *cfgtree = cfgparser->allConfigFile();
-      ConfigureFileParseImplement *cfgimpl = new ConfigureFileParseImplement(&parameter);
-      cfgimpl->visit(cfgtree);
-      
-      cfgbuf.close();
-      delete cfgimpl;
-      delete cfgparser;
-      delete cfgtokens;
-      delete cfglexer;
-      delete cfginput;
-      delete cfgfile;
-    }
+    configfilein = fopen(name, "r" );
+    configfileparse();
   };
 
   template<typename T>
-  static const char* GetSingleConfigureParameter (std::string key, T &value) {
+  static const char* GetSingleConfigureParameter (char *key, T &value) {
     return parameter.GetSingleConfigureParameter(key, value);
   };
-
 };
 
 #define GetSingleConfigSegment(ret, keyword, type) {                           \
@@ -137,6 +84,20 @@ public:
     _LOG_CRIT("%s <%s:%s>", ret, TOSTRING(keyword), type);                     \
     exit(1);                                                                   \
   }                                                                            \
+}
+
+const char* AssignInt(const char* key, char* value) {
+  int intvalue = StoI(value);
+  ConfigureFile::parameter.InsertConfigureMap(key, intvalue);
+  return 0;
+};
+const char* AssignString(const char* key, char* value) {
+  printf("\nin cpp STRING %s = %s \n", key, value);
+  return 0;  
+}
+const char*  AssignIpaddress(const char* key, char* value) {
+  printf("\nin cpp IPADDRESS %s = %s \n", key, value);
+  return 0;  
 }
 
 ConfigureFileParameter ConfigureFile::parameter;

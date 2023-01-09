@@ -1,6 +1,7 @@
 #ifndef __RAYMON_SHAN_INFRA_HPP
 #define __RAYMON_SHAN_INFRA_HPP
 
+#include <any>
 #include <iostream>
 #include <map>
 #include <typeinfo>
@@ -26,10 +27,9 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 
-#include "ConfigureFileLexer.h"
-#include "ConfigureFileBaseVisitor.h"
-#include "PumlLexer.h"
-#include "PumlBaseVisitor.h"
+extern "C" {
+#include "../parse/configfile.bison.h"
+}
 
 #include "raymoncommon.hpp"
 #include "errormessage.hpp"
@@ -37,9 +37,9 @@
 #include "lockers.hpp"
 #include "threadinfo.hpp"
 #include "configurefile.hpp"
-#include "logdirectly.hpp"
+// #include "logdirectly.hpp"
 #include "signalhandle.hpp"
-#include "classdefine.hpp"
+// #include "classdefine.hpp"
 
 #include "datafiletype.hpp"
 
