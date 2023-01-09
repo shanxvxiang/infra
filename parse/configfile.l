@@ -10,38 +10,34 @@ GBK						([\x81-\xFE] ([\x40-\x7E] | [\x80-\xFE]))
 STRING				(\x34 ([^\x34\x92] | {ESCCHAR} )* \x34)
 IDENTIFIER		(({ALPHABET} | {GBK}) ({ALPHABET} | {DIGIT} | {GBK})*)
 */
-/* / \x2F; * \x2A " \x34; ' \x39; [ \x91; \ \x92; ] \x93*/
+/* " \x22; ' \x27; / \x2F; \ \x5c; */
 
 DIGIT 				([0-9])
 HEXDIGIT			([0-9A-Fa-f])
 ALPHABET			([_A-Za-z])
 GBK						([\x81-\xFE][\x40-\xFE])
 
-ESCONE				(\x92[?abfnrtv\x34\x39\x92])
-ESCX					(\x92([x]|[X]){HEXDIGIT}{HEXDIGIT})
-ESCU					(\x92([u]|[U]){HEXDIGIT}{HEXDIGIT}{HEXDIGIT}{HEXDIGIT})
-ESCCHAR				({ESCONE}|{ESCX}|{ESCU})
+ESCONE				(\x5C[abfnrtv?\x22\x27\x5C])
+ESCX					(\x5C([x]|[X]){HEXDIGIT}{HEXDIGIT})
+ESCCHAR				({ESCONE}|{ESCX})
 ALLCHAR				({ALPHABET}|{DIGIT}|{GBK}|{ESCCHAR})
 
 IDENTIFIER		({ALPHABET}+)
 INT						({DIGIT}+)
-STRING				(\x34([^\x34])*\x34)
-IPADDRESS			({INT}"."{INT}"."{INT}"."{INT})
+STRING				(\x22([^\x22\x5c]|{ESCCHAR})*\x22)
+IPADDRESS			({INT}"."{INT}"."{INT}"."{INT}":"{INT})
 
 COMMENT				("//"[^\n]*)
 SEGMENT				("["{ALLCHAR}*"]")
-IS						("=")
-DOT						(".")
-SEMI					(";")
+
 
 %%
-[ \t\r\n]+				{ }
 {IDENTIFIER}			{ _DUPTEXT; return IDENTIFIER; }
 {INT}							{ _DUPTEXT; return INT; }
+{STRING}          { _DUPTEXT; return STRING; }
 {IPADDRESS}				{ _DUPTEXT; return IPADDRESS; }
-{IS}							{ return IS; }
-{DOT}							{ return DOT; }
-{SEMI}						{ return SEMI; }
+[;=]							{ return configfiletext[0]; }
+[ \t\r\n]+				{ }
 {COMMENT}					{ }
 {SEGMENT}					{ }
 

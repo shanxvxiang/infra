@@ -92,11 +92,19 @@ const char* AssignInt(const char* key, char* value) {
   return 0;
 };
 const char* AssignString(const char* key, char* value) {
-  printf("\nin cpp STRING %s = %s \n", key, value);
+  RemoveEscapeChar(value);
+  ConfigureFile::parameter.InsertConfigureMap(key, std::string(value));  
   return 0;  
 }
 const char*  AssignIpaddress(const char* key, char* value) {
-  printf("\nin cpp IPADDRESS %s = %s \n", key, value);
+  sockaddr_in addr;
+  char* colon = strchr(value, ':');
+  *colon = 0;
+  addr.sin_family = AF_INET;
+  inet_aton(value, &addr.sin_addr);   // TODO return
+  addr.sin_port = htons(atoi(colon + 1));  // TODO return
+  ConfigureFile::parameter.InsertConfigureMap(key, addr);
+  *colon = ':';
   return 0;  
 }
 

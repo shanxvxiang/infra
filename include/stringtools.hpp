@@ -66,8 +66,8 @@ fragment ESCCHAR
     | '\\t'
     | '\\v'
     | '\\x' HEXDIGIT HEXDIGIT
-    | '\\X' HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
-    | '\\u' HEXDIGIT HEXDIGIT
+    | '\\u' HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
+    | '\\X' HEXDIGIT HEXDIGIT
     | '\\U' HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
     ;
 
@@ -110,19 +110,61 @@ bool RemoveEscapeChar(std::string &str) {
       case 'v' :
 	*dnow++ = '\v'; break;
       case 'x' :
-      case 'u' :
+      case 'X' :
 	*dnow++ = ToHex(*(snow+1), *(snow+2));
 	snow += 2; break;
-      case 'X' :
-      case 'U' :
-	*dnow++ = ToHex(*(snow+3), *(snow+4));
-	*dnow++ = ToHex(*(snow+1), *(snow+2));
-	snow += 4; break;
       }
       snow++;
     }
   }
   str.erase(slen - (send - dnow) - 1);
+  return true;
+}
+
+bool RemoveEscapeChar(char *str) {
+  int slen = strlen(str);
+  char *dnow = str;
+  char *snow = dnow + 1;
+  char *send = dnow + slen - 1;
+
+  while (snow < send) {
+    if (*snow != '\\') {
+      *dnow++ = *snow++;
+    } else {
+      snow++;
+      switch(*snow) {
+      case '\'':
+	*dnow++ = '\''; break;
+      case '"' :
+	*dnow++ = '"';  break;
+      case '?' :
+	*dnow++ = '?';  break;
+      case '\\':
+	*dnow++ = '\\'; break;
+      case 'a' :
+	*dnow++ = '\a'; break;
+      case 'b' :
+	*dnow++ = '\b'; break;
+      case 'f' :
+	*dnow++ = '\f'; break;
+      case 'n' :
+	*dnow++ = '\n'; break;
+      case 'r' :
+	*dnow++ = '\r'; break;
+      case 't' :
+	*dnow++ = '\t'; break;
+      case 'v' :
+	*dnow++ = '\v'; break;
+      case 'x' :
+      case 'X' :
+	*dnow++ = ToHex(*(snow+1), *(snow+2));
+	snow += 2; break;
+      }
+      snow++;
+    }
+  }
+  
+  *dnow = 0;
   return true;
 }
 

@@ -12,11 +12,7 @@ const char* AssignString(const char* key, char* value);
 const char* AssignIpaddress(const char* key, char* value);
 %}
 
-%token COMMENT SEGMENT
-%token DIGIT HEXDIGIT	ALPHABET GBK	
-%token ESCONE ESCX ESCU ESCCHAR ALLCHAR
 %token IDENTIFIER INT STRING IPADDRESS
-%token IS DOT SEMI
 
 %%
 
@@ -25,11 +21,10 @@ allFile
 	| allFile assign							{ }
 	;
 
-
 assign
-	: IDENTIFIER IS INT	SEMI					{ AssignInt($1, $3); free($1); free($3);}
-	| IDENTIFIER IS STRING SEMI				{ AssignString($1, $3);  free($1); free($3);}
-	| IDENTIFIER IS IPADDRESS SEMI		{ AssignIpaddress($1, $3); free($1); free($3); }
+	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3); free($1); free($3);}
+	| IDENTIFIER '=' STRING ';'				{ AssignString($1, $3);  free($1); free($3);}
+	| IDENTIFIER '=' IPADDRESS ';'		{ AssignIpaddress($1, $3); free($1); free($3); }
 	;
 
 %%
