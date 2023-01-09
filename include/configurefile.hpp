@@ -73,7 +73,7 @@ public:
   };
 
   template<typename T>
-  static const char* GetSingleConfigureParameter (char *key, T &value) {
+  static const char* GetSingleConfigureParameter (std::string key, T &value) {
     return parameter.GetSingleConfigureParameter(key, value);
   };
 };
@@ -113,7 +113,7 @@ ConfigureFileParameter ConfigureFile::parameter;
 std::string LogPath;
 int LogFileLines;
 int LogFileLevel;
-int LogTermLevel;
+int LogTermLevel = 6;
 
 std::string DataDefineFile;
 

@@ -50,10 +50,10 @@ const char* RightOfSlash(const char *str) {
 
 // the input string following the lexer
 /*
-fragment HEXDIGIT
+HEXDIGIT
     : [0-9a-fA-F];
 
-fragment ESCCHAR    
+ESCCHAR    
     : '\\\''
     | '\\"'
     | '\\?'
@@ -66,9 +66,7 @@ fragment ESCCHAR
     | '\\t'
     | '\\v'
     | '\\x' HEXDIGIT HEXDIGIT
-    | '\\u' HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
     | '\\X' HEXDIGIT HEXDIGIT
-    | '\\U' HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
     ;
 
 STRING    

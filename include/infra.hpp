@@ -37,9 +37,9 @@ extern "C" {
 #include "lockers.hpp"
 #include "threadinfo.hpp"
 #include "configurefile.hpp"
-// #include "logdirectly.hpp"
+#include "logdirectly.hpp"
 #include "signalhandle.hpp"
-// #include "classdefine.hpp"
+#include "classdefine.hpp"
 
 #include "datafiletype.hpp"
 
