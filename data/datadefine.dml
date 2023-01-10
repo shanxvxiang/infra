@@ -1,8 +1,8 @@
 class 行政区划 {
-  string 区域名称;
-  string 区域简称;
+  unique string 区域名称;
+  attribute string 区域简称;
 };
 
 class 地址 inherit 行政区划 {
-  string 具体地址;
+  attribute string 具体地址;
 };

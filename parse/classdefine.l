@@ -39,9 +39,9 @@ COMMENT				("//"[^\n]*)
 "hash"						{ return T_HASH; }
 "time"						{ return T_TIME; }
 
+[{};]							{ return classdefinetext[0]; }
 {IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
 {STRING}          { _DUPTEXT; return D_STRING; }
-[{};]							{ return classdefinetext[0]; }
 
 {COMMENT}					{ }
 <<EOF>>						{ return 0; }
