@@ -29,6 +29,7 @@
 
 extern "C" {
 #include "../parse/configfile.bison.h"
+#include "../parse/classdefine.bison.h"
 }
 
 #include "raymoncommon.hpp"

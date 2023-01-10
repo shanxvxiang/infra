@@ -16,23 +16,25 @@ link_directories(
 )
 
 macro(generate_parse perfix)
-	set(PARSE_FILE_LOCATION ${PROJECT_SOURCE_DIR}/parse/${perfix})
+	set(PARSE_FILE_LOCATION ${PROJECT_SOURCE_DIR}/parse/)
 	add_custom_command(
-		OUTPUT ${PARSE_FILE_LOCATION}.bison.c
-		COMMAND bison -d ${PARSE_FILE_LOCATION}.y -o ${PARSE_FILE_LOCATION}.bison.c
-		DEPENDS ${PARSE_FILE_LOCATION}.y
+		OUTPUT ${PARSE_FILE_LOCATION}${perfix}.bison.c ${PARSE_FILE_LOCATION}${perfix}.bison.h
+		COMMAND bison -d ${PARSE_FILE_LOCATION}${perfix}.y -o ${PARSE_FILE_LOCATION}${perfix}.bison.c
+		DEPENDS ${PARSE_FILE_LOCATION}${perfix}.y
 		VERBATIM
     )	
 	add_custom_command(
-		OUTPUT ${PARSE_FILE_LOCATION}.flex.c
-		COMMAND flex --outfile=${PARSE_FILE_LOCATION}.flex.c  ${PARSE_FILE_LOCATION}.l
-		DEPENDS ${PARSE_FILE_LOCATION}.l
+		OUTPUT ${PARSE_FILE_LOCATION}${perfix}.flex.c
+		COMMAND flex --outfile=${PARSE_FILE_LOCATION}${perfix}.flex.c  ${PARSE_FILE_LOCATION}${perfix}.l
+		DEPENDS ${PARSE_FILE_LOCATION}${perfix}.l
 		VERBATIM
    )	
-	set(ALL_PARSE_FILES ${PARSE_FILE_LOCATION}.bison.c ${PARSE_FILE_LOCATION}.flex.c)
+	set(ALL_PARSE_FILES ${ALL_PARSE_FILES} ${PARSE_FILE_LOCATION}${perfix}.bison.c ${PARSE_FILE_LOCATION}${perfix}.flex.c)
 endmacro()
 
 generate_parse(configfile)
+generate_parse(classdefine)
+
 # generate_parse(Puml)
 
 add_executable(infra infra.cpp ${ALL_PARSE_FILES}) 

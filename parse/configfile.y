@@ -22,8 +22,8 @@ allFile
 	;
 
 assign
-	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3); free($1); free($3);}
-	| IDENTIFIER '=' STRING ';'				{ AssignString($1, $3);  free($1); free($3);}
+	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3); free($1); free($3); }
+	| IDENTIFIER '=' STRING ';'				{ AssignString($1, $3);  free($1); free($3); }
 	| IDENTIFIER '=' IPADDRESS ';'		{ AssignIpaddress($1, $3); free($1); free($3); }
 	;
 

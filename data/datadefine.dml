@@ -1,8 +1,8 @@
 class 行政区划 {
-  String 区域名称
-  String 区域简称
-}
+  string 区域名称;
+  string 区域简称;
+};
 
-class 地址 base 行政区划 {
-  String 具体地址
-}
+class 地址 inherit 行政区划 {
+  string 具体地址;
+};

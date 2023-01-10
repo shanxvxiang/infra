@@ -1,39 +1,62 @@
-%define api.prefix {configfile}
+%define api.prefix {classdefine}
 %{
 #include <stdio.h>
-#define CONFIGFILESTYPE char*
+#define CLASSDEFINESTYPE char*
 
-int configfilelex();
-int configfilewrap(void);
-void configfileerror(char *s);
+int classdefinelex();
+int classdefinewrap(void);
+void classdefineerror(char *s);
 
-const char* AssignInt(const char* key, char* value);
-const char* AssignString(const char* key, char* value);
-const char* AssignIpaddress(const char* key, char* value);
+const char* DefineString(const char* identifier);
+const char* DefineInt(const char* identifier);
+const char* DefinePercent(const char* identifier);
+const char* DefineMoney(const char* identifier);
+const char* DefineHash(const char* identifier);
+const char* DefineTime(const char* identifier);
 %}
 
-%token IDENTIFIER INT STRING IPADDRESS
+%token K_CLASS K_INHERIT K_AGGREGATION K_UNIQUE K_ESSENTIAL K_ATTRIBUTE
+%token T_STRING T_INT T_PERCENT T_MONEY T_HASH T_TIME
+%token D_IDENTIFIER D_STRING
 
 %%
 
 allFile
-	: assign											{ }
-	| allFile assign							{ }
+	: sentence										{ }
+	| allFile sentence						{ }
 	;
 
-assign
-	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3); free($1); free($3);}
-	| IDENTIFIER '=' STRING ';'				{ AssignString($1, $3);  free($1); free($3);}
-	| IDENTIFIER '=' IPADDRESS ';'		{ AssignIpaddress($1, $3); free($1); free($3); }
+sentence
+	: classDefine									{ }
 	;
 
+classDefine
+	: K_CLASS D_IDENTIFIER '{' defineBody '}' ';'																										{ printf("in classDefine %s\n", $2); free($2); }
+	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineBody '}' ';'														{ printf("in classDefine %s inherit %s\n", $2, $4); free($2); free($4); }
+	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineBody '}' ';'												{ }
+	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineBody '}' ';'	{ }
+	;
+
+defineBody
+	: defineLine																																										{ }
+	| defineBody defineLine																																					{ }
+	;
+
+defineLine
+	: T_STRING D_IDENTIFIER ';'				{ DefineString($2); free($2); }
+	| T_INT D_IDENTIFIER ';'					{ DefineInt($2); free($2); }
+	| T_PERCENT D_IDENTIFIER ';'			{ DefinePercent($2); free($2); }
+	| T_MONEY D_IDENTIFIER ';'				{ DefineMoney($2); free($2); }
+	| T_HASH D_IDENTIFIER ';'					{ DefineHash($2); free($2); }
+	| T_TIME D_IDENTIFIER ';'					{ DefineTime($2); free($2); }
+	;
 %%
 
-void configfileerror(char* s) {
-    fprintf(stderr, "error: %s\n", s);
+void classdefineerror(char* s) {
+	fprintf(stderr, "error: %s\n", s);
 }
 
-int configfilewrap(void) {
+int classdefinewrap(void) {
 	return 1;
 }
 

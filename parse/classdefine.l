@@ -5,11 +5,6 @@
 #define _DUPTEXT {classdefinelval = strdup(classdefinetext);}
 %}
 
-/* 
-GBK						([\x81-\xFE] ([\x40-\x7E] | [\x80-\xFE])) 
-STRING				(\x34 ([^\x34\x92] | {ESCCHAR} )* \x34)
-IDENTIFIER		(({ALPHABET} | {GBK}) ({ALPHABET} | {DIGIT} | {GBK})*)
-*/
 /* " \x22; ' \x27; / \x2F; \ \x5c; */
 
 DIGIT 				([0-9])
@@ -44,11 +39,10 @@ COMMENT				("//"[^\n]*)
 "hash"						{ return T_HASH; }
 "time"						{ return T_TIME; }
 
-{IDENTIFIER}			{ _DUPTEXT; return IDENTIFIER; }
-{STRING}          { _DUPTEXT; return STRING; }
+{IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
+{STRING}          { _DUPTEXT; return D_STRING; }
+[{};]							{ return classdefinetext[0]; }
 
 {COMMENT}					{ }
-
-
 <<EOF>>						{ return 0; }
 
