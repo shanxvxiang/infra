@@ -1,7 +1,5 @@
 /CMakeFiles/
 /log/
-/third/antlr/ConfigureFile*
-/third/antlr/Puml*
 /parse/*.cpp
 /parse/*.hpp
 /cmake_install.cmake

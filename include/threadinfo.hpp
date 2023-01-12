@@ -1,7 +1,9 @@
 #ifndef __RAYMON_SHAN_THREAD_INFO_HPP
 #define __RAYMON_SHAN_THREAD_INFO_HPP
 
-#include "infra.hpp"
+#include "systeminclude.hpp"
+#include "raymoncommon.hpp"
+#include "lockers.hpp"
 
 struct threadStartInfo {
   char threadName[SMALL_CHAR_LENGTH];
@@ -38,6 +40,8 @@ public:
   };
 };
 
+#ifndef __RAYMON_SHAN_FOR_L_Y
+
 void *InitializeThread(void *arg)
 {
   memcpy(&ThreadInfo::threadInfo, arg, sizeof(threadStartInfo));
@@ -51,6 +55,10 @@ void *InitializeThread(void *arg)
 MutexLock ThreadInfo::serializeMutex;
 threadStartInfo thread_local ThreadInfo::threadInfo;
 unsigned int thread_local ThreadInfo::threadID;
+
+#endif // __RAYMON_SHAN_FOR_L_Y
+
+
 
 #endif  // __RAYMON_SHAN_THREAD_INFO_HPP
 

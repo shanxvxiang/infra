@@ -68,7 +68,7 @@ public:
   ConfigureFile(const char *name) {
     configfilein = fopen(name, "r" );
     if (!configfilein) {
-      printf("\033[5;31m" ERROR_NO_CONFIGURE "\033[0m" " <%s>\n", name);
+      _LOG_CRIT("%s, <%s>", ERROR_NO_CONFIGURE, name);
       exit(1);
     }
     configfileparse();
@@ -86,13 +86,13 @@ const char* GetSingleConfigureParameter (std::string key, T &value) {
 };
 
 const char* AssignInt(const char* key, char* value) {
-  int intvalue = StoI(value);
+  int intvalue = STools::StoI(value);
   ConfigureFile::parameter.InsertConfigureMap(key, intvalue);
   return 0;
 };
 
 const char* AssignString(const char* key, char* value) {
-  RemoveEscapeChar(value);
+  STools::RemoveEscapeChar(value);
   ConfigureFile::parameter.InsertConfigureMap(key, std::string(value));  
   return 0;  
 };

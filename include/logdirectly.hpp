@@ -1,7 +1,9 @@
 #ifndef __RAYMON_SHAN_LOG_DIRECTLY_HPP
 #define __RAYMON_SHAN_LOG_DIRECTLY_HPP
 
-#include "infra.hpp"
+#include "errormessage.hpp"
+#include "stringtools.hpp"
+#include "threadinfo.hpp"
 
 #define LEVEL_LOG_NONE         0
 #define LEVEL_LOG_CRIT         1
@@ -22,7 +24,7 @@
 class LogDirectly {
 public:
   LogDirectly() {
-//    SetLogFileParameter();
+    LogTermLevel = 6;
   };
   static thread_local char timeBuffer[SMALL_CHAR_LENGTH];
   static int LogFileHandle;
@@ -66,7 +68,7 @@ public:
 #define CNAME LogDirectly
 #define ARGVS(LEVEL) \
   CNAME::GetTimeBuffer(), CNAME::GetThreadName(), CNAME::GetThreadID(),        \
-    LEVEL, RightOfSlash(__FILE__), __LINE__
+    LEVEL, STools::RightOfSlash(__FILE__), __LINE__
 
 #define _LOG_FILE_OUT(LEVEL, format, args...)                                  \
   if (CNAME::GetLogHandle() > 0) {					       \
@@ -91,6 +93,9 @@ public:
 #define _LOG_INFO(format, args...)     _LOG_COMMAND(INFO, format, ##args)
 #define _LOG_DBUG(format, args...)     _LOG_COMMAND(DBUG, format, ##args)
 #define _LOG_TRAC(format, args...)     _LOG_COMMAND(TRAC, format, ##args)
+
+
+#ifndef __RAYMON_SHAN_FOR_L_Y
 
 int LogDirectly::LogFileHandle = 0;
 char thread_local LogDirectly::timeBuffer[SMALL_CHAR_LENGTH];
@@ -153,6 +158,8 @@ void LogDirectly::SetLogFileParameter() {
   ShouldOpenLogFile();
   
 };
+
+#endif  // __RAYMON_SHAN_FOR_L_Y
 
 #endif  // __RAYMON_SHAN_LOG_DIRECTLY_HPP
 

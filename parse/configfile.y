@@ -2,6 +2,9 @@
 %{
 #include <stdio.h>
 #define CONFIGFILESTYPE char*
+#define __RAYMON_SHAN_FOR_L_Y
+#include "../include/logdirectly.hpp"
+#undef  __RAYMON_SHAN_FOR_L_Y
 
 int configfilelex();
 extern "C" { int configfilewrap(void); };
@@ -33,8 +36,8 @@ assign
 %%
 
 void configfileerror(const char* s) {
-//_LOG_CRIT("%d", configfilelineno);
-	fprintf(stderr, "error: %s line: %d\n", configfiletext, configfilelineno);
+  _LOG_CRIT("%d", configfilelineno);
+	//fprintf(stderr, "error: %s line: %d\n", configfiletext, configfilelineno);
 }
 
 int configfilewrap(void) {

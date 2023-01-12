@@ -1,8 +1,9 @@
 #ifndef __RAYMON_SHAN_STRING_TOOLS_HPP
 #define __RAYMON_SHAN_STRING_TOOLS_HPP
 
-#include "infra.hpp"
+#include "systeminclude.hpp"
 
+#ifndef __RAYMON_SHAN_FOR_L_Y
 char tohex [128] = {
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -13,40 +14,46 @@ char tohex [128] = {
   0, 10, 11, 12, 13, 14, 15,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
 };
+#else   // __RAYMON_SHAN_FOR_L_Y
+extern char tohex [128];
+#endif  // __RAYMON_SHAN_FOR_L_Y
 
-int ToHex(std::string str) {
-  int result = 0;
-  const char *now = str.c_str() + 2;            // remove 0x
-  while (*now)
-    result = result * 16 + tohex[(int)*now++];
-  return result;
-}
+class STools {
+public:
+  static int ToHex(std::string str) {
+    int result = 0;
+    const char *now = str.c_str() + 2;            // remove 0x
+    while (*now)
+      result = result * 16 + tohex[(int)*now++];
+    return result;
+  };
 
-int ToHex(char *str) {
-  int result = 0;
-  const char *now = str + 2;
-  while (*now)
-    result = result * 16 + tohex[(int)*now++];
-  return result;
-}
+  static int ToHex(char *str) {
+    int result = 0;
+    const char *now = str + 2;
+    while (*now)
+      result = result * 16 + tohex[(int)*now++];
+    return result;
+  };
 
-char ToHex(char a, char b) {
-  return (tohex[(int)a] << 4) + tohex[(int)b];
-}
+  static char ToHex(char a, char b) {
+    return (tohex[(int)a] << 4) + tohex[(int)b];
+  };
 
-int StoI(std::string str) {
-  if (str.compare(0, 2, "0x")) return stoi(str);
-  else return ToHex(str);
-}
+  static int StoI(std::string str) {
+    if (str.compare(0, 2, "0x")) return stoi(str);
+    else return ToHex(str);
+  };
 
-int StoI(char *str) {
-  if (str[0]!='0' || str[1]!='x') return atoi(str);
-  else return ToHex(str);
-}
+  static int StoI(char *str) {
+    if (str[0]!='0' || str[1]!='x') return atoi(str);
+    else return ToHex(str);
+  };
 
-const char* RightOfSlash(const char *str) {
-  return strrchr(str,'/')?strrchr(str,'/')+1:str;
-}
+  static const char* RightOfSlash(const char *str) {
+    return strrchr(str,'/')?strrchr(str,'/')+1:str;
+  };
+
 
 // the input string following the lexer
 /*
@@ -73,97 +80,97 @@ STRING
     : '"' (~["\\] | ESCCHAR )*? '"'
     | '\'' (~['\\] | ESCCHAR )*? '\'';
 */
-bool RemoveEscapeChar(std::string &str) {
-  int slen = str.size();
-  char *dnow = (char*)str.c_str();
-  char *snow = dnow + 1;
-  char *send = dnow + slen - 1;
+  static bool RemoveEscapeChar(std::string &str) {
+    int slen = str.size();
+    char *dnow = (char*)str.c_str();
+    char *snow = dnow + 1;
+    char *send = dnow + slen - 1;
 
-  while (snow < send) {
-    if (*snow != '\\') {
-      *dnow++ = *snow++;
-    } else {
-      snow++;
-      switch(*snow) {
-      case '\'':
-	*dnow++ = '\''; break;
-      case '"' :
-	*dnow++ = '"';  break;
-      case '?' :
-	*dnow++ = '?';  break;
-      case '\\':
-	*dnow++ = '\\'; break;
-      case 'a' :
-	*dnow++ = '\a'; break;
-      case 'b' :
-	*dnow++ = '\b'; break;
-      case 'f' :
-	*dnow++ = '\f'; break;
-      case 'n' :
-	*dnow++ = '\n'; break;
-      case 'r' :
-	*dnow++ = '\r'; break;
-      case 't' :
-	*dnow++ = '\t'; break;
-      case 'v' :
-	*dnow++ = '\v'; break;
-      case 'x' :
-      case 'X' :
-	*dnow++ = ToHex(*(snow+1), *(snow+2));
-	snow += 2; break;
+    while (snow < send) {
+      if (*snow != '\\') {
+        *dnow++ = *snow++;
+      } else {
+        snow++;
+        switch(*snow) {
+        case '\'':
+	  *dnow++ = '\''; break;
+        case '"' :
+          *dnow++ = '"';  break;
+        case '?' :
+          *dnow++ = '?';  break;
+        case '\\':
+          *dnow++ = '\\'; break;
+        case 'a' :
+          *dnow++ = '\a'; break;
+        case 'b' :
+          *dnow++ = '\b'; break;
+        case 'f' :
+          *dnow++ = '\f'; break;
+        case 'n' :
+          *dnow++ = '\n'; break;
+        case 'r' :
+          *dnow++ = '\r'; break;
+        case 't' :
+          *dnow++ = '\t'; break;
+        case 'v' :
+          *dnow++ = '\v'; break;
+        case 'x' :
+        case 'X' :
+          *dnow++ = ToHex(*(snow+1), *(snow+2));
+          snow += 2; break;
+	}
+	snow++;
       }
-      snow++;
     }
-  }
-  str.erase(slen - (send - dnow) - 1);
-  return true;
-}
+    str.erase(slen - (send - dnow) - 1);
+    return true;
+  };
 
-bool RemoveEscapeChar(char *str) {
-  int slen = strlen(str);
-  char *dnow = str;
-  char *snow = dnow + 1;
-  char *send = dnow + slen - 1;
+  static bool RemoveEscapeChar(char *str) {
+    int slen = strlen(str);
+    char *dnow = str;
+    char *snow = dnow + 1;
+    char *send = dnow + slen - 1;
 
-  while (snow < send) {
-    if (*snow != '\\') {
-      *dnow++ = *snow++;
-    } else {
-      snow++;
-      switch(*snow) {
-      case '\'':
-	*dnow++ = '\''; break;
-      case '"' :
-	*dnow++ = '"';  break;
-      case '?' :
-	*dnow++ = '?';  break;
-      case '\\':
-	*dnow++ = '\\'; break;
-      case 'a' :
-	*dnow++ = '\a'; break;
-      case 'b' :
-	*dnow++ = '\b'; break;
-      case 'f' :
-	*dnow++ = '\f'; break;
-      case 'n' :
-	*dnow++ = '\n'; break;
-      case 'r' :
-	*dnow++ = '\r'; break;
-      case 't' :
-	*dnow++ = '\t'; break;
-      case 'v' :
-	*dnow++ = '\v'; break;
-      case 'x' :
-      case 'X' :
-	*dnow++ = ToHex(*(snow+1), *(snow+2));
-	snow += 2; break;
+    while (snow < send) {
+      if (*snow != '\\') {
+        *dnow++ = *snow++;
+      } else {
+        snow++;
+        switch(*snow) {
+        case '\'':
+	  *dnow++ = '\''; break;
+        case '"' :
+          *dnow++ = '"';  break;
+        case '?' :
+          *dnow++ = '?';  break;
+        case '\\':
+          *dnow++ = '\\'; break;
+        case 'a' :
+          *dnow++ = '\a'; break;
+        case 'b' :
+          *dnow++ = '\b'; break;
+        case 'f' :
+          *dnow++ = '\f'; break;
+        case 'n' :
+          *dnow++ = '\n'; break;
+        case 'r' :
+          *dnow++ = '\r'; break;
+        case 't' :
+          *dnow++ = '\t'; break;
+        case 'v' :
+          *dnow++ = '\v'; break;
+        case 'x' :
+        case 'X' :
+          *dnow++ = ToHex(*(snow+1), *(snow+2));
+          snow += 2; break;
+	}
+	snow++;
       }
-      snow++;
-    }
-  }
-  
-  *dnow = 0;
-  return true;
-}
+    }	  
+    *dnow = 0;
+    return true;
+  };
+};
 
 #endif // __RAYMON_SHAN_STRING_TOOLS_HPP
