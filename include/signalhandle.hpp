@@ -64,4 +64,9 @@ public:
   }
 };
 
+extern "C" {
+void SignalParser(int signo) {
+  SignalHandle::SignalParser(signo);
+};
+}
 #endif  // __RAYMON_SHAN_SIGNAL_HANDLE_HPP

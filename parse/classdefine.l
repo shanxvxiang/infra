@@ -1,7 +1,7 @@
 %option prefix="classdefine"
 %{
 #define CLASSDEFINESTYPE char*
-#include "classdefine.bison.h"
+#include "classdefine.bison.hpp"
 #define _DUPTEXT {classdefinelval = strdup(classdefinetext);}
 %}
 

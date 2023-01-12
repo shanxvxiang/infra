@@ -3,11 +3,9 @@
 
 #include "infra.hpp"
 
-extern "C" {
-  const char* AssignInt(const char* key, char* value);
-  const char* AssignString(const char* key, char* value);
-  const char* AssignIpaddress(const char* key, char* value);
-}
+const char* AssignInt(const char* key, char* value);
+const char* AssignString(const char* key, char* value);
+const char* AssignIpaddress(const char* key, char* value);
 
 extern FILE *configfilein;
 
@@ -69,6 +67,10 @@ public:
   
   ConfigureFile(const char *name) {
     configfilein = fopen(name, "r" );
+    if (!configfilein) {
+      printf("\033[5;31m" ERROR_NO_CONFIGURE "\033[0m" " <%s>\n", name);
+      exit(1);
+    }
     configfileparse();
   };
 
@@ -78,24 +80,23 @@ public:
   };
 };
 
-#define GetSingleConfigSegment(ret, keyword, type) {                           \
-  ret = ConfigureFile::GetSingleConfigureParameter(TOSTRING(keyword), keyword);\
-  if (ret) {                                                                   \
-    _LOG_CRIT("%s <%s:%s>", ret, TOSTRING(keyword), type);                     \
-    exit(1);                                                                   \
-  }                                                                            \
-}
+template<typename T>
+const char* GetSingleConfigureParameter (std::string key, T &value) {
+  return ConfigureFile::GetSingleConfigureParameter(key, value);
+};
 
 const char* AssignInt(const char* key, char* value) {
   int intvalue = StoI(value);
   ConfigureFile::parameter.InsertConfigureMap(key, intvalue);
   return 0;
 };
+
 const char* AssignString(const char* key, char* value) {
   RemoveEscapeChar(value);
   ConfigureFile::parameter.InsertConfigureMap(key, std::string(value));  
   return 0;  
-}
+};
+
 const char*  AssignIpaddress(const char* key, char* value) {
   sockaddr_in addr;
   char* colon = strchr(value, ':');
@@ -106,15 +107,9 @@ const char*  AssignIpaddress(const char* key, char* value) {
   ConfigureFile::parameter.InsertConfigureMap(key, addr);
   *colon = ':';
   return 0;  
-}
+};
 
 ConfigureFileParameter ConfigureFile::parameter;
 
-std::string LogPath;
-int LogFileLines;
-int LogFileLevel;
-int LogTermLevel = 6;
-
-std::string DataDefineFile;
 
 #endif  // __RAYMON_SHAN_PARSE_CONFIGURE_FILE_HPP

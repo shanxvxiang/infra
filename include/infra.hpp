@@ -27,18 +27,25 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 
-extern "C" {
-#include "../parse/configfile.bison.h"
-#include "../parse/classdefine.bison.h"
-}
+#include "../parse/configfile.bison.hpp"
+#include "../parse/classdefine.bison.hpp"
+
+std::string LogPath;
+int LogFileLines;
+int LogFileLevel;
+int LogTermLevel = 6;
+
+std::string DataDefineFile;
 
 #include "raymoncommon.hpp"
 #include "errormessage.hpp"
 #include "stringtools.hpp"
 #include "lockers.hpp"
 #include "threadinfo.hpp"
-#include "configurefile.hpp"
 #include "logdirectly.hpp"
+
+#include "configurefile.hpp"
+
 #include "signalhandle.hpp"
 #include "classdefine.hpp"
 

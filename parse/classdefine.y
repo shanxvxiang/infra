@@ -4,8 +4,8 @@
 #define CLASSDEFINESTYPE char*
 
 int classdefinelex();
-int classdefinewrap(void);
-void classdefineerror(char *s);
+extern "C" { int classdefinewrap(void); };
+void classdefineerror(const char *s);
 
 const char* DefineString(const char* id);
 const char* DefineInt(const char* id);
@@ -71,7 +71,7 @@ typeDefine
 	;
 %%
 
-void classdefineerror(char* s) {
+void classdefineerror(const char* s) {
 	fprintf(stderr, "error: %s\n", s);
 }
 

@@ -22,7 +22,7 @@
 class LogDirectly {
 public:
   LogDirectly() {
-    SetLogFileParameter();
+//    SetLogFileParameter();
   };
   static thread_local char timeBuffer[SMALL_CHAR_LENGTH];
   static int LogFileHandle;
@@ -124,6 +124,17 @@ void LogDirectly::ShouldOpenLogFile() {
   if (linenow++ >= LogFileLines - 1) linenow = 0;
 }
 
+template<typename T>
+const char* GetSingleConfigureParameter (std::string key, T &value);
+
+#define GetSingleConfigSegment(ret, keyword, type) {                           \
+  ret = GetSingleConfigureParameter(TOSTRING(keyword), keyword);               \
+  if (ret) {                                                                   \
+    _LOG_CRIT("%s <%s:%s>", ret, TOSTRING(keyword), type);                     \
+    exit(1);                                                                   \
+  }                                                                            \
+};
+
 void LogDirectly::SetLogFileParameter() {
   const char *ret;
 
@@ -142,5 +153,6 @@ void LogDirectly::SetLogFileParameter() {
   ShouldOpenLogFile();
   
 };
+
 #endif  // __RAYMON_SHAN_LOG_DIRECTLY_HPP
 

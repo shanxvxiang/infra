@@ -4,8 +4,11 @@
 #define CONFIGFILESTYPE char*
 
 int configfilelex();
-int configfilewrap(void);
-void configfileerror(char *s);
+extern "C" { int configfilewrap(void); };
+void configfileerror(const char *s);
+
+extern int configfilelineno;
+extern char *configfiletext;
 
 const char* AssignInt(const char* key, char* value);
 const char* AssignString(const char* key, char* value);
@@ -17,20 +20,21 @@ const char* AssignIpaddress(const char* key, char* value);
 %%
 
 allFile
-	: assign											{ }
-	| allFile assign							{ }
+	: assign
+	| allFile assign
 	;
 
 assign
-	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3); free($1); free($3); }
+	: IDENTIFIER '=' INT ';'					{ printf("line %d \n", configfilelineno); AssignInt($1, $3); free($1); free($3); }
 	| IDENTIFIER '=' STRING ';'				{ AssignString($1, $3);  free($1); free($3); }
 	| IDENTIFIER '=' IPADDRESS ';'		{ AssignIpaddress($1, $3); free($1); free($3); }
 	;
 
 %%
 
-void configfileerror(char* s) {
-    fprintf(stderr, "error: %s\n", s);
+void configfileerror(const char* s) {
+//_LOG_CRIT("%d", configfilelineno);
+	fprintf(stderr, "error: %s line: %d\n", configfiletext, configfilelineno);
 }
 
 int configfilewrap(void) {

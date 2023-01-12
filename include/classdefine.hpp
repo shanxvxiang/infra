@@ -3,7 +3,7 @@
 
 #include "infra.hpp"
 
-extern "C" {
+// extern "C" {
   const char* DefineString(const char* identifier);
   const char* DefineInt(const char* identifier);
   const char* DefinePercent(const char* identifier);
@@ -17,7 +17,7 @@ extern "C" {
   const char* DefineInheritClass(const char* name, const char* base);
   const char* DefineAggregationClass(const char* name, const char* summary);
   const char* DefineInheritAggregationClass(const char* name, const char* base, const char* summary);
-}
+// }
 
 
 
