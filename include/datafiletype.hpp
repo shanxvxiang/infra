@@ -1,6 +1,9 @@
 #ifndef __RAYMON_SHAN_DATAFILE_TYPE_HPP
 #define __RAYMON_SHAN_DATAFILE_TYPE_HPP
 
+class _Hash {
+};
+
 /*
 聚合关系（Aggregation） 树木 --o 森林
 泛化关系（Generalization） 继承类 --|> 基类

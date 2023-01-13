@@ -31,6 +31,8 @@ COMMENT				("//"[^\n]*)
 "unique"					{ return K_UNIQUE; }
 "essential"				{ return K_ESSENTIAL; }
 "attribute"				{ return K_ATTRIBUTE; }
+"value"						{ return K_VALUE; }
+"deleted"					{ return K_DELETED; }
 
 "string"					{ return T_STRING; }
 "int"							{ return T_INT; }
@@ -39,10 +41,12 @@ COMMENT				("//"[^\n]*)
 "hash"						{ return T_HASH; }
 "time"						{ return T_TIME; }
 
-[{};]							{ return classdefinetext[0]; }
+[{};,]						{ return classdefinetext[0]; }
 {IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
 {STRING}          { _DUPTEXT; return D_STRING; }
-
+{INT}							{ _DUPTEXT; return D_INT; }
+[\n]							{ classdefinelineno++; }
+[ \t\r]+					{ }
 {COMMENT}					{ }
 <<EOF>>						{ return 0; }
 

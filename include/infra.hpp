@@ -18,9 +18,14 @@
 #include "configurefile.hpp"
 
 #include "signalhandle.hpp"
-#include "classdefine.hpp"
 
 #include "datafiletype.hpp"
+#include "treedefine.hpp"
+#include "classdefine.hpp"
+
+
+
+
 
 #endif  // __RAYMON_SHAN_INFRA_HPP
 

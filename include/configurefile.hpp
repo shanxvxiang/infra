@@ -7,8 +7,6 @@ const char* AssignInt(const char* key, char* value);
 const char* AssignString(const char* key, char* value);
 const char* AssignIpaddress(const char* key, char* value);
 
-extern FILE *configfilein;
-
 class ConfigureFileParameter {
   std::multimap<std::string, std::any> configureFileMap;
 public:
@@ -56,6 +54,9 @@ public:
   }
 };
 
+extern FILE *configfilein;
+const char *ConfigFileName;             // for configfile.y use
+
 class ConfigureFile {
 public:
   static ConfigureFileParameter parameter;
@@ -71,6 +72,7 @@ public:
       _LOG_CRIT("%s, <%s>", ERROR_NO_CONFIGURE, name);
       exit(1);
     }
+    ConfigFileName = name;
     configfileparse();
   };
 

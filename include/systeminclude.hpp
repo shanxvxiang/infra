@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <typeinfo>
+#include <vector>
 
 #include <execinfo.h>
 #include <fcntl.h>

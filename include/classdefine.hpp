@@ -3,25 +3,22 @@
 
 #include "infra.hpp"
 
-// extern "C" {
-  const char* DefineString(const char* identifier);
-  const char* DefineInt(const char* identifier);
-  const char* DefinePercent(const char* identifier);
-  const char* DefineMoney(const char* identifier);
-  const char* DefineHash(const char* identifier);
-  const char* DefineTime(const char* identifier);
+const char* DefineString(const char* identifier);
+const char* DefineInt(const char* identifier);
+const char* DefinePercent(const char* identifier);
+const char* DefineMoney(const char* identifier);
+const char* DefineHash(const char* identifier);
+const char* DefineTime(const char* identifier);
 
-  const char* DefineProperty(int prop);
+const char* DefineProperty(int prop);
   
-  const char* DefineClass(const char* name);
-  const char* DefineInheritClass(const char* name, const char* base);
-  const char* DefineAggregationClass(const char* name, const char* summary);
-  const char* DefineInheritAggregationClass(const char* name, const char* base, const char* summary);
-// }
-
-
+const char* DefineClass(const char* name);
+const char* DefineInheritClass(const char* name, const char* base);
+const char* DefineAggregationClass(const char* name, const char* summary);
+const char* DefineInheritAggregationClass(const char* name, const char* base, const char* summary);
 
 extern FILE *classdefinein;
+const char *ClassDefineName;
 
 class ClassDefine {
 public:
@@ -29,6 +26,11 @@ public:
     const char *ret;
     GetSingleConfigSegment(ret, DataDefineFile, "string");
     classdefinein = fopen(DataDefineFile.c_str(), "r");
+    if (!classdefinein) {
+      _LOG_CRIT("%s, <%s>", ERROR_INVALID_CLASSFILE, DataDefineFile.c_str());
+      exit(1);
+    }
+    ClassDefineName = DataDefineFile.c_str();
     classdefineparse();
   };
 };

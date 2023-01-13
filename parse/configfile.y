@@ -2,6 +2,7 @@
 %{
 #include <stdio.h>
 #define CONFIGFILESTYPE char*
+
 #define __RAYMON_SHAN_FOR_L_Y
 #include "../include/logdirectly.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
@@ -12,6 +13,7 @@ void configfileerror(const char *s);
 
 extern int configfilelineno;
 extern char *configfiletext;
+extern const char *ConfigFileName;		// declare in configurefile.hpp
 
 const char* AssignInt(const char* key, char* value);
 const char* AssignString(const char* key, char* value);
@@ -28,7 +30,7 @@ allFile
 	;
 
 assign
-	: IDENTIFIER '=' INT ';'					{ printf("line %d \n", configfilelineno); AssignInt($1, $3); free($1); free($3); }
+	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3); free($1); free($3); }
 	| IDENTIFIER '=' STRING ';'				{ AssignString($1, $3);  free($1); free($3); }
 	| IDENTIFIER '=' IPADDRESS ';'		{ AssignIpaddress($1, $3); free($1); free($3); }
 	;
@@ -36,11 +38,12 @@ assign
 %%
 
 void configfileerror(const char* s) {
-  _LOG_CRIT("%d", configfilelineno);
-	//fprintf(stderr, "error: %s line: %d\n", configfiletext, configfilelineno);
+  _LOG_CRIT("%s:%s [%s:%d]", s, configfiletext, ConfigFileName, configfilelineno);
+	exit(1);
 }
 
 int configfilewrap(void) {
+	configfilelineno = 1;
 	return 1;
 }
 
