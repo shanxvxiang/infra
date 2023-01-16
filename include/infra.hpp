@@ -14,10 +14,11 @@
 #include "lockers.hpp"
 #include "threadinfo.hpp"
 #include "logdirectly.hpp"
+#include "signalhandle.hpp"
 
 #include "configurefile.hpp"
 
-#include "signalhandle.hpp"
+
 
 #include "datafiletype.hpp"
 #include "treedefine.hpp"

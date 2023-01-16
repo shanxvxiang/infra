@@ -1,4 +1,4 @@
 ((c++-mode . ((flycheck-gcc-include-path . (
   "/usr/include"
-  "/home/raymon/solution/infra/third/antlr"
+  "/usr/src/linux-hwe-5.4-headers-5.4.0-136/include/"
   )))))

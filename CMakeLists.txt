@@ -9,6 +9,9 @@ set(CMAKE_C_FLAGS "-O3 -lpthread -rdynamic -g -no-pie")
 include_directories(
 	/usr/include
 	/usr/include/c++/9
+	/usr/src/linux-hwe-5.4-headers-5.4.0-136/include/
+	/usr/src/linux-hwe-5.4-headers-5.4.0-136/include/uapi/
+  /usr/src/linux-hwe-5.4-headers-5.4.0-136/arch/x86/include/
 #    ${PROJECT_SOURCE_DIR}/third/antlr
 )
 

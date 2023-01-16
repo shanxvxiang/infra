@@ -20,4 +20,20 @@ public:
   }
 };
 
+class SpinLock {
+  struct spinlock spin;
+public:
+  SpinLock() {
+    spin_lock_init(spin);
+  }
+  ~SpinLock() {
+  }
+  void operator ++(int) {
+    spin_lock(&spin);
+  }
+  void operator --(int) {
+    spin_unlock(&spin);    
+  }
+};
+
 #endif  // __RAYMON_SHAN_LOCKS_HPP

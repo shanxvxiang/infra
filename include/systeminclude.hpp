@@ -19,7 +19,7 @@
 
 #include <arpa/inet.h>
 
-//#include <linux/spinlock.h>
+#include <linux/spinlock.h>
 
 #include <netinet/in.h>
 
