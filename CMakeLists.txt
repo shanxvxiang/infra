@@ -2,22 +2,21 @@ cmake_minimum_required(VERSION 3.10)
 project(infra)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -lpthread -rdynamic -g -no-pie")
-set(CMAKE_C_FLAGS "-O3 -lpthread -rdynamic -g -no-pie")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -pthread -rdynamic -g -no-pie")
+set(CMAKE_C_FLAGS "-O3 -pthread -rdynamic -g -no-pie")
 # -rdynamic -g -no-pie for debug with addr2line
 
 include_directories(
 	/usr/include
 	/usr/include/c++/9
-	/usr/src/linux-hwe-5.4-headers-5.4.0-136/include/
-	/usr/src/linux-hwe-5.4-headers-5.4.0-136/include/uapi/
-  /usr/src/linux-hwe-5.4-headers-5.4.0-136/arch/x86/include/
-#    ${PROJECT_SOURCE_DIR}/third/antlr
+	${PROJECT_SOURCE_DIR}/third
 )
 
 link_directories(
-#    ${PROJECT_SOURCE_DIR}/lib
+    ${PROJECT_SOURCE_DIR}/lib
 )
+
+
 
 macro(generate_parse perfix)
 	set(PARSE_FILE_LOCATION ${PROJECT_SOURCE_DIR}/parse/)
@@ -42,6 +41,8 @@ generate_parse(classdefine)
 # generate_parse(Puml)
 
 add_executable(infra infra.cpp ${ALL_PARSE_FILES}) 
+
+target_link_libraries(infra libgmssl.a)
 
 
 

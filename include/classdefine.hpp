@@ -36,7 +36,7 @@ public:
 };
 
 const char* DefineString(const char* id) {
-  printf("in define string %s \n", id);
+  //printf("in define string %s \n", id);
   return 0;
 };
 const char* DefineInt(const char* id)  {
@@ -56,12 +56,12 @@ const char* DefineTime(const char* id) {
 };
 
 const char* DefineProperty(int prop) {
-  printf("in define property %d \n", prop);
+  //printf("in define property %d \n", prop);
   return 0;
 }
 
 const char* DefineClass(const char* name) {
-  printf("in define class %s \n", name);
+  //printf("in define class %s \n", name);
   return 0;  
 };
 const char* DefineInheritClass(const char* name, const char* base) {

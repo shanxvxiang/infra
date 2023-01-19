@@ -81,18 +81,18 @@ typeDefine
 	;
 
 classValue
-	: K_VALUE D_IDENTIFIER '{' valueGroup '}' ';' { printf("CLASSVALUE %s \n", $2); }
+	: K_VALUE D_IDENTIFIER '{' valueGroup '}' ';' { }//printf("CLASSVALUE %s \n", $2); }
 	;	
 
 valueGroup
-	: valueLine																		{ printf("  LEVEL NORMAL 1 %s\n", $1); }
-	| valueGroup valueLine												{ printf("  LEVEL NORMAL 2 %s %s \n", $1, $2); }
-	| valueGroup '{' valueGroup '}' ';'						{ printf("  LEVELPLUS %s %s \n", $1, $2); }
+	: valueLine																		{ }//printf("  LEVEL NORMAL 1 %s\n", $1); }
+	| valueGroup valueLine												{ }//printf("  LEVEL NORMAL 2 %s %s \n", $1, $2); }
+	| valueGroup '{' valueGroup '}' ';'						{ }//printf("  LEVELPLUS %s %s \n", $1, $2); }
 	;
 	
 valueLine
-	: valueType ';'																{ printf("NORMAL LINE COMPLETE\n"); }
-	| K_DELETED valueType ';'											{ printf("DELETED LINE COMPLETE\n"); }
+	: valueType ';'																{ }//printf("NORMAL LINE COMPLETE\n"); }
+	| K_DELETED valueType ';'											{ }//printf("DELETED LINE COMPLETE\n"); }
 	;
 
 valueType
@@ -101,8 +101,8 @@ valueType
 	;
 
 valueOne
-	: D_STRING																		{ printf("ONESTRING %s \n", $1); }
-	| D_INT																				{ printf("ONEINT %s \n", $1); }
+	: D_STRING																		{ }//printf("ONESTRING %s \n", $1); }
+	| D_INT																				{ }//printf("ONEINT %s \n", $1); }
 
 %%
 

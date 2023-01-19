@@ -1,11 +1,7 @@
 #ifndef __RAYMON_SHAN_SYSTEM_INCLUDE_HPP
 #define __RAYMON_SHAN_SYSTEM_INCLUDE_HPP
 
-#include <any>
-#include <iostream>
-#include <map>
-#include <typeinfo>
-#include <vector>
+#include <bits/stdc++.h>
 
 #include <execinfo.h>
 #include <fcntl.h>
@@ -19,7 +15,7 @@
 
 #include <arpa/inet.h>
 
-#include <linux/spinlock.h>
+// #include <linux/spinlock.h>
 
 #include <netinet/in.h>
 

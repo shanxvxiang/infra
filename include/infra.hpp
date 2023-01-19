@@ -6,7 +6,9 @@
 #include "../parse/configfile.bison.hpp"
 #include "../parse/classdefine.bison.hpp"
 
+#include "gmssl/sm3.h"
 
+#define  _WITH_TEST_NODE
 
 #include "raymoncommon.hpp"
 #include "errormessage.hpp"

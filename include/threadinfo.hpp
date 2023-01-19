@@ -20,12 +20,12 @@ public:
     strncpy(threadInfo.threadName, "MAIN", SMALL_CHAR_LENGTH - 1);
     threadID = syscall(SYS_gettid);
   };
-  static MutexLock serializeMutex;
+  static MutexLocker serializeMutex;
   
   static thread_local threadStartInfo threadInfo;
   static thread_local unsigned int threadID;
 
-  static int CreateThread(char *tname, void *(*func)(void *), void *arg) {
+  static pthread_t CreateThread(const char *tname, void *(*func)(void *), void *arg) {
     pthread_t tid;
     threadStartInfo startInfo;
 
@@ -34,15 +34,13 @@ public:
     startInfo.threadFunc = func;
     startInfo.threadArg = arg;
     pthread_create(&tid, NULL, InitializeThread, &startInfo);
-    // should add control for return
-    pthread_join(tid, NULL);
-    return 0;
+    return tid;
   };
 };
 
 #ifndef __RAYMON_SHAN_FOR_L_Y
 
-void *InitializeThread(void *arg)
+void* InitializeThread(void *arg)
 {
   memcpy(&ThreadInfo::threadInfo, arg, sizeof(threadStartInfo));
   ThreadInfo::serializeMutex--;
@@ -52,13 +50,11 @@ void *InitializeThread(void *arg)
   return ThreadInfo::threadInfo.threadFunc(ThreadInfo::threadInfo.threadArg);
 }
 
-MutexLock ThreadInfo::serializeMutex;
+MutexLocker ThreadInfo::serializeMutex;
 threadStartInfo thread_local ThreadInfo::threadInfo;
 unsigned int thread_local ThreadInfo::threadID;
 
 #endif // __RAYMON_SHAN_FOR_L_Y
-
-
 
 #endif  // __RAYMON_SHAN_THREAD_INFO_HPP
 
