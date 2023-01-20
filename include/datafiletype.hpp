@@ -1,6 +1,24 @@
 #ifndef __RAYMON_SHAN_DATAFILE_TYPE_HPP
 #define __RAYMON_SHAN_DATAFILE_TYPE_HPP
 
+#include "infra.hpp"
+#include "../parse/classdefine.bison.hpp"
+
+class DataField {
+  int fieldCategory;            // unique, essential, attribute
+  int fieldType;                // string, int, percent, money, hash, time
+  std::string fileName;
+public:
+  DataField(int category, int type, char *name) {};
+};
+
+class DataClass {
+  DataClass *inheritClass;
+  DataClass *aggregationClass;
+  DataField *fieldList;
+  TreeNode  *dataList;
+};
+
 
 /*
 聚合关系（Aggregation） 树木 --o 森林

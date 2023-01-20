@@ -35,19 +35,19 @@
 #include "lockers.hpp"
 #include "threadinfo.hpp"
 #include "globalvar.hpp"
+#include "logdirectly.hpp"
 
 #ifndef __RAYMON_SHAN_FOR_L_Y
-
-#include "logdirectly.hpp"
-#include "signalhandle.hpp"
-#include "configurefile.hpp"
 
 typedef class SM3_Hash _Hash;
 #include "gmencryption.hpp"
 
+#include "signalhandle.hpp"
+#include "configurefile.hpp"
 #include "treedefine.hpp"
-#include "classdefine.hpp"
 #include "datafiletype.hpp"
+#include "classdefine.hpp"
+
 
 
 #endif  // __RAYMON_SHAN_FOR_L_Y

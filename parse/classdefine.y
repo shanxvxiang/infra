@@ -4,7 +4,7 @@
 #define CLASSDEFINESTYPE char*
 
 #define __RAYMON_SHAN_FOR_L_Y
-#include "../include/logdirectly.hpp"
+#include "../include/infra.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
 
 int classdefinelex();
@@ -32,7 +32,7 @@ const char* DefineInheritAggregationClass(const char* name, const char* base, co
 
 %token K_CLASS K_INHERIT K_AGGREGATION K_UNIQUE K_ESSENTIAL K_ATTRIBUTE
 %token K_VALUE K_DELETED
-%token T_STRING T_INT T_PERCENT T_MONEY T_HASH T_TIME
+%token T_STRING T_INT T_PERCENT T_MONEY T_HASH T_TIME T_ID
 %token D_IDENTIFIER D_STRING D_INT
 
 %%

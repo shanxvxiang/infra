@@ -4,7 +4,7 @@
 #define CONFIGFILESTYPE char*
 
 #define __RAYMON_SHAN_FOR_L_Y
-#include "../include/logdirectly.hpp"
+#include "../include/infra.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
 
 int configfilelex();
