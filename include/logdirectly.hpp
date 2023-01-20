@@ -1,9 +1,7 @@
 #ifndef __RAYMON_SHAN_LOG_DIRECTLY_HPP
 #define __RAYMON_SHAN_LOG_DIRECTLY_HPP
 
-#include "errormessage.hpp"
-#include "stringtools.hpp"
-#include "threadinfo.hpp"
+#include "infra.hpp"
 
 #define LEVEL_LOG_NONE         0
 #define LEVEL_LOG_CRIT         1

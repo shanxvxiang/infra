@@ -1,9 +1,7 @@
 #ifndef __RAYMON_SHAN_THREAD_INFO_HPP
 #define __RAYMON_SHAN_THREAD_INFO_HPP
 
-#include "systeminclude.hpp"
-#include "raymoncommon.hpp"
-#include "lockers.hpp"
+#include "infra.hpp"
 
 struct threadStartInfo {
   char threadName[SMALL_CHAR_LENGTH];

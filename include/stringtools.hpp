@@ -1,7 +1,7 @@
 #ifndef __RAYMON_SHAN_STRING_TOOLS_HPP
 #define __RAYMON_SHAN_STRING_TOOLS_HPP
 
-#include "systeminclude.hpp"
+#include "infra.hpp"
 
 #ifndef __RAYMON_SHAN_FOR_L_Y
 char tohex [128] = {

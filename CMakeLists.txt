@@ -9,14 +9,11 @@ set(CMAKE_C_FLAGS "-O3 -pthread -rdynamic -g -no-pie")
 include_directories(
 	/usr/include
 	/usr/include/c++/9
-	${PROJECT_SOURCE_DIR}/third
 )
 
 link_directories(
-    ${PROJECT_SOURCE_DIR}/lib
+	${PROJECT_SOURCE_DIR}/lib
 )
-
-
 
 macro(generate_parse perfix)
 	set(PARSE_FILE_LOCATION ${PROJECT_SOURCE_DIR}/parse/)

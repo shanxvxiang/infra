@@ -1,7 +1,7 @@
 #ifndef __RAYMON_SHAN_LOCKS_HPP
 #define __RAYMON_SHAN_LOCKS_HPP
 
-#include "systeminclude.hpp"
+#include "infra.hpp"
 
 #define CACHE_LINE_SIZE         64
 

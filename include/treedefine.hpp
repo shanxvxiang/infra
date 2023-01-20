@@ -22,9 +22,27 @@ private:
   };
 
 public:
+
+#ifdef  _WITH_TEST_NODE
   static int count;
   static SpinInt childcount;
   static SpinInt brothercount;
+
+  int TraversalNode(int level = 0) {
+    //    for (int i = 0; i < level; i++) printf(" ");
+    hashid.Print();
+    count ++;
+    if (child) {
+      childcount++;
+      child->TraversalNode(level + 1);
+    }
+    if (brother) {
+      brothercount++;
+      return brother->TraversalNode(level);
+    }
+    return count;
+  };
+#endif  // _WITH_TEST_NODE
   
   TreeNode() {
     parent = child = brother = NULL;
@@ -59,21 +77,6 @@ public:
     }
     return true;
   };
-  
-  int TraversalNode(int level = 0) {
-    //    for (int i = 0; i < level; i++) printf(" ");
-    hashid.Print();
-    count ++;
-    if (child) {
-      childcount++;
-      child->TraversalNode(level + 1);
-    }
-    if (brother) {
-      brothercount++;
-      return brother->TraversalNode(level);
-    }
-    return count;
-  };
 };
 
 
@@ -81,6 +84,8 @@ class CustomTreeNode : public TreeNode{
 private:
   TreeNode realNode;
 };
+
+
 
 #ifdef  _WITH_TEST_NODE
 
@@ -127,13 +132,11 @@ void TestInsertNode (int thnum, int nodenum) {
 	 (int)TreeNode::childcount, (int)TreeNode::brothercount);  
 }
 
-#endif  // _WITH_TEST_NODE
-
 int TreeNode::count = 0;
 SpinInt TreeNode::childcount = 0;
 SpinInt TreeNode::brothercount = 0;
 
-
+#endif  // _WITH_TEST_NODE
 
 #endif  // __RAYMON_SHAN_TREE_DEFINE_HPP
 
