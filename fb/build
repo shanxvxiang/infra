@@ -1,4 +1,4 @@
-flex --outfile=calc.flex.cpp calc.l
-bison -d calc.y -o calc.bison.cpp
-gcc -o calc calc.bison.cpp calc.flex.cpp
+flex --outfile=configfile.flex.cpp configfile.l
+bison -d configfile.y -o configfile.bison.cpp
+gcc -o configfile configfile.bison.cpp configfile.flex.cpp
 
