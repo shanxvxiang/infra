@@ -3,7 +3,7 @@
 
 #include "infra.hpp"
 
-int DoClassDefineParse(FILE* in);
+int DoClassDefineParse(FILE* in, const char* name);
 
 class ClassDefine {
 public:
@@ -17,7 +17,7 @@ public:
       exit(1);
     }
     //    ClassDefineName = DataDefineFile.c_str();
-    DoClassDefineParse(classdefinein);
+    DoClassDefineParse(classdefinein, DataDefineFile.c_str());
   };
 };
 

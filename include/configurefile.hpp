@@ -50,7 +50,7 @@ public:
   }
 };
 
-int DoConfigFileParse(FILE* in);
+int DoConfigFileParse(FILE* in, const char* name);
 
 class ConfigureFile {
 public:
@@ -68,8 +68,7 @@ public:
       _LOG_CRIT("%s, <%s>", ERROR_NO_CONFIGURE, name);
       exit(1);
     }
-    //    ConfigFileName = name;
-    DoConfigFileParse(configfilein);
+    DoConfigFileParse(configfilein, name);
   };
 
   template<typename T>

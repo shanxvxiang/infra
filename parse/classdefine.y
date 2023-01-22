@@ -12,7 +12,7 @@
 #include "../include/infra.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
 
-void classdefineerror(CLASSDEFINELTYPE *yylloc_param, void *yylval_param, const char *msg);
+void classdefineerror(CLASSDEFINELTYPE *yylloc_param, void *yyscanner, const char *msg);
 int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_param , void* yyscanner);
 %}
 
@@ -87,16 +87,9 @@ valueType
 	;
 
 valueOne
-	: D_STRING																		{ }//printf("ONESTRING %s \n", $1); }
+	: strings																			{ }//printf("ONESTRING %s \n", $1); }
 	| D_INT																				{ }//printf("ONEINT %s \n", $1); }
 
-%%
-
-void classdefineerror(CLASSDEFINELTYPE * yylloc_param, void* yylval_param, const char *msg) {
-	printf("in error lineno=%d:%d\n", yylloc_param->first_line, yylloc_param->first_column);
-  //_LOG_CRIT("%s:%s [%s:%d]", msg, yytext, ConfigFileName, yylineno);
-	exit(1);
-}
-
-
-
+strings
+	: D_STRING
+	| strings D_STRING

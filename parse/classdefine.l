@@ -13,15 +13,15 @@
 
 #define _DUPTEXT {*yylval = strdup(yytext);}
 
-#define YY_USER_ACTION																								\
-    yylloc->first_line = yylloc->last_line;														\
-    yylloc->first_column = yylloc->last_column;												\
-    if (yylloc->last_line == yylineno)																\
-      yylloc->last_column += yyleng;																	\
-    else {																														\
-      yylloc->last_line = yylineno;																		\
-      yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n');	\
-    }
+#define YY_USER_ACTION																							\
+	yylloc->first_line = yylloc->last_line;														\
+	yylloc->first_column = yylloc->last_column;												\
+	if (yylloc->last_line == yylineno)																\
+		yylloc->last_column += yyleng;																	\
+	else {																														\
+		yylloc->last_line = yylineno;																		\
+		yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n');	\
+	}
 %}
 
 /*  https://www.nuomiphp.com/eplan/518696  for multi comment */
@@ -43,7 +43,7 @@ ALLCHAR				({ALPHABET}|{DIGIT}|{GBK})
 
 IDENTIFIER		({AHEADCHAR}{ALLCHAR}*)
 INT						({DIGIT}+)
-STRING				(\x22([^\x22\x5c]|{ESCCHAR})*\x22)
+STRING				(\x22([^\x22\x5c\n]|{ESCCHAR})*\x22)
 
 COMMENT				("//"[^\n]*)
 
@@ -76,23 +76,35 @@ COMMENT				("//"[^\n]*)
 <MULCOMMENT>{
   [^*\\\n]+				/* eat anything that's not a '*' or line end */
   "*"+[^*/\\\n]*	/* eat up '*'s not followed by '/'s or line end */
-  [*]{splice}[/]	{ BEGIN(INITIAL);}
+  [*]{splice}[/]	{ BEGIN(INITIAL); }
   [*\\]						/* stray '*' or backslash */
   \n							/* Reduce the amount of work needed for yylineno */
 }
 
+[[:^blank:]]			{ }
 <<EOF>>						{ return 0; }
 
 %%
-int DoClassDefineParse(FILE* in) {      
+int DoClassDefineParse(FILE* in, const char *name) {
 	yyscan_t yyscanner;
+	yylex_init ( &yyscanner );
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
      
-	yylex_init ( &yyscanner );
-	yyset_in(in, yyscanner);
+	yyextra = (void*)name ;
+	yyin = in;
+	//yyset_in(in, yyscanner);
 	classdefineparse ( yyscanner );
 	yylex_destroy ( yyscanner );
 	return 0;
 }
+
+void classdefineerror(CLASSDEFINELTYPE * yylloc_param, void* yyscanner, const char *msg) {
+	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+
+  _LOG_CRIT("configure file [%s:%d,%d] %s:%s ", (char*)yyextra, yylineno, yylloc_param->first_column, msg, yytext );
+	exit(1);
+};
+
+
 
 
