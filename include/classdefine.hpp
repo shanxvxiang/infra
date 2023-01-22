@@ -3,11 +3,13 @@
 
 #include "infra.hpp"
 
+int DoClassDefineParse(FILE* in);
 
 class ClassDefine {
 public:
   ClassDefine() {
     const char *ret;
+    FILE* classdefinein;
     GetSingleConfigSegment(ret, DataDefineFile, "string");
     classdefinein = fopen(DataDefineFile.c_str(), "r");
     if (!classdefinein) {
@@ -15,7 +17,7 @@ public:
       exit(1);
     }
     ClassDefineName = DataDefineFile.c_str();
-    classdefineparse(NULL);      ///////////
+    DoClassDefineParse(classdefinein);
   };
 };
 

@@ -1,6 +1,9 @@
 %define api.prefix {classdefine}
-%define api.pure full
-%parse-param {const char* yyscanner}
+%define api.pure
+%locations
+%parse-param {void* classdefinescanner}
+%lex-param {void* classdefinescanner}
+
 %{
 #include <stdio.h>
 #define CLASSDEFINESTYPE char*
@@ -10,12 +13,11 @@
 #include "../include/infra.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
 
-int classdefinelex(char**);
-extern "C" { int classdefinewrap(void); };
-void classdefineerror(const char *s, const char *m);
 
-extern int classdefinelineno;
-extern char *classdefinetext;
+void classdefineerror(CLASSDEFINELTYPE *classdefinelloc_param, void *classdefinelval_param, const char *msg);
+int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_param , void* yyscanner);
+
+//extern char *classdefinetext;
 //extern const char *ClassDefineName;				// declare in classdefine.hpp
 
 %}
@@ -96,15 +98,10 @@ valueOne
 
 %%
 
-void classdefineerror(const char* s) {
-  _LOG_CRIT("%s:%s [%s:%d]", s, classdefinetext, ClassDefineName, classdefinelineno);
+void classdefineerror(CLASSDEFINELTYPE * yylloc_param, void* yylval_param, const char *msg) {
+	printf("in error lineno=%d:%d\n", yylloc_param->first_line, yylloc_param->first_column);
+  //_LOG_CRIT("%s:%s [%s:%d]", msg, yytext, ConfigFileName, yylineno);
 	exit(1);
-	//fprintf(stderr, "error: %s line: %d\n", configfiletext, configfilelineno);
-}
-
-int classdefinewrap(void) {
-	classdefinelineno = 1;
-	return 1;
 }
 
 

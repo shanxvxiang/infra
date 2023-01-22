@@ -1,9 +1,12 @@
-
+%option prefix="xy"
 %option reentrant noyywrap yylineno
 %option bison-bridge bison-locations
 %{
 #include <stdio.h>
-#define YYSTYPE char*
+#define XYSTYPE char*
+#define YYSTYPE         XYSTYPE
+#define YYLTYPE         XYLTYPE
+
 #include "configfile.bison.hpp"
 #define _DUPTEXT {*yylval = strdup(yytext);}
 
@@ -16,14 +19,11 @@
       yylloc->last_line = yylineno;                                  \
       yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n'); \
     }
+    
 %}
-
 
 %x MULCOMMENT
 splice                  (\\[[:blank:]]*\n)*
-
-
-
 
 /* " \x22; ' \x27; / \x2F; \ \x5c; */
 DIGIT 				([0-9])
@@ -38,10 +38,9 @@ DISPLAYCHAR		([\x20-\xFE\t])
 
 IDENTIFIER		({ALPHABET}({ALPHABET}|{DIGIT})*)
 INT						({DIGIT}+)
-STRING				(\x22([^\x22\x5c\n]|{ESCCHAR})*\x22)
+STRING				(\x22([^\x22\x5c]|{ESCCHAR})*\x22)
 IPADDRESS			({INT}"."{INT}"."{INT}"."{INT}":"{INT})
 COMMENT				("//"[^\n]*)
-MULTICOMMENT	("/*".*"*/")
 SEGMENT				("["{DISPLAYCHAR}*"]")
 
 %%
@@ -53,16 +52,15 @@ SEGMENT				("["{DISPLAYCHAR}*"]")
 [\n]							{ /*yylineno++;*/ }
 [ \t\r]+					{ }
 {COMMENT}					{ }
-{MULTICOMMENT}		{ }
 {SEGMENT}					{ }
 
 
-[/]{splice}[*]          BEGIN(MULCOMMENT);
+[/]{splice}[*]          { BEGIN(MULCOMMENT); }
 
 <MULCOMMENT>{
   [^*\\\n]+             /* eat anything that's not a '*' or line end */
   "*"+[^*/\\\n]*        /* eat up '*'s not followed by '/'s or line end */
-  [*]{splice}[/]        BEGIN(INITIAL);
+  [*]{splice}[/]        { BEGIN(INITIAL);}
   [*\\]                 /* stray '*' or backslash */
   \n                    /* Reduce the amount of work needed for yylineno */
 }
@@ -86,7 +84,7 @@ int main() {
 	//	exit(1);
 	//}
 	//printf("yyin %p\n", yyin);
-	yyparse ( yyscanner );
+	xyparse ( yyscanner );
 	yylex_destroy ( yyscanner );
 
 	return 0;

@@ -1,10 +1,27 @@
 %option prefix="classdefine"
-%option reentrant
+%option reentrant noyywrap yylineno
+%option bison-bridge bison-locations
 
 %{
-#define CLASSDEFINESTYPE char*
-#include "classdefine.bison.hpp"
-#define _DUPTEXT {yylval = strdup(yytext);}
+#define CLASSDEFINESTYPE 			char*
+#define YYSTYPE         			CLASSDEFINESTYPE
+#define YYLTYPE         			CLASSDEFINELTYPE
+
+#define __RAYMON_SHAN_FOR_L_Y
+#include "../include/infra.hpp"
+#undef  __RAYMON_SHAN_FOR_L_Y
+
+#define _DUPTEXT {*yylval = strdup(yytext);}
+
+#define YY_USER_ACTION																								\
+    yylloc->first_line = yylloc->last_line;														\
+    yylloc->first_column = yylloc->last_column;												\
+    if (yylloc->last_line == yylineno)																\
+      yylloc->last_column += yyleng;																	\
+    else {																														\
+      yylloc->last_line = yylineno;																		\
+      yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n');	\
+    }
 %}
 
 /* " \x22; ' \x27; / \x2F; \ \x5c; */
@@ -47,8 +64,24 @@ COMMENT				("//"[^\n]*)
 {IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
 {STRING}          { _DUPTEXT; return D_STRING; }
 {INT}							{ _DUPTEXT; return D_INT; }
-[\n]							{ yylineno++; }
+[\n]							{ }
 [ \t\r]+					{ }
 {COMMENT}					{ }
 <<EOF>>						{ return 0; }
+
+%%
+int DoClassDefineParse(FILE* in) {      
+	yyscan_t yyscanner;
+	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+     
+	yylex_init ( &yyscanner );
+	
+	yyset_in(in, yyscanner);
+
+	classdefineparse ( yyscanner );
+	yylex_destroy ( yyscanner );
+
+	return 0;
+}
+
 

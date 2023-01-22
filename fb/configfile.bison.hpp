@@ -35,58 +35,67 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_CONFIGFILE_BISON_HPP_INCLUDED
-# define YY_YY_CONFIGFILE_BISON_HPP_INCLUDED
+#ifndef YY_XY_CONFIGFILE_BISON_HPP_INCLUDED
+# define YY_XY_CONFIGFILE_BISON_HPP_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef XYDEBUG
+# if defined YYDEBUG
 #if YYDEBUG
-extern int yydebug;
+#   define XYDEBUG 1
+#  else
+#   define XYDEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define XYDEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined XYDEBUG */
+#if XYDEBUG
+extern int xydebug;
 #endif
 
 /* Token kinds.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef XYTOKENTYPE
+# define XYTOKENTYPE
+  enum xytokentype
   {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
+    XYEMPTY = -2,
+    XYEOF = 0,                     /* "end of file"  */
+    XYerror = 256,                 /* error  */
+    XYUNDEF = 257,                 /* "invalid token"  */
     IDENTIFIER = 258,              /* IDENTIFIER  */
     INT = 259,                     /* INT  */
     STRING = 260,                  /* STRING  */
-    IPADDRESS = 261                /* IPADDRESS  */
+    IPADDRESS = 261,               /* IPADDRESS  */
+    MULTILINE = 262                /* MULTILINE  */
   };
-  typedef enum yytokentype yytoken_kind_t;
+  typedef enum xytokentype xytoken_kind_t;
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#if ! defined XYSTYPE && ! defined XYSTYPE_IS_DECLARED
+typedef int XYSTYPE;
+# define XYSTYPE_IS_TRIVIAL 1
+# define XYSTYPE_IS_DECLARED 1
 #endif
 
 /* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
+#if ! defined XYLTYPE && ! defined XYLTYPE_IS_DECLARED
+typedef struct XYLTYPE XYLTYPE;
+struct XYLTYPE
 {
   int first_line;
   int first_column;
   int last_line;
   int last_column;
 };
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
+# define XYLTYPE_IS_DECLARED 1
+# define XYLTYPE_IS_TRIVIAL 1
 #endif
 
 
 
 
-int yyparse (void* yyscanner);
+int xyparse (void* xyscanner);
 
 
-#endif /* !YY_YY_CONFIGFILE_BISON_HPP_INCLUDED  */
+#endif /* !YY_XY_CONFIGFILE_BISON_HPP_INCLUDED  */

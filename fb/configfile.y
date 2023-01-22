@@ -1,30 +1,30 @@
-//%define api.prefix {yy}
+%define api.prefix {xy}
 %define api.pure
 %locations
-%parse-param {void* yyscanner}
-%lex-param {void* yyscanner}
+%parse-param {void* xyscanner}
+%lex-param {void* xyscanner}
 
 %{
 #include <stdio.h>
-#define YYSTYPE char*
+#define XYSTYPE char*
 
 //#define __RAYMON_SHAN_FOR_L_Y
 //#include "../include/infra.hpp"
 //#undef  __RAYMON_SHAN_FOR_L_Y
 
 #include "configfile.bison.hpp"
-void yyerror(YYLTYPE * yylloc_param, void * yylval_param, const char* msg);
-int yylex (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , void* yyscanner);
+void xyerror(XYLTYPE * xylloc_param, void * xylval_param, const char* msg);
+int xylex (XYSTYPE * xylval_param, XYLTYPE * xylloc_param , void* xyscanner);
 
-void AssignInt(char* id, char* val, YYLTYPE * yylloc_param);
+void AssignInt(char* id, char* val, XYLTYPE * xylloc_param);
 
-//extern int yylineno;
-//extern char *yytext;
+//extern int xylineno;
+//extern char *xytext;
 //extern const char *ConfigFileName;		// declare in configurefile.hpp
 
 %}
 
-%token IDENTIFIER INT STRING IPADDRESS
+%token IDENTIFIER INT STRING IPADDRESS MULTILINE
 
 %%
 
@@ -33,23 +33,29 @@ allFile
 	| allFile assign
 	;
 
+
 assign
 	: IDENTIFIER '=' INT ';'					{ AssignInt($1, $3, &yylloc); free($1); free($3); }
-	| IDENTIFIER '=' STRING ';'				{ AssignInt($1, $3, &yylloc); free($1); free($3); }
+	| IDENTIFIER '=' strings ';'			{ printf("ID is %s\n", $1); free($1); }
 	| IDENTIFIER '=' IPADDRESS ';'		{ AssignInt($1, $3, &yylloc); free($1); free($3); }
 	;
 
+strings
+	: STRING													{ printf("STRING1 is %s\n", $1); free($1); }
+	| strings STRING									{ printf("STRING2 is %s\n", $2); free($2); }
+	;
+	
 %%
 
-void yyerror(YYLTYPE * yylloc_param, void * yylval_param, const char* msg) {
-	printf("in error lineno=%d:%d\n", yylloc_param->first_line, yylloc_param->first_column);
-  //_LOG_CRIT("%s:%s [%s:%d]", msg, yytext, ConfigFileName, yylineno);
+void xyerror(XYLTYPE * xylloc_param, void * xylval_param, const char* msg) {
+	printf("in error lineno=%d:%d\n", xylloc_param->first_line, xylloc_param->first_column);
+  //_LOG_CRIT("%s:%s [%s:%d]", msg, xytext, ConfigFileName, xylineno);
 	exit(1);
 }
 
 
-void AssignInt(char* id, char* val, YYLTYPE * yylloc_param) {
-printf("in assgin %s = %s, lineno=%d:%d\n", id, val, yylloc_param->first_line, yylloc_param->first_column);
+void AssignInt(char* id, char* val, XYLTYPE * xylloc_param) {
+printf("in assgin %s = %s, lineno=%d:%d\n", id, val, xylloc_param->first_line, xylloc_param->first_column);
 }
 
 
