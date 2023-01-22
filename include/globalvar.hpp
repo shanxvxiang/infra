@@ -17,12 +17,12 @@ EXTERN int LogTermLevel;
 
 EXTERN std::string DataDefineFile;
 
-EXTERN const char *ConfigFileName;
-EXTERN const char *ClassDefineName;
+//EXTERN const char *ConfigFileName;
+//EXTERN const char *ClassDefineName;
 
 #undef  EXTERN
 
-extern FILE *configfilein;
+//extern FILE *configfilein;
 //extern FILE *classdefinein;
 
 const char* AssignInt(const char* key, char* value);

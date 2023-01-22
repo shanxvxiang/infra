@@ -50,6 +50,8 @@ public:
   }
 };
 
+int DoConfigFileParse(FILE* in);
+
 class ConfigureFile {
 public:
   static ConfigureFileParameter parameter;
@@ -60,13 +62,14 @@ public:
   };
   
   ConfigureFile(const char *name) {
+    FILE *configfilein;
     configfilein = fopen(name, "r" );
     if (!configfilein) {
       _LOG_CRIT("%s, <%s>", ERROR_NO_CONFIGURE, name);
       exit(1);
     }
-    ConfigFileName = name;
-    configfileparse();
+    //    ConfigFileName = name;
+    DoConfigFileParse(configfilein);
   };
 
   template<typename T>

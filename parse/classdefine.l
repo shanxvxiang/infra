@@ -24,6 +24,10 @@
     }
 %}
 
+/*  https://www.nuomiphp.com/eplan/518696  for multi comment */
+%x MULCOMMENT
+splice				(\\[[:blank:]]*\n)*
+
 /* " \x22; ' \x27; / \x2F; \ \x5c; */
 
 DIGIT 				([0-9])
@@ -67,6 +71,16 @@ COMMENT				("//"[^\n]*)
 [\n]							{ }
 [ \t\r]+					{ }
 {COMMENT}					{ }
+
+[/]{splice}[*]		{ BEGIN(MULCOMMENT); }
+<MULCOMMENT>{
+  [^*\\\n]+				/* eat anything that's not a '*' or line end */
+  "*"+[^*/\\\n]*	/* eat up '*'s not followed by '/'s or line end */
+  [*]{splice}[/]	{ BEGIN(INITIAL);}
+  [*\\]						/* stray '*' or backslash */
+  \n							/* Reduce the amount of work needed for yylineno */
+}
+
 <<EOF>>						{ return 0; }
 
 %%
@@ -75,12 +89,9 @@ int DoClassDefineParse(FILE* in) {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
      
 	yylex_init ( &yyscanner );
-	
 	yyset_in(in, yyscanner);
-
 	classdefineparse ( yyscanner );
 	yylex_destroy ( yyscanner );
-
 	return 0;
 }
 

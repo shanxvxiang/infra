@@ -8,18 +8,12 @@
 #include <stdio.h>
 #define CLASSDEFINESTYPE char*
 
-
 #define __RAYMON_SHAN_FOR_L_Y
 #include "../include/infra.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
 
-
-void classdefineerror(CLASSDEFINELTYPE *classdefinelloc_param, void *classdefinelval_param, const char *msg);
+void classdefineerror(CLASSDEFINELTYPE *yylloc_param, void *yylval_param, const char *msg);
 int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_param , void* yyscanner);
-
-//extern char *classdefinetext;
-//extern const char *ClassDefineName;				// declare in classdefine.hpp
-
 %}
 
 %token K_CLASS K_INHERIT K_AGGREGATION K_UNIQUE K_ESSENTIAL K_ATTRIBUTE

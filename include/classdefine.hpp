@@ -9,14 +9,14 @@ class ClassDefine {
 public:
   ClassDefine() {
     const char *ret;
-    FILE* classdefinein;
+    FILE *classdefinein;
     GetSingleConfigSegment(ret, DataDefineFile, "string");
     classdefinein = fopen(DataDefineFile.c_str(), "r");
     if (!classdefinein) {
       _LOG_CRIT("%s, <%s>", ERROR_INVALID_CLASSFILE, DataDefineFile.c_str());
       exit(1);
     }
-    ClassDefineName = DataDefineFile.c_str();
+    //    ClassDefineName = DataDefineFile.c_str();
     DoClassDefineParse(classdefinein);
   };
 };

@@ -1,4 +1,9 @@
 %define api.prefix {configfile}
+%define api.pure
+%locations
+%parse-param {void* configfilescanner}
+%lex-param {void* configfilescanner}
+
 %{
 #include <stdio.h>
 #define CONFIGFILESTYPE char*
@@ -7,14 +12,8 @@
 #include "../include/infra.hpp"
 #undef  __RAYMON_SHAN_FOR_L_Y
 
-int configfilelex();
-extern "C" { int configfilewrap(void); };
-void configfileerror(const char *s);
-
-extern int configfilelineno;
-extern char *configfiletext;
-//extern const char *ConfigFileName;		// declare in configurefile.hpp
-
+void configfileerror(CONFIGFILELTYPE *yylloc_param, void *yylval_param, const char *msg);
+int configfilelex (CONFIGFILESTYPE *yyval_param, CONFIGFILELTYPE *yylloc_param , void* yyscanner);
 %}
 
 %token IDENTIFIER INT STRING IPADDRESS
@@ -33,15 +32,10 @@ assign
 	;
 
 %%
-
-void configfileerror(const char* s) {
-  _LOG_CRIT("%s:%s [%s:%d]", s, configfiletext, ConfigFileName, configfilelineno);
+void configfileerror(CONFIGFILELTYPE * yylloc_param, void* yylval_param, const char *msg) {
+	printf("in error lineno=%d:%d\n", yylloc_param->first_line, yylloc_param->first_column);
+  //_LOG_CRIT("%s:%s [%s:%d]", msg, yytext, ConfigFileName, yylineno);
 	exit(1);
-}
-
-int configfilewrap(void) {
-	configfilelineno = 1;
-	return 1;
 }
 
 
