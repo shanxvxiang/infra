@@ -3,10 +3,6 @@
 
 #include "infra.hpp"
 
-const char* AssignInt(const char* key, char* value);
-const char* AssignString(const char* key, char* value);
-const char* AssignIpaddress(const char* key, char* value);
-
 class ConfigureFileParameter {
   std::multimap<std::string, std::any> configureFileMap;
 public:
@@ -53,9 +49,6 @@ public:
     return NULL;
   }
 };
-
-extern FILE *configfilein;
-const char *ConfigFileName;             // for configfile.y use
 
 class ConfigureFile {
 public:

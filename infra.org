@@ -78,5 +78,11 @@ useful emacs flycheck command  http://t.zoukankan.com/cobbliu-p-7468620.html , i
               https://blog.51cto.com/u_15127502/3922167    multi impl
               https://stackoverflow.com/questions/60333666/flex-bison-windows-introduction   c function declare
               https://www.mianshigee.com/tutorial/pandolia-tinyc/about.md  tiny-c compiler
+              https://z.itpub.net/article/detail/A964D010F08FF337D966485B975E7E93  more % option
+              https://blog.csdn.net/yuucyf/article/details/7439860 multithread reenter
+              https://zhuanlan.zhihu.com/p/108167693  yylloc    %option bison-bridge bison-locations    
+              https://www.likecs.com/show-305404194.html    %option yylineno   location problem
+              
+              
        
 

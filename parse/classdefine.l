@@ -1,8 +1,10 @@
 %option prefix="classdefine"
+%option reentrant
+
 %{
 #define CLASSDEFINESTYPE char*
 #include "classdefine.bison.hpp"
-#define _DUPTEXT {classdefinelval = strdup(classdefinetext);}
+#define _DUPTEXT {yylval = strdup(yytext);}
 %}
 
 /* " \x22; ' \x27; / \x2F; \ \x5c; */
@@ -41,11 +43,11 @@ COMMENT				("//"[^\n]*)
 "hash"						{ return T_HASH; }
 "time"						{ return T_TIME; }
 
-[{};,]						{ return classdefinetext[0]; }
+[{};,]						{ return yytext[0]; }
 {IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
 {STRING}          { _DUPTEXT; return D_STRING; }
 {INT}							{ _DUPTEXT; return D_INT; }
-[\n]							{ classdefinelineno++; }
+[\n]							{ yylineno++; }
 [ \t\r]+					{ }
 {COMMENT}					{ }
 <<EOF>>						{ return 0; }

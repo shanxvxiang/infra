@@ -1,0 +1,4 @@
+flex --outfile=calc.flex.cpp calc.l
+bison -d calc.y -o calc.bison.cpp
+gcc -o calc calc.bison.cpp calc.flex.cpp
+

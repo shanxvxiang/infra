@@ -13,11 +13,8 @@ void configfileerror(const char *s);
 
 extern int configfilelineno;
 extern char *configfiletext;
-extern const char *ConfigFileName;		// declare in configurefile.hpp
+//extern const char *ConfigFileName;		// declare in configurefile.hpp
 
-const char* AssignInt(const char* key, char* value);
-const char* AssignString(const char* key, char* value);
-const char* AssignIpaddress(const char* key, char* value);
 %}
 
 %token IDENTIFIER INT STRING IPADDRESS

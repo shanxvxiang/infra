@@ -2,7 +2,6 @@
 #define __RAYMON_SHAN_DATAFILE_TYPE_HPP
 
 #include "infra.hpp"
-#include "../parse/classdefine.bison.hpp"
 
 class DataField {
   int fieldCategory;            // unique, essential, attribute
