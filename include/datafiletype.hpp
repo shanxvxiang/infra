@@ -4,20 +4,51 @@
 #include "infra.hpp"
 
 class DataField {
+public:
   int fieldCategory;            // unique, essential, attribute
   int fieldType;                // string, int, percent, money, hash, time
-  std::string fileName;
+  DataField *nextField;
+  std::string *fieldName;
 public:
-  DataField(int category, int type, char *name) {};
+  DataField() {
+    fieldCategory = 0;
+    fieldType = 0;
+    nextField = NULL;
+  };
+  DataField(int category, int type, const char *name) {
+    fieldCategory = category;
+    fieldType = type;
+    //fieldName = new std::string(name);
+    nextField = NULL;    
+  };
+  void Display(void) {
+    //printf("FIELD %s, %d, %d\n", fieldName->c_str(), fieldCategory, fieldType);
+  };
 };
 
 class DataClass {
+public:
+  std::string *className;
   DataClass *inheritClass;
   DataClass *aggregationClass;
   DataField *fieldList;
   TreeNode  *dataList;
+public:
+  DataClass(DataClass *inherit, DataClass *aggregation, DataField *field, const char *name) {
+    inheritClass = inherit;
+    aggregationClass = aggregation;
+    fieldList = field;
+    //className = new std::string(name);
+  };
+  void TravelClass(void) {
+    //printf("CLASS %s\n", className->c_str());
+    DataField **pnext = &fieldList;
+    while (*pnext != NULL) {
+      (*pnext)->Display();
+      pnext = &((*pnext)->nextField);
+    }
+  };
 };
-
 
 /*
 聚合关系（Aggregation） 树木 --o 森林

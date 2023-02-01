@@ -91,9 +91,10 @@ int DoClassDefineParse(FILE* in, ScanExtra *name) {
 	yylex_init ( &yyscanner );
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
      
-	yyextra = (void*)name ;
+	yyextra = (void*)name;
 	yyin = in;
 	//yyset_in(in, yyscanner);
+printf("classdefinescanner %p, %p\n", yyscanner, name->classDefine);
 	classdefineparse ( yyscanner );
 	yylex_destroy ( yyscanner );
 	return 0;

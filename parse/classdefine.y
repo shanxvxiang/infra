@@ -47,23 +47,27 @@ classDefine
 	;
 
 defineGroup
-	: defineLine
-	| defineGroup defineLine
+	: defineFieldLine
+	| defineGroup defineFieldLine
 	;
 
-defineLine
-	: K_UNIQUE typeDefine							{ DefineProperty(classdefinescanner, K_UNIQUE); }
-	| K_ESSENTIAL typeDefine					{ DefineProperty(classdefinescanner, K_ESSENTIAL); }
-	| K_ATTRIBUTE typeDefine					{ DefineProperty(classdefinescanner, K_ATTRIBUTE); }
+defineFieldLine
+	: categoryDefine typeDefine	D_IDENTIFIER ';'					{ DefineField(classdefinescanner, $3); free($3); }
+	;
+
+categoryDefine
+	: K_UNIQUE				{ DefineFieldCategory(classdefinescanner, K_UNIQUE); }
+	| K_ESSENTIAL			{ DefineFieldCategory(classdefinescanner, K_ESSENTIAL); }
+	| K_ATTRIBUTE			{ DefineFieldCategory(classdefinescanner, K_ATTRIBUTE); }
 	;
 
 typeDefine
-	: T_STRING D_IDENTIFIER ';'				{ DefineType(classdefinescanner, T_STRING, $2); free($2); }
-	| T_INT D_IDENTIFIER ';'					{ DefineType(classdefinescanner, T_INT, $2); free($2); }
-	| T_PERCENT D_IDENTIFIER ';'			{ DefineType(classdefinescanner, T_PERCENT, $2); free($2); }
-	| T_MONEY D_IDENTIFIER ';'				{ DefineType(classdefinescanner, T_MONEY, $2); free($2); }
-	| T_HASH D_IDENTIFIER ';'					{ DefineType(classdefinescanner, T_HASH, $2); free($2); }
-	| T_TIME D_IDENTIFIER ';'					{ DefineType(classdefinescanner, T_TIME, $2); free($2); }
+	: T_STRING				{ DefineFieldType(classdefinescanner, T_STRING); }
+	| T_INT  					{ DefineFieldType(classdefinescanner, T_STRING); }
+	| T_PERCENT 			{ DefineFieldType(classdefinescanner, T_STRING); }
+	| T_MONEY 				{ DefineFieldType(classdefinescanner, T_STRING); }
+	| T_HASH  				{ DefineFieldType(classdefinescanner, T_STRING); }
+	| T_TIME  				{ DefineFieldType(classdefinescanner, T_STRING); }
 	;
 
 classValue

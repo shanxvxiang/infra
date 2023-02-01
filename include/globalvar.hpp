@@ -34,8 +34,9 @@ struct ScanExtra {
   std::string fileName;
   class ClassDefine *classDefine;
 };
-const char* DefineType(void *classdefinescanner, int type, const char* identifier);
-const char* DefineProperty(void *classdefinescanner, int prop);
+const char* DefineField(void* classdefinescanner, const char* name);
+const char* DefineFieldType(void* classdefinescanner, int type);
+const char* DefineFieldCategory(void* classdefinescanner, int prop);
   
 const char* DefineClass(void *classdefinescanner, const char* name);
 const char* DefineInheritClass(void *classdefinescanner, const char* name, const char* base);
