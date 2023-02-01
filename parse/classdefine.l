@@ -22,7 +22,6 @@
 		yylloc->last_line = yylineno;																		\
 		yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n');	\
 	}
-
 %}
 
 /*  https://www.nuomiphp.com/eplan/518696  for multi comment */
@@ -92,9 +91,7 @@ int DoClassDefineParse(FILE* in, ScanExtra *name) {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
      
 	yyextra = (void*)name;
-	yyin = in;
-	//yyset_in(in, yyscanner);
-printf("classdefinescanner %p, %p\n", yyscanner, name->classDefine);
+	yyset_in(in, yyscanner);
 	classdefineparse ( yyscanner );
 	yylex_destroy ( yyscanner );
 	return 0;

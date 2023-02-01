@@ -11,8 +11,7 @@ int main(int, char **) {
   gLogDirectly->SetLogFileParameter();
 
   ClassDefine *gClassDefine = new ClassDefine();
-  // gConfigureFile->IteratorParameter();
-  
+
   
   delete gClassDefine;
   delete gConfigureFile;

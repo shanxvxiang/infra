@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(infra)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-std=c++17 -O0 -pthread -rdynamic -g -no-pie")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -pthread -rdynamic -g -no-pie")
 # set(CMAKE_C_FLAGS "-O3 -pthread -rdynamic -g -no-pie")
 # -rdynamic -g -no-pie for debug with addr2line
 

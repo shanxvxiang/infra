@@ -3,10 +3,20 @@
 
 #include "infra.hpp"
 
+struct classdefineguts_t {
+  ScanExtra* yyextra_r;
+};
+class ClassDefine;
+
+class AllClassMap {
+  
+};
+
 int DoClassDefineParse(FILE* in, struct ScanExtra* extra);
 
 class ClassDefine {
   ScanExtra scanExtra;
+  FILE *classdefinein;
   int pendingFieldCategory;
   int pendingFieldType;
   DataClass *pendingInheritClass;
@@ -28,18 +38,9 @@ public:
     while (*pnext != NULL) pnext = &((*pnext)->nextField);
     *pnext = field;
   };
-  void FreeAllFieldList(DataField *field) {
-    DataField **pnext = &field;
-    DataField *now;
-    while (*pnext != NULL)  {
-      now = *pnext;
-      pnext = &((*pnext)->nextField);
-      delete now;
-    }
-  };
+
   ClassDefine() {
     const char *ret;
-    FILE *classdefinein;
     GetSingleConfigSegment(ret, DataDefineFile, "string");
     classdefinein = fopen(DataDefineFile.c_str(), "r");
     if (!classdefinein) {
@@ -50,75 +51,75 @@ public:
     RenewPendingClass();
     scanExtra.fileName = DataDefineFile;
     scanExtra.classDefine = this;
-    printf("this %p\n", this);
     DoClassDefineParse(classdefinein, &scanExtra);
-    
   };
 
   const char* DefineField(const char* name) {
-    //DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
-    //ChainFieldList(newfield);
-    //RenewPendingField();
-    //    printf("in DefineField %s \n", name);
+    DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
+    ChainFieldList(newfield);
+    RenewPendingField();
     return 0;
   };
   const char* DefineFieldType(int type) {
-    //pendingFieldType = type;
+    pendingFieldType = type;
     return 0;
   };
   const char* DefineFieldCategory(int cate) {
-    //pendingFieldCategory = cate;
+    pendingFieldCategory = cate;
     return 0;
   };
   const char* DefineClass(const char* name) {
-    //DataClass *newclass = new DataClass(NULL, NULL, pendFieldList, name);
-    //newclass->TravelClass();
+    DataClass *newclass = new DataClass(name, NULL, NULL, pendFieldList);
+    RenewPendingClass();
+    
     printf("in DefineClass:%s \n", name);
     return 0;
   };
   const char* DefineInheritClass(const char* name, const char* base) {
+    RenewPendingClass();
     printf("in DefineInheritClass:%s base:%s \n", name, base);
     return 0;
   };
   const char* DefineAggregationClass(const char* name, const char* summary) {
+    RenewPendingClass();
     printf("in DefineAggregationClass:%s aggr:%s \n", name, summary);
     return 0;
   };
   const char* DefineInheritAggregationClass(const char* name, const char* base, const char* summary) {
+    RenewPendingClass();
     printf("in DefineInheritAggregationClass:%s base:%s aggr:%s \n", name, base, summary);
     return 0;
   };
 };
 
 const char* DefineField(void* classdefinescanner, const char* name) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
-  printf("in out %p, %p\n", extra->classDefine, classdefinescanner);
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineField(name);
 };
 const char* DefineFieldType(void* classdefinescanner, int type) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineFieldType(type);
 };
 const char* DefineFieldCategory(void* classdefinescanner, int cate) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineFieldCategory(cate);
 }
 const char* DefineClass(void* classdefinescanner, const char* name) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineClass(name);
 };
 const char* DefineInheritClass(void* classdefinescanner, const char* name, const char* base) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineInheritClass(name, base);
 };
 const char* DefineAggregationClass(void* classdefinescanner, const char* name, const char* summary) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineAggregationClass(name, summary);    
   return 0;  
 };
 const char* DefineInheritAggregationClass(void* classdefinescanner,
 					  const char* name, const char* base, const char* summary) {
-  ScanExtra* extra = (ScanExtra*)classdefinescanner;            // the first field in scan is extra
+  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineInheritAggregationClass(name, base, summary);  
 }
 

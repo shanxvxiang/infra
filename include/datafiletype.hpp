@@ -8,7 +8,7 @@ public:
   int fieldCategory;            // unique, essential, attribute
   int fieldType;                // string, int, percent, money, hash, time
   DataField *nextField;
-  std::string *fieldName;
+  std::string fieldName;
 public:
   DataField() {
     fieldCategory = 0;
@@ -18,30 +18,43 @@ public:
   DataField(int category, int type, const char *name) {
     fieldCategory = category;
     fieldType = type;
-    //fieldName = new std::string(name);
+    fieldName = name;
     nextField = NULL;    
   };
   void Display(void) {
-    //printf("FIELD %s, %d, %d\n", fieldName->c_str(), fieldCategory, fieldType);
+    printf("FIELD %s, %d, %d\n", fieldName.c_str(), fieldCategory, fieldType);
   };
 };
 
 class DataClass {
 public:
-  std::string *className;
+  std::string className;
   DataClass *inheritClass;
   DataClass *aggregationClass;
   DataField *fieldList;
   TreeNode  *dataList;
 public:
-  DataClass(DataClass *inherit, DataClass *aggregation, DataField *field, const char *name) {
+  DataClass(const char *name, DataClass *inherit, DataClass *aggregation, DataField *field) {
     inheritClass = inherit;
     aggregationClass = aggregation;
     fieldList = field;
-    //className = new std::string(name);
+    className = name;
   };
+  void FreeAllFieldList(DataField *field) {
+    DataField *next = field;
+    DataField *now;
+    while (next != NULL)  {
+      now = next;
+      next = next->nextField;
+      delete now;
+    }
+  };
+  ~DataClass() {
+    FreeAllFieldList(fieldList);    
+  }
+  
   void TravelClass(void) {
-    //printf("CLASS %s\n", className->c_str());
+    printf("CLASS %s\n", className.c_str());
     DataField **pnext = &fieldList;
     while (*pnext != NULL) {
       (*pnext)->Display();
