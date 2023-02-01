@@ -35,15 +35,15 @@ sentence
 
 classDefine
 	: K_CLASS D_IDENTIFIER '{' defineGroup '}' ';'																										
-		{ DefineClass($2); free($2); }
+		{ DefineClass(classdefinescanner, $2); free($2); }
 	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}' ';'														
-		{ DefineInheritClass($2, $4); free($2); free($4); }
+		{ DefineInheritClass(classdefinescanner, $2, $4); free($2); free($4); }
 	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}' ';'												
-		{ DefineAggregationClass($2, $4); free($2); free($4); }
+		{ DefineAggregationClass(classdefinescanner, $2, $4); free($2); free($4); }
 	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}' ';'	
-		{ DefineInheritAggregationClass($2, $4, $6); free($2); free($4); free($6); }
+		{ DefineInheritAggregationClass(classdefinescanner, $2, $4, $6); free($2); free($4); free($6); }
 	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}' ';'	
-		{ DefineInheritAggregationClass($2, $6, $4); free($2); free($4); free($6); }
+		{ DefineInheritAggregationClass(classdefinescanner, $2, $6, $4); free($2); free($4); free($6); }
 	;
 
 defineGroup
@@ -52,18 +52,18 @@ defineGroup
 	;
 
 defineLine
-	: K_UNIQUE typeDefine							{ DefineProperty(K_UNIQUE); }
-	| K_ESSENTIAL typeDefine					{ DefineProperty(K_ESSENTIAL); }
-	| K_ATTRIBUTE typeDefine					{ DefineProperty(K_ATTRIBUTE); }
+	: K_UNIQUE typeDefine							{ DefineProperty(classdefinescanner, K_UNIQUE); }
+	| K_ESSENTIAL typeDefine					{ DefineProperty(classdefinescanner, K_ESSENTIAL); }
+	| K_ATTRIBUTE typeDefine					{ DefineProperty(classdefinescanner, K_ATTRIBUTE); }
 	;
 
 typeDefine
-	: T_STRING D_IDENTIFIER ';'				{ DefineType(T_STRING, $2); free($2); }
-	| T_INT D_IDENTIFIER ';'					{ DefineType(T_INT, $2); free($2); }
-	| T_PERCENT D_IDENTIFIER ';'			{ DefineType(T_PERCENT, $2); free($2); }
-	| T_MONEY D_IDENTIFIER ';'				{ DefineType(T_MONEY, $2); free($2); }
-	| T_HASH D_IDENTIFIER ';'					{ DefineType(T_HASH, $2); free($2); }
-	| T_TIME D_IDENTIFIER ';'					{ DefineType(T_TIME, $2); free($2); }
+	: T_STRING D_IDENTIFIER ';'				{ DefineType(classdefinescanner, T_STRING, $2); free($2); }
+	| T_INT D_IDENTIFIER ';'					{ DefineType(classdefinescanner, T_INT, $2); free($2); }
+	| T_PERCENT D_IDENTIFIER ';'			{ DefineType(classdefinescanner, T_PERCENT, $2); free($2); }
+	| T_MONEY D_IDENTIFIER ';'				{ DefineType(classdefinescanner, T_MONEY, $2); free($2); }
+	| T_HASH D_IDENTIFIER ';'					{ DefineType(classdefinescanner, T_HASH, $2); free($2); }
+	| T_TIME D_IDENTIFIER ';'					{ DefineType(classdefinescanner, T_TIME, $2); free($2); }
 	;
 
 classValue

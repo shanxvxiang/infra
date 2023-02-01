@@ -22,6 +22,7 @@
 		yylloc->last_line = yylineno;																		\
 		yylloc->last_column = yytext + yyleng - strrchr(yytext, '\n');	\
 	}
+
 %}
 
 /*  https://www.nuomiphp.com/eplan/518696  for multi comment */
@@ -85,7 +86,7 @@ COMMENT				("//"[^\n]*)
 <<EOF>>						{ return 0; }
 
 %%
-int DoClassDefineParse(FILE* in, const char *name) {
+int DoClassDefineParse(FILE* in, ScanExtra *name) {
 	yyscan_t yyscanner;
 	yylex_init ( &yyscanner );
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -101,7 +102,8 @@ int DoClassDefineParse(FILE* in, const char *name) {
 void classdefineerror(CLASSDEFINELTYPE * yylloc_param, void* yyscanner, const char *msg) {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-  _LOG_CRIT("configure file [%s:%d,%d] %s:%s ", (char*)yyextra, yylineno, yylloc_param->first_column, msg, yytext );
+	ScanExtra* extra = (ScanExtra*)yyextra;
+  _LOG_CRIT("configure file [%s:%d,%d] %s:%s ", extra->fileName.c_str(), yylineno, yylloc_param->first_column, msg, yytext );
 	exit(1);
 };
 

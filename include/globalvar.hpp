@@ -30,13 +30,18 @@ const char* AssignString(const char* key, char* value);
 const char* AssignIpaddress(const char* key, char* value);
 
 
-const char* DefineType(int type, const char* identifier);
-const char* DefineProperty(int prop);
+struct ScanExtra {
+  std::string fileName;
+  class ClassDefine *classDefine;
+};
+const char* DefineType(void *classdefinescanner, int type, const char* identifier);
+const char* DefineProperty(void *classdefinescanner, int prop);
   
-const char* DefineClass(const char* name);
-const char* DefineInheritClass(const char* name, const char* base);
-const char* DefineAggregationClass(const char* name, const char* summary);
-const char* DefineInheritAggregationClass(const char* name, const char* base, const char* summary);
+const char* DefineClass(void *classdefinescanner, const char* name);
+const char* DefineInheritClass(void *classdefinescanner, const char* name, const char* base);
+const char* DefineAggregationClass(void *classdefinescanner, const char* name, const char* summary);
+const char* DefineInheritAggregationClass(void *classdefinescanner,
+					  const char* name, const char* base, const char* summary);
 
 #endif  // __RAYMON_SHAN_GLOBAL_VAR_HPP
 
