@@ -43,6 +43,7 @@ typedef class SM3_Hash _Hash;
 #include "gmencryption.hpp"
 
 #include "signalhandle.hpp"
+#include "vectormap.hpp"
 #include "configurefile.hpp"
 #include "treedefine.hpp"
 #include "datafiletype.hpp"

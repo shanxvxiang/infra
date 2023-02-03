@@ -1,0 +1,12 @@
+#ifndef __RAYMON_SHAN_VECTOR_MAP_HPP
+#define __RAYMON_SHAN_VECTOR_MAP_HPP
+
+
+
+
+
+
+
+
+
+#endif  // __RAYMON_SHAN_VECTOR_MAP_HPP

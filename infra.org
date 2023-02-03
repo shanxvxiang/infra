@@ -86,6 +86,7 @@ useful emacs flycheck command  http://t.zoukankan.com/cobbliu-p-7468620.html , i
 
 ** multi thread hashmap
 	https://github.com/mintomic     lock free hashmap
+	https://zhuanlan.zhihu.com/p/348414580 lock free hashmap
               
               
        
