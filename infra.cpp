@@ -3,7 +3,7 @@
 int main(int, char **) {
 
   printf("%s  %s Compiled %s %s\n", __MY_PROGRAM, __MY_VERSION,  __DATE__, __TIME__);
-
+  /*
   LogDirectly *gLogDirectly = new LogDirectly();
   ThreadInfo *gThreadInfo = new ThreadInfo();
   SignalHandle *gSignalHandle = new SignalHandle();
@@ -18,6 +18,13 @@ int main(int, char **) {
   delete gSignalHandle;
   delete gThreadInfo;
   delete gLogDirectly;
+  */
+
+  String K("abc");
+  String V("aasdfsdfds242dfadfasdfdsfdsaf");
+  
+  StringNode node(K, V);
+  node.PrintHash();
   return 0;
 
 }
