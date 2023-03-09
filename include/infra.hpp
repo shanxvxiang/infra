@@ -39,7 +39,7 @@
 
 #ifndef __RAYMON_SHAN_FOR_L_Y
 
-typedef class SM3_Hash _Hash;
+typedef class SM3Hash _Hash;
 #include "gmencryption.hpp"
 
 #include "signalhandle.hpp"

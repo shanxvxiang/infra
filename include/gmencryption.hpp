@@ -62,9 +62,9 @@ public:
   }
 };
 
-class SM3_Hash {
+class SM3Hash {
 public:
-  SM3_Hash() {};
+  SM3Hash() {};
 
   static unsigned char* Digest(unsigned char *detail, int len, unsigned char* hashvalue) {
     sm3_digest(detail, len, hashvalue);

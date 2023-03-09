@@ -23,10 +23,10 @@ int main(int, char **) {
   String K("abc");
   String V("aasdfsdfds242dfadfasdfdsfdsaf");
   
+  typedef class LinkedNode <String, String, SM3Hash, Hash256> StringNode;
   StringNode node(K, V);
   node.PrintHash();
   return 0;
-
 }
 
 

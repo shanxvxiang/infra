@@ -3,25 +3,37 @@
 
 #include "infra.hpp"
 
-template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH >
-class Node
-{
+template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
+class LinkedNode {
 private:
   HASH hash;
-  KEY key;
+  //  KEY key;
   VALUE value;
+  LinkedNode *next;
 public:
-  Node(KEY& k, VALUE& v) {
-    key = k;
+  LinkedNode(KEY& k, VALUE& v) {
+    // key = k;
     value = v;
-    HASHCLASS::Digest(key.GetAddress(), key.GetLength(), hash.GetAddress());
+    HASHCLASS::Digest(k.GetAddress(), k.GetLength(), hash.GetAddress());
+    next = NULL;
   }
   void PrintHash() {
     HASHCLASS::PrintHash(hash.GetAddress());
   }
 };
 
-typedef class Node <String, String, SM3_Hash, Hash256> StringNode;
+template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
+class NodeList {
+  typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
+private:
+  TNode *nodeHead;
+  SpinInt nodeSize;
+public:
+  NodeList() : nodeSize(0) { nodeHead = NULL; }
+};
+
+
+
 
 
 
