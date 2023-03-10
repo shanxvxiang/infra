@@ -29,7 +29,15 @@ private:
   TNode *nodeHead;
   SpinInt nodeSize;
 public:
-  NodeList() : nodeSize(0) { nodeHead = NULL; }
+  NodeList() : nodeSize(0) { nodeHead = NULL; };
+  bool Insert(TNode *node) { return Insert(nodeHead, node); };
+  bool Insert(TNode *from, TNode *node) {
+    return true;
+  };
+  bool InsertInOrder(TNode *node) { return InsertInOrder(nodeHead, node); };
+  bool InsertInOrder(TNode *from, TNode *node) {
+    return true;
+  }
 };
 
 
