@@ -7,25 +7,28 @@ struct threadStartInfo {
   char threadName[SMALL_CHAR_LENGTH];
   void *(*threadFunc)(void *);
   void *threadArg;
+  unsigned int threadID;
 };
 
-void *InitializeThread(void *arg);
+#ifndef __RAYMON_SHAN_FOR_L_Y
+thread_local threadStartInfo ThreadStartInfo;
+#else  // __RAYMON_SHAN_FOR_L_Y
+extern thread_local threadStartInfo ThreadStartInfo;
+#endif // __RAYMON_SHAN_FOR_L_Y
 
+void *InitializeThread(void *arg);
 
 class ThreadInfo {
 public:
   ThreadInfo() {
-    strncpy(threadInfo.threadName, "MAIN", SMALL_CHAR_LENGTH - 1);
-    threadID = syscall(SYS_gettid);
+    strncpy(ThreadStartInfo.threadName, "MAIN", SMALL_CHAR_LENGTH - 1);
+    ThreadStartInfo.threadID = syscall(SYS_gettid);
   };
   static MutexLocker serializeMutex;
-  
-  static thread_local threadStartInfo threadInfo;
-  static thread_local unsigned int threadID;
 
   static pthread_t CreateThread(const char *tname, void *(*func)(void *), void *arg) {
     pthread_t tid;
-    threadStartInfo startInfo;
+    static threadStartInfo startInfo;
 
     serializeMutex++;
     strncpy(startInfo.threadName, tname, SMALL_CHAR_LENGTH - 1);
@@ -40,17 +43,14 @@ public:
 
 void* InitializeThread(void *arg)
 {
-  memcpy(&ThreadInfo::threadInfo, arg, sizeof(threadStartInfo));
+  memcpy(&ThreadStartInfo, arg, sizeof(threadStartInfo));
   ThreadInfo::serializeMutex--;
-  
-  ThreadInfo::threadID = syscall(SYS_gettid);
-  
-  return ThreadInfo::threadInfo.threadFunc(ThreadInfo::threadInfo.threadArg);
+
+  ThreadStartInfo.threadID = syscall(SYS_gettid);
+  return ThreadStartInfo.threadFunc(ThreadStartInfo.threadArg);
 }
 
 MutexLocker ThreadInfo::serializeMutex;
-threadStartInfo thread_local ThreadInfo::threadInfo;
-unsigned int thread_local ThreadInfo::threadID;
 
 #endif // __RAYMON_SHAN_FOR_L_Y
 

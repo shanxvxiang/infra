@@ -46,10 +46,10 @@ public:
     return timeBuffer;
   }
   static unsigned int GetThreadID() {
-    return ThreadInfo::threadID;
+    return ThreadStartInfo.threadID;
   }
   static char* GetThreadName() {
-    return ThreadInfo::threadInfo.threadName;
+    return ThreadStartInfo.threadName;
   }  
   static void GetFormat() {
     time_t time_struct;

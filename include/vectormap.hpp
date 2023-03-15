@@ -7,12 +7,13 @@ template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
 class LinkedNode {
 private:
   HASH hash;
-  //  KEY key;
+//  KEY key;
   VALUE value;
-  LinkedNode *next;
+public:
+  volatile LinkedNode *next;
 public:
   LinkedNode(KEY& k, VALUE& v) {
-    // key = k;
+// key = k;
     value = v;
     HASHCLASS::Digest(k.GetAddress(), k.GetLength(), hash.GetAddress());
     next = NULL;
@@ -27,17 +28,42 @@ class NodeList {
   typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
 private:
   TNode *nodeHead;
-  SpinInt nodeSize;
 public:
-  NodeList() : nodeSize(0) { nodeHead = NULL; };
-  bool Insert(TNode *node) { return Insert(nodeHead, node); };
-  bool Insert(TNode *from, TNode *node) {
+  NodeList(KEY& k, VALUE& v) {
+    nodeHead = new TNode(k, v);
+  };
+  bool Insert_once(TNode *node) {
+    volatile TNode *old;
+    old = nodeHead->next;
+    node->next = old;
+    return __sync_bool_compare_and_swap(&(nodeHead->next), old, node);
+  };
+  bool Insert(TNode *node) {  
+    volatile TNode *old;
+    do {
+      old = nodeHead->next;
+      node->next = old;
+    } while (!__sync_bool_compare_and_swap(&(nodeHead->next), old, node));
     return true;
   };
-  bool InsertInOrder(TNode *node) { return InsertInOrder(nodeHead, node); };
-  bool InsertInOrder(TNode *from, TNode *node) {
-    return true;
-  }
+
+  int Size() {
+    int size = 0;
+    volatile TNode *now = nodeHead;
+    while (now) {
+      now = now->next;
+      size ++;
+    }
+    return size;
+  };
+  void PrintList() {
+    volatile TNode *now = nodeHead;    
+    while (now) {
+      printf("%p->", now);
+      now = now->next;
+    }
+    printf("\n");
+  };
 };
 
 
