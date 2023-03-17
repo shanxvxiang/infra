@@ -77,26 +77,26 @@ public:
     value = v;
   }
   int operator ++(int) {
-    return __sync_fetch_and_add(&value, 1);
+    return __sync_add_and_fetch(&value, 1);
   }
   int operator --(int) {
-    return __sync_fetch_and_sub(&value, 1);
+    return __sync_sub_and_fetch(&value, 1);
   }  
     
   int operator +=(int v) {
-    return __sync_fetch_and_add(&value, v);
+    return __sync_add_and_fetch(&value, v);
   }
   int operator -=(int v) {
-    return __sync_fetch_and_sub(&value, v);
+    return __sync_sub_and_fetch(&value, v);
   }
   int operator &=(int v) {
-    return __sync_fetch_and_and(&value, v);
+    return __sync_and_and_fetch(&value, v);
   }
   int operator |=(int v) {
-    return __sync_fetch_and_or(&value, v);
+    return __sync_or_and_fetch(&value, v);
   }
   int operator ^=(int v) {
-    return __sync_fetch_and_xor(&value, v);
+    return __sync_xor_and_fetch(&value, v);
   }
   void cas(int oldvalue, int newvalue) {
     while (!__sync_bool_compare_and_swap(&value, oldvalue, newvalue));

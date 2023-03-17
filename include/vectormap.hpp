@@ -23,6 +23,7 @@ public:
   }
 };
 
+// unique, ordered KEY
 template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
 class NodeList {
   typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
@@ -32,13 +33,8 @@ public:
   NodeList(KEY& k, VALUE& v) {
     nodeHead = new TNode(k, v);
   };
-  bool Insert_once(TNode *node) {
-    volatile TNode *old;
-    old = nodeHead->next;
-    node->next = old;
-    return __sync_bool_compare_and_swap(&(nodeHead->next), old, node);
-  };
-  bool Insert(TNode *node) {  
+
+  bool InsertAhead(TNode *node) {  
     volatile TNode *old;
     do {
       old = nodeHead->next;

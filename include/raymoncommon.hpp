@@ -23,4 +23,5 @@ typedef union {
 #define CACHE_LINE_SIZE         64
 
 
+
 #endif  // __RAYMON_SHAN_COMMON_HPP

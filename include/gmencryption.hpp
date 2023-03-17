@@ -9,6 +9,17 @@ public:
   virtual int GetLength() = 0;
 };
 
+class None : public ValueType {
+public:
+  None() {};
+  unsigned char* GetAddress() {
+    return NULL;
+  };
+  int GetLength() {
+    return 0;
+  };
+};
+
 class String : public ValueType {
 public:
   std::string val;
@@ -41,25 +52,28 @@ public:
   };
   bool operator == (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) == 0);
-  }
+  };
   bool operator != (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) != 0);
-  }
+  };
   bool operator <= (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) <= 0);
-  }
+  };
   bool operator < (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) < 0);
-  }
+  };
   bool operator >= (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) >= 0);
-  }
+  };
   bool operator > (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) > 0);
-  }
+  };
+  int Hash256Cmp(Hash256& that) {
+    return memcmp(val, that.val, sizeof(long) * 4);
+  };
   unsigned char* GetAddress() {
     return (unsigned char*)val;
-  }
+  };
 };
 
 class SM3Hash {
@@ -70,14 +84,23 @@ public:
     sm3_digest(detail, len, hashvalue);
     return hashvalue;
   };
-  static void PrintHash(unsigned char* hashvalue) {
+  static void PrintHash(unsigned char *hashvalue) {
     for(int i = 0; i < 256/8; i++) {
       unsigned char c = hashvalue[i];
       printf("%02X", c);
     }
     printf("\n");
-  }
+  };
 };
 
-
+class NoneHash {
+public:
+  NoneHash() {};
+  static unsigned char* Digest(unsigned char*, int, unsigned char*) {
+    return NULL;
+  }
+  static void PrintHash(unsigned char*) {
+    printf("None\n");
+  };
+};
 #endif  // __RAYMON_SHAN_GM_ENCRYPTION_HPP
