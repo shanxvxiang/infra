@@ -5,7 +5,7 @@
 
 template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
 class LinkedNode {
-private:
+public:
   HASH hash;
 //  KEY key;
   VALUE value;
@@ -23,23 +23,26 @@ public:
   }
 };
 
-// unique, ordered KEY
 template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
 class NodeList {
   typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
 private:
   TNode *nodeHead;
 public:
+  NodeList() {
+    nodeHead = NULL;
+  };
+  /*
   NodeList(KEY& k, VALUE& v) {
     nodeHead = new TNode(k, v);
   };
-
+  */
   bool InsertAhead(TNode *node) {  
     volatile TNode *old;
     do {
-      old = nodeHead->next;
+      old = nodeHead;
       node->next = old;
-    } while (!__sync_bool_compare_and_swap(&(nodeHead->next), old, node));
+    } while (!__sync_bool_compare_and_swap(&nodeHead, old, node));
     return true;
   };
 
@@ -62,8 +65,18 @@ public:
   };
 };
 
-
-
+template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
+class HashMapList {
+  typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
+  typedef NodeList<KEY, VALUE, HASHCLASS, HASH> TList;
+private:
+  int bucketNumber;
+  TList *bucketList;;
+public:
+  HashMapList(int bucketNumber) {
+    this.bucketNumber = bucketNumber;
+  }
+};
 
 
 

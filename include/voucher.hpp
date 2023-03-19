@@ -9,7 +9,7 @@ typedef __int128_t int128;
 
 class SmallMoney {
 
-private:
+public:
   volatile long money;
 public:
   SmallMoney() { money = 0; };
@@ -43,7 +43,6 @@ public:
   bool operator >= (SmallMoney m) {
     return (money >= m.money);
   };
-  
 
 };
 
@@ -52,16 +51,22 @@ class VoucherDetail;
 class Balance;
 class BalanceDetail;
 
-typedef class LinkedNode<None, VoucherDetail*, NoneHash, None> VoucherDetailNode;
-typedef class NodeList<None, VoucherDetail*, NoneHash, None> VoucherDetailList;
-typedef class LinkedNode<None, BalanceDetail*, NoneHash, None> BalanceDetailNode;
-typedef class NodeList<None, BalanceDetail*, NoneHash, None> BalanceDetailList;
+
+typedef class LinkedNode<None, Voucher, NoneHash, None> VoucherNode;
+typedef class NodeList<None, Voucher, NoneHash, None> VoucherList;
+typedef class LinkedNode<None, Balance, NoneHash, None> BalanceNode;
+typedef class NodeList<None, Balance, NoneHash, None> BalanceList;
+
+typedef class LinkedNode<None, VoucherDetail, NoneHash, None> VoucherDetailNode;
+typedef class NodeList<None, VoucherDetail, NoneHash, None> VoucherDetailList;
+typedef class LinkedNode<None, BalanceDetail, NoneHash, None> BalanceDetailNode;
+typedef class NodeList<None, BalanceDetail, NoneHash, None> BalanceDetailList;
 
 
 class VoucherDetail {
 public:
-  BalanceDetail *balanceDetail;
-  Voucher *voucher;
+  BalanceDetailNode *balanceNode;   // sum of VoucherDetail is BalancdDetail
+  VoucherNode *voucher;
   SmallMoney money;
 };
 
@@ -70,32 +75,36 @@ class Voucher {
   // PEOPLE
   // SIGN
   int detailNumber;
-  VoucherDetail voucherDetail[];
+  VoucherDetailNode voucherNode[];
 };
 
 None Not_None;
-VoucherDetail *Not_Voucher = NULL; 
+VoucherDetail Not_Voucher; 
 
 class BalanceDetail {
+public:
   Balance *balance;
   SmallMoney money;
   VoucherDetailList *voucherDetailList;
   // BASE_INFO [number]
 public:
   BalanceDetail() {
-    voucherDetailList = new VoucherDetailList(Not_None, Not_Voucher);
+    voucherDetailList = new VoucherDetailList();
   }
-  bool operator += (VoucherDetail *vd) {
-    vd->balanceDetail = this;
-    money += vd->money;
-    voucherDetailList->InsertAhead(new VoucherDetailNode(Not_None, vd));
-    return true;
-  }
+  
 };
 
 class Balance {
   BalanceDetailList balanceDetailList(None, BalanceDetail*);
   
 };
+
+bool InsertVoucherDetail(BalanceDetailNode *bn, VoucherDetailNode *vn) {
+  vn->value.balanceNode = bn;
+  bn->value.money += vn->value.money;
+  bn->value.voucherDetailList->InsertAhead(vn);
+  return true;
+};
+
 
 #endif  // __RAYMON_SHAN_VOUCHER_HPP

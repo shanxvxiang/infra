@@ -24,15 +24,20 @@ typedef class LinkedNode <None, None, NoneHash, None> StringNode;
 typedef class NodeList<None, None, NoneHash, None> StringList;
 None K, V;
 
-StringList list(K, V);
 volatile int wwait = 1;
+int addsize = 100000;
+BalanceDetail bd;
+BalanceDetailNode bdn(K, bd);
+
 
 void* TestList(void*) {
   do {} while (wwait);
-
-  for (int i = 0; i < 1000000; i++) {
+  
+  VoucherDetail vd;
+  for (int i = 0; i < addsize; i++) {
+    vd.money = i;
 //    printf("%d, %d\n", ThreadStartInfo.threadID, i);
-    list.InsertAhead(new StringNode(K, V));
+    InsertVoucherDetail(&bdn, new VoucherDetailNode(K, vd));
   }
 
   return NULL;
@@ -43,10 +48,6 @@ int main(int, char **) {
   int ret, ret1, ret2;
   void* retv;
   printf("%s  %s Compiled %s %s\n", __MY_PROGRAM, __MY_VERSION,  __DATE__, __TIME__);
-  
-
-  
-  list.PrintList();
   
   pthread_t t1 = ThreadInfo::CreateThread("test", TestList, (void*)0xaaa);
   pthread_t t2 = ThreadInfo::CreateThread("errrr", TestList, (void*)0xbbb);
@@ -62,8 +63,9 @@ int main(int, char **) {
   pthread_join(t3, &retv);
   ret1 = tspend.TimeClick();
   
-  ret = list.Size();
+  ret = bdn.value.voucherDetailList->Size();
   ret2 = tspend.TimeClick();
+  printf("money: %ld\n", bdn.value.money.money);
 
   printf("size: %d, time1: %d, time2: %d\n", ret, ret1, ret2);
   //  list.PrintList();
