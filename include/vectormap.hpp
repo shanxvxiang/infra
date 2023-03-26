@@ -27,7 +27,7 @@ template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
 class NodeList {
   typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
 private:
-  TNode *nodeHead;
+  volatile TNode *nodeHead;
 public:
   NodeList() {
     nodeHead = NULL;
@@ -43,6 +43,31 @@ public:
       old = nodeHead;
       node->next = old;
     } while (!__sync_bool_compare_and_swap(&nodeHead, old, node));
+    return true;
+  };
+  TNode* FindOrInsert(TNode *node) {
+    volatile TNode *old;
+    int retcmp;
+    bool retcas;
+
+    do {
+      if (nodeHead == NULL) {
+	old = NULL;
+	node->next = NULL;
+	retcas = __sync_bool_compare_and_swap(&nodeHead, old, node);
+      } else {
+	old = nodeHead;
+	do {
+	  retcmp = node->hash.Compare(old->hash);
+
+	} while (old->next);
+      
+      }
+    
+    }
+
+    
+    while (!InsertOrderOnce(node));
     return true;
   };
 
@@ -66,14 +91,14 @@ public:
 };
 
 template <typename KEY, typename VALUE, typename HASHCLASS, typename HASH>
-class HashMapList {
+class HashListMap {
   typedef LinkedNode<KEY, VALUE, HASHCLASS, HASH> TNode;
   typedef NodeList<KEY, VALUE, HASHCLASS, HASH> TList;
 private:
   int bucketNumber;
-  TList *bucketList;;
+  TList *bucketList;
 public:
-  HashMapList(int bucketNumber) {
+  HashListMap(int bucketNumber) {
     this.bucketNumber = bucketNumber;
   }
 };

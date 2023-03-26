@@ -59,9 +59,8 @@ typedef class NodeList<None, Balance, NoneHash, None> BalanceList;
 
 typedef class LinkedNode<None, VoucherDetail, NoneHash, None> VoucherDetailNode;
 typedef class NodeList<None, VoucherDetail, NoneHash, None> VoucherDetailList;
-typedef class LinkedNode<None, BalanceDetail, NoneHash, None> BalanceDetailNode;
-typedef class NodeList<None, BalanceDetail, NoneHash, None> BalanceDetailList;
-
+typedef class LinkedNode<String, BalanceDetail, SM3Hash, Hash256> BalanceDetailNode;
+typedef class NodeList<String, BalanceDetail, SM3Hash, Hash256> BalanceDetailList;
 
 class VoucherDetail {
 public:

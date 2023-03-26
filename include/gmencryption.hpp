@@ -68,7 +68,7 @@ public:
   bool operator > (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) > 0);
   };
-  int Hash256Cmp(Hash256& that) {
+  int Compare(Hash256& that) {
     return memcmp(val, that.val, sizeof(long) * 4);
   };
   unsigned char* GetAddress() {

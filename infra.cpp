@@ -22,12 +22,13 @@ typedef class SM3Hash _Hash;
 
 typedef class LinkedNode <None, None, NoneHash, None> StringNode;
 typedef class NodeList<None, None, NoneHash, None> StringList;
-None K, V;
+None KN;
+String KS;
 
 volatile int wwait = 1;
 int addsize = 100000;
 BalanceDetail bd;
-BalanceDetailNode bdn(K, bd);
+BalanceDetailNode bdn(KS, bd);
 
 
 void* TestList(void*) {
@@ -37,7 +38,7 @@ void* TestList(void*) {
   for (int i = 0; i < addsize; i++) {
     vd.money = i;
 //    printf("%d, %d\n", ThreadStartInfo.threadID, i);
-    InsertVoucherDetail(&bdn, new VoucherDetailNode(K, vd));
+    InsertVoucherDetail(&bdn, new VoucherDetailNode(KN, vd));
   }
 
   return NULL;
@@ -52,9 +53,7 @@ int main(int, char **) {
   pthread_t t1 = ThreadInfo::CreateThread("test", TestList, (void*)0xaaa);
   pthread_t t2 = ThreadInfo::CreateThread("errrr", TestList, (void*)0xbbb);
   pthread_t t3 = ThreadInfo::CreateThread("test", TestList, (void*)0xccc);
-  //  ThreadInfo::CreateThread("test", TestList, NULL);
-  //  ThreadInfo::CreateThread("test", TestList, NULL);
-  //  ThreadInfo::CreateThread("test", TestList, NULL);
+
   wwait = 0;
   tspend.TimeStart();
 
