@@ -19,7 +19,7 @@ public:
     next = NULL;
   }
   void PrintHash() {
-    HASHCLASS::PrintHash(hash.GetAddress());
+    hash.PrintHash(3);
   }
 };
 
@@ -32,11 +32,7 @@ public:
   NodeList() {
     nodeHead = NULL;
   };
-  /*
-  NodeList(KEY& k, VALUE& v) {
-    nodeHead = new TNode(k, v);
-  };
-  */
+
   bool InsertAhead(TNode *node) {  
     volatile TNode *old;
     do {
@@ -46,29 +42,40 @@ public:
     return true;
   };
   TNode* FindOrInsert(TNode *node) {
-    volatile TNode *old;
+    volatile TNode *oldvalue;
+    volatile TNode **oldplace;
     int retcmp;
     bool retcas;
 
     do {
+      oldplace = &nodeHead;
+      oldvalue = nodeHead;
       if (nodeHead == NULL) {
-	old = NULL;
-	node->next = NULL;
-	retcas = __sync_bool_compare_and_swap(&nodeHead, old, node);
+	node->next = oldvalue;
+	retcas = __sync_bool_compare_and_swap(oldplace, oldvalue, node);       // NULL pointer
       } else {
-	old = nodeHead;
 	do {
-	  retcmp = node->hash.Compare(old->hash);
-
-	} while (old->next);
-      
+	  retcmp = node->hash.Compare(((TNode*)oldvalue)->hash);
+	  if (retcmp == 0) {
+	    printf("find same\n");
+	    return (TNode*)oldvalue;
+	  } else if (retcmp > 0) {
+	    oldplace = &(((TNode*)oldvalue)->next);
+	    oldvalue = oldvalue->next;                                         // get next
+	    if (oldvalue == NULL) {
+	      node->next = oldvalue;
+	      retcas = __sync_bool_compare_and_swap(oldplace, oldvalue, node); // add to last
+	      break;
+	    }
+	  } else {
+	    node->next = oldvalue;
+	    retcas = __sync_bool_compare_and_swap(oldplace, oldvalue, node);   // insert between
+	    break;
+	  }
+	} while (true);
       }
-    
-    }
-
-    
-    while (!InsertOrderOnce(node));
-    return true;
+    } while (!retcas);
+    return node;
   };
 
   int Size() {
@@ -83,7 +90,8 @@ public:
   void PrintList() {
     volatile TNode *now = nodeHead;    
     while (now) {
-      printf("%p->", now);
+      printf("\n%p->", now);
+      ((TNode*)now)->PrintHash();      
       now = now->next;
     }
     printf("\n");
@@ -96,11 +104,28 @@ class HashListMap {
   typedef NodeList<KEY, VALUE, HASHCLASS, HASH> TList;
 private:
   int bucketNumber;
-  TList *bucketList;
+  void *listArray;
+  TList **bucketList;
 public:
   HashListMap(int bucketNumber) {
-    this.bucketNumber = bucketNumber;
-  }
+    this->bucketNumber = bucketNumber;
+    listArray = malloc(bucketNumber * sizeof(TList*));
+    bucketList = (TList**)listArray;
+    for (int i = 0; i < bucketNumber; i++) bucketList[i] = new TList();
+  };
+  ~HashListMap() {
+    for (int i = 0; i < bucketNumber; i++) delete bucketList[i];
+    free(listArray);
+  };
+  int GetBucket(HASH hash) {
+    unsigned int *index = (unsigned int*) &hash;
+    return *index % bucketNumber;
+  };
+  TNode* FindOrInsert(TNode *node) {
+    int num = GetBucket(node->hash);
+    printf("hash insert %d\n", num);
+    return bucketList[GetBucket(node->hash)]->FindOrInsert(node);
+  };
 };
 
 

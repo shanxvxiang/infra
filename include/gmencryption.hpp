@@ -74,6 +74,14 @@ public:
   unsigned char* GetAddress() {
     return (unsigned char*)val;
   };
+  void PrintHash(int len = 0) {
+    unsigned char *uc = (unsigned char*)val;
+    if (len == 0) len = 32;
+    for(int i = 0; i < len; i++) {
+      printf("%02X", *uc++);
+    }
+    // printf("\n");
+  };
 };
 
 class SM3Hash {
@@ -84,13 +92,7 @@ public:
     sm3_digest(detail, len, hashvalue);
     return hashvalue;
   };
-  static void PrintHash(unsigned char *hashvalue) {
-    for(int i = 0; i < 256/8; i++) {
-      unsigned char c = hashvalue[i];
-      printf("%02X", c);
-    }
-    printf("\n");
-  };
+
 };
 
 class NoneHash {
