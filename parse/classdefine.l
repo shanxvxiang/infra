@@ -85,7 +85,7 @@ COMMENT				("//"[^\n]*)
 <<EOF>>						{ return 0; }
 
 %%
-int DoClassDefineParse(FILE* in, ScanExtra *name) {
+int DoClassDefineFileParse(FILE* in, ScanExtra *name) {
 	yyscan_t yyscanner;
 	yylex_init ( &yyscanner );
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -93,6 +93,22 @@ int DoClassDefineParse(FILE* in, ScanExtra *name) {
 	yyextra = (void*)name;
 	yyset_in(in, yyscanner);
 	classdefineparse ( yyscanner );
+	yylex_destroy ( yyscanner );
+	return 0;
+}
+
+int DoClassDefineMemoryParse(char* buffer, int length, ScanExtra *name) {
+// https://www.coder.work/article/1567976
+    YY_BUFFER_STATE buf;
+	yyscan_t yyscanner;
+	yylex_init ( &yyscanner );
+	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+     
+	yyextra = (void*)name;
+//	yyset_in(in, yyscanner);
+    buf = yy_scan_bytes( buffer, length , yyscanner);
+	classdefineparse ( yyscanner );
+    yy_delete_buffer(buf, yyscanner);
 	yylex_destroy ( yyscanner );
 	return 0;
 }

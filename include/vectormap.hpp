@@ -12,14 +12,14 @@ public:
 public:
   volatile LinkedNode *next;
 public:
-  LinkedNode(KEY& k, VALUE& v) {
+  LinkedNode(KEY k, VALUE v) {
 // key = k;
     value = v;
     HASHCLASS::Digest(k.GetAddress(), k.GetLength(), hash.GetAddress());
     next = NULL;
   }
-  void PrintHash() {
-    hash.PrintHash(3);
+  void PrintHash(int len = 0) {
+    hash.PrintHash(len);
   }
 };
 
@@ -41,6 +41,21 @@ public:
     } while (!__sync_bool_compare_and_swap(&nodeHead, old, node));
     return true;
   };
+  TNode* Find(HASH keyhash) {
+    TNode *ret = NULL;
+    int retcmp;
+    do {
+      ret = GetNext(ret);
+      if (ret) {
+	retcmp = ret->hash.Compare(keyhash);
+	if (retcmp < 0) continue;
+	else if (retcmp == 0) return ret;
+	else break;
+      }
+    } while (ret);
+    return NULL;
+  };
+  
   TNode* FindOrInsert(TNode *node) {
     volatile TNode *oldvalue;
     volatile TNode **oldplace;
@@ -57,7 +72,7 @@ public:
 	do {
 	  retcmp = node->hash.Compare(((TNode*)oldvalue)->hash);
 	  if (retcmp == 0) {
-	    printf("find same\n");
+//	    printf("find same\n");
 	    return (TNode*)oldvalue;
 	  } else if (retcmp > 0) {
 	    oldplace = &(((TNode*)oldvalue)->next);
@@ -76,6 +91,11 @@ public:
       }
     } while (!retcas);
     return node;
+  };
+
+  TNode* GetNext(TNode *node = NULL) {
+    if (node == NULL) return (TNode*)nodeHead;
+    else return (TNode*)(node->next);
   };
 
   int Size() {
@@ -121,10 +141,32 @@ public:
     unsigned int *index = (unsigned int*) &hash;
     return *index % bucketNumber;
   };
+  TNode* Find(HASH keyhash) {
+    return bucketList[GetBucket(keyhash)]->Find(keyhash);
+  };
+  TNode* Find(KEY key) {
+    HASH keyhash;
+    HASHCLASS::Digest(key.GetAddress(), key.GetLength(), keyhash.GetAddress());
+    return bucketList[GetBucket(keyhash)]->Find(keyhash);
+  };
+  
   TNode* FindOrInsert(TNode *node) {
-    int num = GetBucket(node->hash);
-    printf("hash insert %d\n", num);
+    // int num = GetBucket(node->hash);
+    //    printf("hash insert %d\n", num);
     return bucketList[GetBucket(node->hash)]->FindOrInsert(node);
+  };
+  TNode* GetNext(TNode *node = NULL) {
+    int begin;
+    TNode *ret;
+    if (node == NULL) begin = 0;
+    else begin = GetBucket(node->hash);
+    ret = bucketList[begin]->GetNext(node);
+    if (ret) return ret;
+    for (int i = begin + 1; i < bucketNumber; i++) {
+      ret =  bucketList[i]->GetNext(NULL);
+      if (ret) return ret;
+    }
+    return NULL;
   };
 };
 

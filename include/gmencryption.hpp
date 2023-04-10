@@ -28,6 +28,10 @@ public:
   String(const std::string& str) {
     val = str;
   };
+  String& operator = (const char* str) {
+    val = str;
+    return *this;
+  };
 
   String& operator = (String& that) {
     val = that.val;

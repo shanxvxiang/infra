@@ -1,7 +1,7 @@
 #ifndef __RAYMON_SHAN_DATAFILE_TYPE_HPP
 #define __RAYMON_SHAN_DATAFILE_TYPE_HPP
 
-#include "infra.hpp"
+#include "infraall.hpp"
 
 class DataField {
 public:
@@ -28,7 +28,7 @@ public:
 
 class DataClass {
 public:
-  std::string className;
+  String className;
   DataClass *inheritClass;
   DataClass *aggregationClass;
   DataField *fieldList;
@@ -53,8 +53,8 @@ public:
     FreeAllFieldList(fieldList);    
   }
   
-  void TravelClass(void) {
-    printf("CLASS %s\n", className.c_str());
+  void Display(void) {
+    printf("CLASS %s\n", className.GetAddress());
     DataField **pnext = &fieldList;
     while (*pnext != NULL) {
       (*pnext)->Display();
