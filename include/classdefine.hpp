@@ -23,6 +23,7 @@ class ClassDefine {
   DataClass *pendingAggregationClass;
   DataField *pendFieldList;
 public:
+  TreeNode *classTreeRoot;
   static ClassHash allClassHash;
 
 public:
@@ -129,6 +130,8 @@ const char* DefineInheritAggregationClass(void* classdefinescanner,
   ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
   return extra->classDefine->DefineInheritAggregationClass(name, base, summary);  
 }
+
+
 
 
 ClassHash ClassDefine::allClassHash(CLASS_HASH_BUCKET_NUMBER);    // 128

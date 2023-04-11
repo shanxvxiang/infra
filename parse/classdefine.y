@@ -30,19 +30,21 @@ allFile
 
 sentence
 	: classDefine
+	| classDefine ';'
 	| classValue
+	| classValue ';'
 	;
 
 classDefine
-	: K_CLASS D_IDENTIFIER '{' defineGroup '}' ';'																										
+	: K_CLASS D_IDENTIFIER '{' defineGroup '}'	
 		{ DefineClass(classdefinescanner, $2); free($2); }
-	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}' ';'														
+	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}'
 		{ DefineInheritClass(classdefinescanner, $2, $4); free($2); free($4); }
-	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}' ';'												
+	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}'
 		{ DefineAggregationClass(classdefinescanner, $2, $4); free($2); free($4); }
-	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}' ';'	
+	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}'
 		{ DefineInheritAggregationClass(classdefinescanner, $2, $4, $6); free($2); free($4); free($6); }
-	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}' ';'	
+	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}'
 		{ DefineInheritAggregationClass(classdefinescanner, $2, $6, $4); free($2); free($4); free($6); }
 	;
 
@@ -71,29 +73,31 @@ typeDefine
 	;
 
 classValue
-	: K_VALUE D_IDENTIFIER '{' valueGroup '}' ';' { }//printf("CLASSVALUE %s \n", $2); }
+	: K_VALUE D_IDENTIFIER '{' valueGroup '}' 		{ printf("    CLASSVALUE %s \n", $2); }
 	;	
 
 valueGroup
-	: valueLine																		{ }//printf("  LEVEL NORMAL 1 %s\n", $1); }
-	| valueGroup valueLine												{ }//printf("  LEVEL NORMAL 2 %s %s \n", $1, $2); }
-	| valueGroup '{' valueGroup '}' ';'						{ }//printf("  LEVELPLUS %s %s \n", $1, $2); }
+	: valueLine																		{ printf("  LEVEL NORMAL 1 %s\n", $1); }
+	| valueGroup valueLine												{ printf("  LEVEL NORMAL 2 %s \n", $2); }
+	| valueGroup '{' valueGroup '}' ';'						{ printf("  LEVELPLUS %s \n", $2); }
+	| valueGroup '{' valueGroup '}'								{ printf("  LEVELPLUS %s \n", $2); }
 	;
 	
 valueLine
-	: valueType ';'																{ }//printf("NORMAL LINE COMPLETE\n"); }
-	| K_DELETED valueType ';'											{ }//printf("DELETED LINE COMPLETE\n"); }
+	: valueType ';'																{ printf("    NORMAL LINE COMPLETE %s\n", $1); }
+	| K_DELETED valueType ';'											{ printf("    DELETED LINE COMPLETE %s\n", $2); }
 	;
 
 valueType
-	: valueOne 
-	| valueType ',' valueOne
+	: valueOne 																		{ printf("        value one %s\n", $1); }
+	| valueType ',' valueOne											{ printf("        value two %s, %s\n", $1, $3); }
 	;
 
 valueOne
-	: strings																			{ }//printf("ONESTRING %s \n", $1); }
-	| D_INT																				{ }//printf("ONEINT %s \n", $1); }
+	: strings																			{}// printf("ONESTRING %s \n", $1); }
+	| D_INT																				{ printf("ONEINT %s \n", $1); }
 
 strings
 	: D_STRING
 	| strings D_STRING
+

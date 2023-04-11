@@ -1,7 +1,7 @@
 #ifndef __RAYMON_SHAN_TREE_DEFINE_HPP
 #define __RAYMON_SHAN_TREE_DEFINE_HPP
 
-#include "infra.hpp"
+#include "infraall.hpp"
 
 #define LAST_NODE       ((TreeNode*)(-1))
 
