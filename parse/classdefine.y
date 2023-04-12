@@ -25,27 +25,29 @@ int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_para
 
 allFile
 	: sentence
+	| sentence ';'
 	| allFile sentence
+	| allFile sentence ';'
 	;
 
 sentence
 	: classDefine
-	| classDefine ';'
 	| classValue
-	| classValue ';'
+	| '{' defineGroup '}'								{ EndofDefineClass(classdefinescanner); }
+	| '{' valueGroup '}' 								{ printf("  END value\n"); }
 	;
 
 classDefine
-	: K_CLASS D_IDENTIFIER '{' defineGroup '}'	
-		{ DefineClass(classdefinescanner, $2); free($2); }
-	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}'
-		{ DefineInheritClass(classdefinescanner, $2, $4); free($2); free($4); }
-	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}'
-		{ DefineAggregationClass(classdefinescanner, $2, $4); free($2); free($4); }
-	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER K_AGGREGATION D_IDENTIFIER '{' defineGroup '}'
-		{ DefineInheritAggregationClass(classdefinescanner, $2, $4, $6); free($2); free($4); free($6); }
-	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER K_INHERIT D_IDENTIFIER '{' defineGroup '}'
-		{ DefineInheritAggregationClass(classdefinescanner, $2, $6, $4); free($2); free($4); free($6); }
+	: K_CLASS D_IDENTIFIER
+		{ DefineClass(classdefinescanner, $2, NULL, NULL); free($2); }
+	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER
+		{ DefineClass(classdefinescanner, $2, $4, NULL); free($2); free($4); }
+	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER
+		{ DefineClass(classdefinescanner, $2, NULL, $4); free($2); free($4); }
+	| K_CLASS D_IDENTIFIER K_INHERIT D_IDENTIFIER K_AGGREGATION D_IDENTIFIER
+		{ DefineClass(classdefinescanner, $2, $4, $6); free($2); free($4); free($6); }
+	| K_CLASS D_IDENTIFIER K_AGGREGATION D_IDENTIFIER K_INHERIT D_IDENTIFIER
+		{ DefineClass(classdefinescanner, $2, $6, $4); free($2); free($4); free($6); }
 	;
 
 defineGroup
@@ -73,7 +75,7 @@ typeDefine
 	;
 
 classValue
-	: K_VALUE D_IDENTIFIER '{' valueGroup '}' 		{ printf("    CLASSVALUE %s \n", $2); }
+	: K_VALUE D_IDENTIFIER 		{ printf("    CLASSVALUE %s \n", $2); }
 	;	
 
 valueGroup

@@ -38,11 +38,8 @@ const char* DefineField(void* classdefinescanner, const char* name);
 const char* DefineFieldType(void* classdefinescanner, int type);
 const char* DefineFieldCategory(void* classdefinescanner, int prop);
   
-const char* DefineClass(void *classdefinescanner, const char* name);
-const char* DefineInheritClass(void *classdefinescanner, const char* name, const char* base);
-const char* DefineAggregationClass(void *classdefinescanner, const char* name, const char* summary);
-const char* DefineInheritAggregationClass(void *classdefinescanner,
-					  const char* name, const char* base, const char* summary);
+const char* DefineClass(void *classdefinescanner, const char* name, const char* base, const char* summary);
+const char* EndofDefineClass(void* classdefinescanner);
 
 #endif  // __RAYMON_SHAN_GLOBAL_VAR_HPP
 

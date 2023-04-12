@@ -34,7 +34,7 @@ public:
   DataField *fieldList;
   TreeNode  *dataList;
 public:
-  DataClass(const char *name, DataClass *inherit, DataClass *aggregation, DataField *field) {
+  DataClass(String &name, DataClass *inherit, DataClass *aggregation, DataField *field) {
     inheritClass = inherit;
     aggregationClass = aggregation;
     fieldList = field;

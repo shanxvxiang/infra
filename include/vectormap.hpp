@@ -12,7 +12,7 @@ public:
 public:
   volatile LinkedNode *next;
 public:
-  LinkedNode(KEY k, VALUE v) {
+  LinkedNode(KEY &k, VALUE &v) {
 // key = k;
     value = v;
     HASHCLASS::Digest(k.GetAddress(), k.GetLength(), hash.GetAddress());

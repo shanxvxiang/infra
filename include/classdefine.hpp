@@ -22,6 +22,7 @@ class ClassDefine {
   DataClass *pendingInheritClass;
   DataClass *pendingAggregationClass;
   DataField *pendFieldList;
+  String pendName;
 public:
   TreeNode *classTreeRoot;
   static ClassHash allClassHash;
@@ -35,6 +36,7 @@ public:
     pendingInheritClass = NULL;
     pendingAggregationClass = NULL;
     pendFieldList = NULL;
+    pendName = "";
   };
   void ChainFieldList(DataField *field) {
     DataField **pnext = &pendFieldList;
@@ -80,57 +82,50 @@ public:
     return 0;
   };
 
-  const char* DefineInheritAggregationClass(const char* name, const char* base, const char* summary) {
+  const char* DefineClass(const char* name, const char* base, const char* summary) {
+    // TODO not found class
     ClassNode *node;
-    DataClass *inhe = NULL, *aggr = NULL;
+    pendName = name;
     if (base) {
       node = allClassHash.Find(String(base));
-      if (node) inhe = node->value;
+      if (node) pendingInheritClass = node->value;
     }
     if (summary) {
       node = allClassHash.Find(String(summary));
-      if (node) aggr = node->value;
+      if (node) pendingAggregationClass = node->value;
     }
-    
-    DataClass *newclass = new DataClass(name, inhe, aggr, pendFieldList);
-    node = new ClassNode(String(name), newclass);
-    allClassHash.FindOrInsert(node);
-    RenewPendingClass();
-    //    printf("in DefineInheritAggregationClass:%s base:%s aggr:%s \n", name, base, summary);
     return 0;
   };
+
+  const char* EndofDefineClass() {
+    ClassNode *node;
+    DataClass *newclass =
+      new DataClass(pendName, pendingInheritClass, pendingAggregationClass, pendFieldList);
+    //    newclass->Display();
+    node = new ClassNode(pendName, newclass);
+    allClassHash.FindOrInsert(node);
+    RenewPendingClass();
+    return 0;
+  }
 };
+
+#define ClassDefineFunc ((classdefineguts_t*)classdefinescanner)->yyextra_r->classDefine
 
 const char* DefineField(void* classdefinescanner, const char* name) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineField(name);
+  return ClassDefineFunc->DefineField(name);
 };
 const char* DefineFieldType(void* classdefinescanner, int type) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineFieldType(type);
+  return ClassDefineFunc->DefineFieldType(type);
 };
 const char* DefineFieldCategory(void* classdefinescanner, int cate) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineFieldCategory(cate);
+  return ClassDefineFunc->DefineFieldCategory(cate);
 }
-const char* DefineClass(void* classdefinescanner, const char* name) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineInheritAggregationClass(name, NULL, NULL);
-};
-const char* DefineInheritClass(void* classdefinescanner, const char* name, const char* base) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineInheritAggregationClass(name, base, NULL);
-};
-const char* DefineAggregationClass(void* classdefinescanner, const char* name, const char* summary) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineInheritAggregationClass(name, NULL, summary);    
-};
-const char* DefineInheritAggregationClass(void* classdefinescanner,
-					  const char* name, const char* base, const char* summary) {
-  ScanExtra* extra = ((classdefineguts_t*)classdefinescanner)->yyextra_r;
-  return extra->classDefine->DefineInheritAggregationClass(name, base, summary);  
+const char* DefineClass(void* classdefinescanner, const char* name, const char* base, const char* summary) {
+  return ClassDefineFunc->DefineClass(name, base, summary);  
 }
-
+const char* EndofDefineClass(void* classdefinescanner) {
+  return ClassDefineFunc->EndofDefineClass();
+};
 
 
 
