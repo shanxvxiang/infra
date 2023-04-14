@@ -7,7 +7,7 @@ class 地址 inherit 行政区划 {
   attribute string 具体地址;
 }
 
-value 行政区划 
+value 行政区划 ( 区划名称,  区划代码 )
 {
 	"北京市", "110000";
 	{
