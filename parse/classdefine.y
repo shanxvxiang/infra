@@ -18,7 +18,7 @@ int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_para
 
 %token K_CLASS K_INHERIT K_AGGREGATION K_UNIQUE K_ESSENTIAL K_ATTRIBUTE
 %token K_VALUE K_DELETED
-%token T_STRING T_INT T_PERCENT T_MONEY T_HASH T_TIME T_ID
+%token T_STRING T_INT T_PERCENT T_MONEY T_HASH T_TIME
 %token D_IDENTIFIER D_STRING D_INT
 
 %%
@@ -33,7 +33,7 @@ allFile
 sentence
 	: classDefine
 	| classValue
-	| '{' defineGroup '}'								{ EndofDefineClass(classdefinescanner); }
+	| '{' classGroup '}'								{ EndofDefineClass(classdefinescanner); }
 	| '{' valueGroup '}' 								{ printf("  END value\n"); }
 	;
 
@@ -50,9 +50,9 @@ classDefine
 		{ DefineClass(classdefinescanner, $2, $6, $4); free($2); free($4); free($6); }
 	;
 
-defineGroup
+classGroup
 	: defineFieldLine
-	| defineGroup defineFieldLine
+	| classGroup defineFieldLine
 	;
 
 defineFieldLine
@@ -67,16 +67,26 @@ categoryDefine
 
 typeDefine
 	: T_STRING				{ DefineFieldType(classdefinescanner, T_STRING); }
-	| T_INT  					{ DefineFieldType(classdefinescanner, T_STRING); }
-	| T_PERCENT 			{ DefineFieldType(classdefinescanner, T_STRING); }
-	| T_MONEY 				{ DefineFieldType(classdefinescanner, T_STRING); }
-	| T_HASH  				{ DefineFieldType(classdefinescanner, T_STRING); }
-	| T_TIME  				{ DefineFieldType(classdefinescanner, T_STRING); }
+	| T_INT  					{ DefineFieldType(classdefinescanner, T_INT); }
+	| T_PERCENT 			{ DefineFieldType(classdefinescanner, T_PERCENT); }
+	| T_MONEY 				{ DefineFieldType(classdefinescanner, T_MONEY); }
+	| T_HASH  				{ DefineFieldType(classdefinescanner, T_HASH); }
+	| T_TIME  				{ DefineFieldType(classdefinescanner, T_TIME); }
 	;
 
 classValue
-	: K_VALUE D_IDENTIFIER 		{ printf("    CLASSVALUE %s \n", $2); }
+	: K_VALUE className 		{ printf("    CLASSVALUE %s \n", $2); }
 	;	
+
+className
+	: D_IDENTIFIER																			{ printf("  class name only %s\n", $1); }
+	| D_IDENTIFIER '(' valueOrder ')'										{ printf("  class name with order %s\n", $1); }
+	;
+
+valueOrder
+	: D_IDENTIFIER																			{ printf("  class order 1 %s\n", $1); }
+	| valueOrder ',' D_IDENTIFIER												{ printf("  class order 2 %s\n", $3); }
+	;
 
 valueGroup
 	: valueLine																		{ printf("  LEVEL NORMAL 1 %s\n", $1); }
