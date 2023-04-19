@@ -64,7 +64,7 @@ COMMENT				("//"[^\n]*)
 "hash"						{ return T_HASH; }
 "time"						{ return T_TIME; }
 
-[{};,()]						{ return yytext[0]; }
+[{};,()]					{ return yytext[0]; }
 {IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
 {STRING}          { _DUPTEXT; return D_STRING; }
 {INT}							{ _DUPTEXT; return D_INT; }

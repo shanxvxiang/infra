@@ -41,6 +41,10 @@ const char* DefineFieldCategory(void* classdefinescanner, int prop);
 const char* DefineClass(void *classdefinescanner, const char* name, const char* base, const char* summary);
 const char* EndofDefineClass(void* classdefinescanner);
 
+
+const char* DefineValueOrder(void* classdefinescanner, int isfirst = 1);
+const char* EndofValueClass(void* classdefinescanner);
+
 #endif  // __RAYMON_SHAN_GLOBAL_VAR_HPP
 
 

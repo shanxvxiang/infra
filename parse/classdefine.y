@@ -34,7 +34,7 @@ sentence
 	: classDefine
 	| classValue
 	| '{' classGroup '}'								{ EndofDefineClass(classdefinescanner); }
-	| '{' valueGroup '}' 								{ printf("  END value\n"); }
+	| '{' valueGroup '}' 								{ EndofValueClass(classdefinescanner); }
 	;
 
 classDefine
@@ -75,17 +75,13 @@ typeDefine
 	;
 
 classValue
-	: K_VALUE className 		{ printf("    CLASSVALUE %s \n", $2); }
+	: K_VALUE D_IDENTIFIER 												{ printf("  class name only %s\n", $2); }
+	| K_VALUE D_IDENTIFIER '(' valueOrder ')'			{ printf("  class name with order %s\n", $2); }
 	;	
 
-className
-	: D_IDENTIFIER																			{ printf("  class name only %s\n", $1); }
-	| D_IDENTIFIER '(' valueOrder ')'										{ printf("  class name with order %s\n", $1); }
-	;
-
 valueOrder
-	: D_IDENTIFIER																			{ printf("  class order 1 %s\n", $1); }
-	| valueOrder ',' D_IDENTIFIER												{ printf("  class order 2 %s\n", $3); }
+	: D_IDENTIFIER																{ DefineValueOrder($1, 1); }
+	| valueOrder ',' D_IDENTIFIER									{ DefineValueOrder($3, 0); }
 	;
 
 valueGroup

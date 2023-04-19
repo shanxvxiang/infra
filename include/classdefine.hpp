@@ -33,6 +33,7 @@ public:
     pendingFieldType = 0;
   };
   void RenewPendingClass(void) {
+    RenewPendingField();
     pendingInheritClass = NULL;
     pendingAggregationClass = NULL;
     pendFieldList = NULL;
@@ -42,7 +43,28 @@ public:
     DataField **pnext = &pendFieldList;
     while (*pnext != NULL) pnext = &((*pnext)->nextField);
     *pnext = field;
+    printf("add chain %p\n", field);
   };
+  void RemoveFieldList() {                 // for value field order use
+    DataField **pnext = &pendFieldList, *nnext;
+    while (*pnext != NULL) pnext = &((*pnext)->nextField);
+          printf("remove chain %p\n", *pnext);
+    delete *pnext;
+
+  };
+  /*
+  void RemoveFieldList() {                 // for value field order use
+    DataField **pnext = &pendFieldList, *nnext;
+    while (*pnext != NULL) {
+      nnext = *pnext;      
+      printf("remove chain %p\n", nnext);
+
+      pnext = &((*pnext)->nextField);
+           delete nnext;
+    }
+
+  };*/
+  
 
   ClassDefine() {
     const char *ret;
@@ -52,7 +74,6 @@ public:
       _LOG_CRIT("%s, <%s>", ERROR_INVALID_CLASSFILE, DataDefineFile.c_str());
       exit(1);
     }
-    RenewPendingField();
     RenewPendingClass();
     scanExtra.fileName = DataDefineFile;
     scanExtra.classDefine = this;
@@ -60,7 +81,6 @@ public:
   };
 
   ClassDefine(char *buffer, int length) {
-    RenewPendingField();
     RenewPendingClass();
     scanExtra.fileName = DataDefineFile;
     scanExtra.classDefine = this;
@@ -69,7 +89,10 @@ public:
 
   const char* DefineField(const char* name) {
     DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
+    printf("new %p\n", newfield);
     ChainFieldList(newfield);
+
+
     RenewPendingField();
     return 0;
   };
@@ -104,9 +127,21 @@ public:
     //    newclass->Display();
     node = new ClassNode(pendName, newclass);
     allClassHash.FindOrInsert(node);
+
+        RemoveFieldList(); //////
     RenewPendingClass();
+
+    
     return 0;
-  }
+  };
+
+  const char* DefineValueOrder(int isfirst) {
+    return 0;
+  };
+  const char* EndofValueClass() {
+    return 0;
+  };
+  
 };
 
 #define ClassDefineFunc ((classdefineguts_t*)classdefinescanner)->yyextra_r->classDefine
@@ -119,14 +154,21 @@ const char* DefineFieldType(void* classdefinescanner, int type) {
 };
 const char* DefineFieldCategory(void* classdefinescanner, int cate) {
   return ClassDefineFunc->DefineFieldCategory(cate);
-}
+};
 const char* DefineClass(void* classdefinescanner, const char* name, const char* base, const char* summary) {
   return ClassDefineFunc->DefineClass(name, base, summary);  
-}
+};
 const char* EndofDefineClass(void* classdefinescanner) {
   return ClassDefineFunc->EndofDefineClass();
 };
 
+
+const char* DefineValueOrder(void* classdefinescanner, int isfirst) {
+  return ClassDefineFunc->DefineValueOrder(isfirst);  
+};
+const char* EndofValueClass(void* classdefinescanner) {
+  return ClassDefineFunc->EndofValueClass();
+};
 
 
 ClassHash ClassDefine::allClassHash(CLASS_HASH_BUCKET_NUMBER);    // 128
