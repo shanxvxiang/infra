@@ -42,8 +42,12 @@ AHEADCHAR			({ALPHABET}|{GBK})
 ALLCHAR				({ALPHABET}|{DIGIT}|{GBK})
 
 IDENTIFIER		({AHEADCHAR}{ALLCHAR}*)
-INT						({DIGIT}+)
 STRING				(\x22([^\x22\x5c\n]|{ESCCHAR})*\x22)
+INT						({DIGIT}+)
+DOUBLE				({DIGIT}+(.{DIGIT}*)?)
+MONEY					({DIGIT}+(.{DIGIT}*)?)
+HASH					([0-9A-Fa-f]{16})
+TIME					([0-9A-Fa-f]{16})
 
 COMMENT				("//"[^\n]*)
 
@@ -59,7 +63,7 @@ COMMENT				("//"[^\n]*)
 
 "string"					{ return T_STRING; }
 "int"							{ return T_INT; }
-"percent"					{ return T_PERCENT; }
+"double"					{ return T_DOUBLE; }
 "money"						{ return T_MONEY; }
 "hash"						{ return T_HASH; }
 "time"						{ return T_TIME; }
@@ -68,6 +72,11 @@ COMMENT				("//"[^\n]*)
 {IDENTIFIER}			{ _DUPTEXT; return D_IDENTIFIER; }
 {STRING}          { _DUPTEXT; return D_STRING; }
 {INT}							{ _DUPTEXT; return D_INT; }
+{DOUBLE}					{ _DUPTEXT; return D_DOUBLE; }
+{MONEY}						{ _DUPTEXT; return D_MONEY; }
+{HASH}						{ _DUPTEXT; return D_HASH; }
+{TIME}						{ _DUPTEXT; return D_TIME; }
+
 [\n]							{ }
 [ \t\r]+					{ }
 {COMMENT}					{ }

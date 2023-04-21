@@ -43,14 +43,17 @@ public:
     DataField **pnext = &pendFieldList;
     while (*pnext != NULL) pnext = &((*pnext)->nextField);
     *pnext = field;
-    printf("add chain %p\n", field);
+    //    printf("add chain %p\n", field);
   };
   void RemoveFieldList() {                 // for value field order use
-    DataField **pnext = &pendFieldList, *nnext;
-    while (*pnext != NULL) pnext = &((*pnext)->nextField);
-          printf("remove chain %p\n", *pnext);
-    delete *pnext;
-
+    DataField *pnext = pendFieldList, *nnext;
+    while (pnext != NULL) {
+      nnext = pnext;
+      pnext = pnext->nextField;
+      //      printf("in delete %p\n", nnext);
+      delete nnext;
+    }
+    pendFieldList = NULL;
   };
   /*
   void RemoveFieldList() {                 // for value field order use
@@ -89,10 +92,8 @@ public:
 
   const char* DefineField(const char* name) {
     DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
-    printf("new %p\n", newfield);
+    //    printf("new %p\n", newfield);
     ChainFieldList(newfield);
-
-
     RenewPendingField();
     return 0;
   };
@@ -127,18 +128,37 @@ public:
     //    newclass->Display();
     node = new ClassNode(pendName, newclass);
     allClassHash.FindOrInsert(node);
-
-        RemoveFieldList(); //////
     RenewPendingClass();
-
-    
     return 0;
   };
 
-  const char* DefineValueOrder(int isfirst) {
+  const char* DefineValueOrder(char *name, int isfirst) {
+    printf("in value order %s, %d\n", name, isfirst);
+    if (isfirst) {
+      RemoveFieldList();
+    }
+    DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
+    ChainFieldList(newfield);
+    RenewPendingField();
     return 0;
   };
+  const char* DefineClassValue(char *name, int defaultorder) {
+    DataField *order;
+    DataField *field;
+
+    field = ClassDefine::allClassHash.Find(String(name))->value->fieldList;
+    if (defaultorder) {
+      order = field;
+    }
+    else {
+      // TODO: confirm field in class 
+      order = pendFieldList;
+    }
+    return 0;
+  }
+  
   const char* EndofValueClass() {
+            RemoveFieldList(); 
     return 0;
   };
   
@@ -163,9 +183,12 @@ const char* EndofDefineClass(void* classdefinescanner) {
 };
 
 
-const char* DefineValueOrder(void* classdefinescanner, int isfirst) {
-  return ClassDefineFunc->DefineValueOrder(isfirst);  
+const char* DefineValueOrder(void* classdefinescanner, char* name, int isfirst) {
+  return ClassDefineFunc->DefineValueOrder(name, isfirst);  
 };
+const char* DefineClassValue(void* classdefinescanner, char *name, int defaultorder) {
+    return ClassDefineFunc->DefineClassValue(name, defaultorder); 
+}
 const char* EndofValueClass(void* classdefinescanner) {
   return ClassDefineFunc->EndofValueClass();
 };

@@ -1,9 +1,9 @@
 #ifndef __RAYMON_SHAN_VOUCHER_HPP
 #define __RAYMON_SHAN_VOUCHER_HPP
 
-#include "infra.hpp"
-#include "vectormap.hpp"
-#include "gmencryption.hpp"
+#include "infraall.hpp"
+//#include "vectormap.hpp"
+//#include "gmencryption.hpp"
 
 typedef __int128_t int128;
 

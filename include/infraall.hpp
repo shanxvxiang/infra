@@ -6,7 +6,7 @@
 #ifndef __RAYMON_SHAN_FOR_L_Y
 
 typedef class SM3Hash _Hash;
-#include "gmencryption.hpp"
+#include "fieldtype.hpp"
 
 #include "signalhandle.hpp"
 #include "vectormap.hpp"

@@ -18,8 +18,8 @@ int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_para
 
 %token K_CLASS K_INHERIT K_AGGREGATION K_UNIQUE K_ESSENTIAL K_ATTRIBUTE
 %token K_VALUE K_DELETED
-%token T_STRING T_INT T_PERCENT T_MONEY T_HASH T_TIME
-%token D_IDENTIFIER D_STRING D_INT
+%token T_STRING T_INT T_DOUBLE T_MONEY T_HASH T_TIME
+%token D_IDENTIFIER D_STRING D_INT D_DOUBLE D_MONEY D_HASH D_TIME
 
 %%
 
@@ -68,20 +68,20 @@ categoryDefine
 typeDefine
 	: T_STRING				{ DefineFieldType(classdefinescanner, T_STRING); }
 	| T_INT  					{ DefineFieldType(classdefinescanner, T_INT); }
-	| T_PERCENT 			{ DefineFieldType(classdefinescanner, T_PERCENT); }
+	| T_DOUBLE 				{ DefineFieldType(classdefinescanner, T_DOUBLE); }
 	| T_MONEY 				{ DefineFieldType(classdefinescanner, T_MONEY); }
 	| T_HASH  				{ DefineFieldType(classdefinescanner, T_HASH); }
 	| T_TIME  				{ DefineFieldType(classdefinescanner, T_TIME); }
 	;
 
 classValue
-	: K_VALUE D_IDENTIFIER 												{ printf("  class name only %s\n", $2); }
-	| K_VALUE D_IDENTIFIER '(' valueOrder ')'			{ printf("  class name with order %s\n", $2); }
+	: K_VALUE D_IDENTIFIER 												{ DefineClassValue(classdefinescanner, $2, 1); }
+	| K_VALUE D_IDENTIFIER '(' valueOrder ')'			{ DefineClassValue(classdefinescanner, $2, 0); }
 	;	
 
 valueOrder
-	: D_IDENTIFIER																{ DefineValueOrder($1, 1); }
-	| valueOrder ',' D_IDENTIFIER									{ DefineValueOrder($3, 0); }
+	: D_IDENTIFIER																{ DefineValueOrder(classdefinescanner, $1, 1); }
+	| valueOrder ',' D_IDENTIFIER									{ DefineValueOrder(classdefinescanner, $3, 0); }
 	;
 
 valueGroup
@@ -104,6 +104,11 @@ valueType
 valueOne
 	: strings																			{}// printf("ONESTRING %s \n", $1); }
 	| D_INT																				{ printf("ONEINT %s \n", $1); }
+	| D_DOUBLE																		{ printf("ONEDOUBLE %s \n", $1); }
+	| D_MONEY 																		{ printf("ONEMONEY %s \n", $1); }
+	| D_HASH  																		{ printf("ONEHASH %s \n", $1); }
+	| D_TIME  																		{ printf("ONETIME %s \n", $1); }
+	;
 
 strings
 	: D_STRING

@@ -1,5 +1,5 @@
-#ifndef __RAYMON_SHAN_GM_ENCRYPTION_HPP
-#define __RAYMON_SHAN_GM_ENCRYPTION_HPP
+#ifndef __RAYMON_SHAN_FILED_TYPE_HPP
+#define __RAYMON_SHAN_FILED_TYPE_HPP
 
 #include "infra.hpp"
 
@@ -15,34 +15,12 @@ public:
   unsigned char* GetAddress() {
     return NULL;
   };
-  int GetLength() {
+  int GetLength() {            // for string is strlen
     return 0;
   };
-};
-
-class String : public ValueType {
-public:
-  std::string val;
-public:
-  String() {};
-  String(const std::string& str) {
-    val = str;
-  };
-  String& operator = (const char* str) {
-    val = str;
-    return *this;
-  };
-
-  String& operator = (String& that) {
-    val = that.val;
-    return *this;
-  };
-  unsigned char* GetAddress() {
-    return (unsigned char*)val.c_str();
-  };
-  int GetLength() {
-    return val.length();
-  };
+  int GetSize() {              // is sizeof()
+    return 0;
+  }
 };
 
 class Hash256 {
@@ -88,6 +66,7 @@ public:
   };
 };
 
+
 class SM3Hash {
 public:
   SM3Hash() {};
@@ -109,4 +88,64 @@ public:
     printf("None\n");
   };
 };
-#endif  // __RAYMON_SHAN_GM_ENCRYPTION_HPP
+
+class String : public ValueType {
+public:
+  std::string val;
+public:
+  String() {};
+  String(const std::string &str) {
+    val = str;
+  };
+  String& operator = (const char *str) {
+    val = str;
+    return *this;
+  };
+
+  String& operator = (String &that) {
+    val = that.val;
+    return *this;
+  };
+  unsigned char* GetAddress() {
+    return (unsigned char*)val.c_str();
+  };
+  int GetLength() {
+    return val.length();
+  };
+  int GetSize() {
+    return sizeof(String);
+  }
+};
+
+class Int : public ValueType {
+public:
+  int val;
+public:
+  Int() {
+    val = 0;
+  };
+  Int(int i) {
+    val = i;
+  };
+  Int& operator = (int i) {
+    val = i;
+    return *this;
+  };
+  Int& operator = (Int &that) {
+    val = that.val;
+    return *this;
+  };
+  unsigned char* GetAddress() {
+    return (unsigned char*)(&val);
+  };
+  int GetLength() {
+    return sizeof(Int);
+  };
+  int GetSize() {
+    return sizeof(Int);
+  };
+};
+
+
+#endif  // __RAYMON_SHAN_FILED_TYPE_HPP
+
