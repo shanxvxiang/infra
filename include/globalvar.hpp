@@ -6,6 +6,12 @@
 // GLOBAL VARS
 #ifndef __RAYMON_SHAN_FOR_L_Y
 #define EXTERN
+
+// depend classdefine.y
+// %token T_STRING T_INT T_DOUBLE T_MONEY T_HASH T_TIME
+int FIELDOFFSET[T_TIME - T_STRING + 1] = {sizeof(std::string), sizeof(long), sizeof(double)};
+
+
 #else   // __RAYMON_SHAN_FOR_L_Y
 #define EXTERN extern
 #endif  // __RAYMON_SHAN_FOR_L_Y
@@ -46,6 +52,8 @@ const char* DefineValueOrder(void* classdefinescanner, char *name, int isfirst =
 const char* DefineClassValue(void* classdefinescanner, char *name, int defaultorder = 1);
 
 const char* EndofValueClass(void* classdefinescanner);
+
+
 
 #endif  // __RAYMON_SHAN_GLOBAL_VAR_HPP
 

@@ -19,6 +19,7 @@ class ClassDefine {
   FILE *classdefinein;
   int pendingFieldCategory;
   int pendingFieldType;
+  int pendingFieldOffset;
   DataClass *pendingInheritClass;
   DataClass *pendingAggregationClass;
   DataField *pendFieldList;
@@ -31,9 +32,11 @@ public:
   void RenewPendingField(void) {
     pendingFieldCategory = 0;
     pendingFieldType = 0;
+
   };
   void RenewPendingClass(void) {
     RenewPendingField();
+    pendingFieldOffset = 0;
     pendingInheritClass = NULL;
     pendingAggregationClass = NULL;
     pendFieldList = NULL;
@@ -55,19 +58,6 @@ public:
     }
     pendFieldList = NULL;
   };
-  /*
-  void RemoveFieldList() {                 // for value field order use
-    DataField **pnext = &pendFieldList, *nnext;
-    while (*pnext != NULL) {
-      nnext = *pnext;      
-      printf("remove chain %p\n", nnext);
-
-      pnext = &((*pnext)->nextField);
-           delete nnext;
-    }
-
-  };*/
-  
 
   ClassDefine() {
     const char *ret;
@@ -91,8 +81,8 @@ public:
   };  
 
   const char* DefineField(const char* name) {
-    DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
-    //    printf("new %p\n", newfield);
+    DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, pendingFieldOffset, name);
+    pendingFieldOffset += FIELDOFFSET[pendingFieldType - T_STRING];
     ChainFieldList(newfield);
     RenewPendingField();
     return 0;
@@ -137,7 +127,7 @@ public:
     if (isfirst) {
       RemoveFieldList();
     }
-    DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, name);
+    DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, 0, name);
     ChainFieldList(newfield);
     RenewPendingField();
     return 0;
@@ -154,6 +144,14 @@ public:
       // TODO: confirm field in class 
       order = pendFieldList;
     }
+
+    DataField *pnext = field;
+    while (pnext != NULL) {
+      pnext->Display();
+      pnext = pnext->nextField;
+    }
+
+    
     return 0;
   }
   

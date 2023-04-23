@@ -7,6 +7,7 @@ class DataField {
 public:
   int fieldCategory;            // unique, essential, attribute
   int fieldType;                // string, int, percent, money, hash, time
+  int fieldOffset;
   DataField *nextField;
   std::string fieldName;
 public:
@@ -15,14 +16,15 @@ public:
     fieldType = 0;
     nextField = NULL;
   };
-  DataField(int category, int type, const char *name) {
+  DataField(int category, int type, int offset, const char *name) {
     fieldCategory = category;
     fieldType = type;
+    fieldOffset = offset;
     fieldName = name;
     nextField = NULL;    
   };
   void Display(void) {
-    printf("FIELD %s, %d, %d\n", fieldName.c_str(), fieldCategory, fieldType);
+    printf("FIELD %s, %d, %d, %d\n", fieldName.c_str(), fieldCategory, fieldType, fieldOffset);
   };
 };
 
@@ -33,12 +35,21 @@ public:
   DataClass *aggregationClass;
   DataField *fieldList;
   TreeNode  *dataList;
+  int fieldLength;
 public:
   DataClass(String &name, DataClass *inherit, DataClass *aggregation, DataField *field) {
     inheritClass = inherit;
     aggregationClass = aggregation;
     fieldList = field;
     className = name;
+
+    fieldLength = 0;
+    DataField *next = fieldList;
+    while (next != NULL) {
+      fieldLength += FIELDOFFSET[next->fieldType - T_STRING];
+      next = next->nextField;
+    }
+    
   };
   void FreeAllFieldList(DataField *field) {
     DataField *next = field;
@@ -54,7 +65,7 @@ public:
   }
   
   void Display(void) {
-    printf("CLASS %s\n", className.GetAddress());
+    printf("CLASS %s, size:%d\n", className.GetAddress(), fieldLength);
     DataField **pnext = &fieldList;
     while (*pnext != NULL) {
       (*pnext)->Display();

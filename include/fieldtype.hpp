@@ -66,29 +66,6 @@ public:
   };
 };
 
-
-class SM3Hash {
-public:
-  SM3Hash() {};
-
-  static unsigned char* Digest(unsigned char *detail, int len, unsigned char* hashvalue) {
-    sm3_digest(detail, len, hashvalue);
-    return hashvalue;
-  };
-
-};
-
-class NoneHash {
-public:
-  NoneHash() {};
-  static unsigned char* Digest(unsigned char*, int, unsigned char*) {
-    return NULL;
-  }
-  static void PrintHash(unsigned char*) {
-    printf("None\n");
-  };
-};
-
 class String : public ValueType {
 public:
   std::string val;
@@ -146,6 +123,27 @@ public:
   };
 };
 
+class SM3Hash {
+public:
+  SM3Hash() {};
+
+  static unsigned char* Digest(unsigned char *detail, int len, unsigned char* hashvalue) {
+    sm3_digest(detail, len, hashvalue);
+    return hashvalue;
+  };
+
+};
+
+class NoneHash {
+public:
+  NoneHash() {};
+  static unsigned char* Digest(unsigned char*, int, unsigned char*) {
+    return NULL;
+  }
+  static void PrintHash(unsigned char*) {
+    printf("None\n");
+  };
+};
 
 #endif  // __RAYMON_SHAN_FILED_TYPE_HPP
 
