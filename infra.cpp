@@ -65,6 +65,8 @@ int main(int, char **) {
   delete gLogDirectly;
   delete gClassDefine;
   delete gConfigureFile;
+
+  // printf("%ld, %ld, %ld\n", sizeof(ValueType), sizeof(String), sizeof(std::string));
   return 0;
 }
 

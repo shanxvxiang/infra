@@ -3,6 +3,12 @@
 
 #include "infraall.hpp"
 
+// depend classdefine.y
+// %token T_STRING T_INT T_DOUBLE T_MONEY T_HASH T_TIME
+int FIELDOFFSET[T_TIME - T_STRING + 1] = {sizeof(String), sizeof(Int)};
+
+typedef class TreeNode<SM3Hash, Hash256> ClassTree;
+
 class DataField {
 public:
   int fieldCategory;            // unique, essential, attribute
@@ -34,7 +40,7 @@ public:
   DataClass *inheritClass;
   DataClass *aggregationClass;
   DataField *fieldList;
-  TreeNode  *dataList;
+  ClassTree  *dataList;
   int fieldLength;
 public:
   DataClass(String &name, DataClass *inherit, DataClass *aggregation, DataField *field) {
@@ -49,7 +55,6 @@ public:
       fieldLength += FIELDOFFSET[next->fieldType - T_STRING];
       next = next->nextField;
     }
-    
   };
   void FreeAllFieldList(DataField *field) {
     DataField *next = field;
@@ -62,7 +67,7 @@ public:
   };
   ~DataClass() {
     FreeAllFieldList(fieldList);    
-  }
+  };
   
   void Display(void) {
     printf("CLASS %s, size:%d\n", className.GetAddress(), fieldLength);

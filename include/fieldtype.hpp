@@ -5,8 +5,9 @@
 
 class ValueType {
 public:
-  virtual unsigned char* GetAddress() = 0;
-  virtual int GetLength() = 0;
+  //  virtual unsigned char* GetAddress() = 0;
+  //  virtual int GetLength() = 0;
+  //  virtual int GetSize() = 0;  
 };
 
 class None : public ValueType {
@@ -131,7 +132,6 @@ public:
     sm3_digest(detail, len, hashvalue);
     return hashvalue;
   };
-
 };
 
 class NoneHash {

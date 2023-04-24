@@ -11,6 +11,8 @@ typedef class LinkedNode<String, DataClass*, SM3Hash, Hash256> ClassNode;
 typedef class NodeList<String, DataClass*, SM3Hash, Hash256> ClassList;
 typedef class HashListMap<String, DataClass*, SM3Hash, Hash256> ClassHash;
 
+
+
 int DoClassDefineFileParse(FILE* in, struct ScanExtra* extra);
 int DoClassDefineMemoryParse(char* buffer, int length, struct ScanExtra* extra);
 
@@ -25,7 +27,7 @@ class ClassDefine {
   DataField *pendFieldList;
   String pendName;
 public:
-  TreeNode *classTreeRoot;
+  ClassTree *classTreeRoot;
   static ClassHash allClassHash;
 
 public:
@@ -48,8 +50,8 @@ public:
     *pnext = field;
     //    printf("add chain %p\n", field);
   };
-  void RemoveFieldList() {                 // for value field order use
-    DataField *pnext = pendFieldList, *nnext;
+  void RemoveFieldList(DataField *list) {                 // for value field order use
+    DataField *pnext = list, *nnext;
     while (pnext != NULL) {
       nnext = pnext;
       pnext = pnext->nextField;
@@ -57,6 +59,13 @@ public:
       delete nnext;
     }
     pendFieldList = NULL;
+  };
+  DataField* FindDataField(std::string &name, DataField *list) {
+    while (list != NULL) {
+      if (list->fieldName.compare(name) == 0) return list;
+      list = list->nextField;
+    }
+    return NULL;
   };
 
   ClassDefine() {
@@ -70,7 +79,7 @@ public:
     RenewPendingClass();
     scanExtra.fileName = DataDefineFile;
     scanExtra.classDefine = this;
-    DoClassDefineFileParse(classdefinein, &scanExtra);
+    DoClassDefineFileParse(classdefinein, &scanExtra);    // READ CLASS DEFINE and VALUE
   };
 
   ClassDefine(char *buffer, int length) {
@@ -125,7 +134,7 @@ public:
   const char* DefineValueOrder(char *name, int isfirst) {
     printf("in value order %s, %d\n", name, isfirst);
     if (isfirst) {
-      RemoveFieldList();
+      RemoveFieldList(pendFieldList);
     }
     DataField *newfield = new DataField(pendingFieldCategory, pendingFieldType, 0, name);
     ChainFieldList(newfield);
@@ -133,8 +142,8 @@ public:
     return 0;
   };
   const char* DefineClassValue(char *name, int defaultorder) {
-    DataField *order;
-    DataField *field;
+    DataField *order, *field;
+    DataField *next, *now;
 
     field = ClassDefine::allClassHash.Find(String(name))->value->fieldList;
     if (defaultorder) {
@@ -143,20 +152,23 @@ public:
     else {
       // TODO: confirm field in class 
       order = pendFieldList;
+      next = pendFieldList;
+      while (next != NULL) {
+	now = FindDataField(next->fieldName, field);
+	if (now) {
+	  next->fieldCategory = now->fieldCategory;
+	  next->fieldType = now->fieldType;
+	  next->fieldOffset = now->fieldOffset;
+	}
+	next = next->nextField;
+      }
     }
 
-    DataField *pnext = field;
-    while (pnext != NULL) {
-      pnext->Display();
-      pnext = pnext->nextField;
-    }
-
-    
     return 0;
   }
   
   const char* EndofValueClass() {
-            RemoveFieldList(); 
+            RemoveFieldList(pendFieldList); 
     return 0;
   };
   

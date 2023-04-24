@@ -3,17 +3,19 @@
 
 #include "infraall.hpp"
 
-#define LAST_NODE       ((TreeNode*)(-1))
+#define LAST_NODE       ((TreeNode*)(-1))                 // insert into last
 
+template <typename HASHCLASS, typename HASH>
 class TreeNode {
 protected:
   TreeNode *parent;
   TreeNode *child;
   TreeNode *brother;
 
-  _Hash hashid;
+  HASH hashid;
+  char* fieldBuffer;
 
-  static SpinLocker lock;
+  //  static SpinLocker lock;
 private:
   void inline chainNode(TreeNode **chain) {
     do {
@@ -48,10 +50,6 @@ public:
     parent = child = brother = NULL;
   }
   
-  TreeNode(_Hash hash) {
-    parent = child = brother = NULL;
-    hashid = hash;
-  }
   // par = NULL, is the root node 
   // bro = NULL, is first child. or after the given node, default is last node
   // if hash = NULL, do NOT display the only root node
@@ -77,12 +75,6 @@ public:
     }
     return true;
   };
-};
-
-
-class CustomTreeNode : public TreeNode{
-private:
-  TreeNode realNode;
 };
 
 
