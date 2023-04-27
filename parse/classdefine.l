@@ -55,6 +55,7 @@ COMMENT				("//"[^\n]*)
 "class"						{ return K_CLASS; }
 "inherit"					{ return K_INHERIT; }
 "aggregation"			{ return K_AGGREGATION; }
+"key"							{ return K_KEY; }
 "unique"					{ return K_UNIQUE; }
 "essential"				{ return K_ESSENTIAL; }
 "attribute"				{ return K_ATTRIBUTE; }

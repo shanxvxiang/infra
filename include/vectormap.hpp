@@ -18,8 +18,8 @@ public:
     HASHCLASS::Digest(k.GetAddress(), k.GetLength(), hash.GetAddress());
     next = NULL;
   }
-  void PrintHash(int len = 0) {
-    hash.PrintHash(len);
+  void Display(int len = 0) {
+    hash.Display(len);
   }
 };
 

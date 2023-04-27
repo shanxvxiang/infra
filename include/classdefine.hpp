@@ -11,7 +11,7 @@ typedef class LinkedNode<String, DataClass*, SM3Hash, Hash256> ClassNode;
 typedef class NodeList<String, DataClass*, SM3Hash, Hash256> ClassList;
 typedef class HashListMap<String, DataClass*, SM3Hash, Hash256> ClassHash;
 
-
+typedef class TreeNode<SM3Hash, Hash256> ClassTree;
 
 int DoClassDefineFileParse(FILE* in, struct ScanExtra* extra);
 int DoClassDefineMemoryParse(char* buffer, int length, struct ScanExtra* extra);
@@ -24,7 +24,12 @@ class ClassDefine {
   int pendingFieldOffset;
   DataClass *pendingInheritClass;
   DataClass *pendingAggregationClass;
+  DataClass *nowDataClass;
   DataField *pendFieldList;
+  DataField *pendFieldOrder;
+  DataField *nowFieldOrder;
+  char *nowFieldBuffer;
+  ClassTree **nowTreeNode;
   String pendName;
 public:
   ClassTree *classTreeRoot;
@@ -43,6 +48,8 @@ public:
     pendingAggregationClass = NULL;
     pendFieldList = NULL;
     pendName = "";
+    nowTreeNode = NULL;
+    classTreeRoot = NULL;
   };
   void ChainFieldList(DataField *field) {
     DataField **pnext = &pendFieldList;
@@ -132,7 +139,7 @@ public:
   };
 
   const char* DefineValueOrder(char *name, int isfirst) {
-    printf("in value order %s, %d\n", name, isfirst);
+    //    printf("in value order %s, %d\n", name, isfirst);
     if (isfirst) {
       RemoveFieldList(pendFieldList);
     }
@@ -142,31 +149,78 @@ public:
     return 0;
   };
   const char* DefineClassValue(char *name, int defaultorder) {
-    DataField *order, *field;
-    DataField *next, *now;
+    DataField *field;
+    DataField *order, *now;
 
-    field = ClassDefine::allClassHash.Find(String(name))->value->fieldList;
-    if (defaultorder) {
-      order = field;
-    }
-    else {
-      // TODO: confirm field in class 
-      order = pendFieldList;
-      next = pendFieldList;
-      while (next != NULL) {
-	now = FindDataField(next->fieldName, field);
+    // TODO: verify class name
+    nowDataClass = ClassDefine::allClassHash.Find(String(name))->value;
+    field = nowDataClass->fieldList;
+    nowTreeNode = &(nowDataClass->dataList);
+    if (!defaultorder) {
+      
+      // TODO: confirm field in class
+      pendFieldOrder = order = pendFieldList;
+      while (order != NULL) {
+	now = FindDataField(order->fieldName, field);
 	if (now) {
-	  next->fieldCategory = now->fieldCategory;
-	  next->fieldType = now->fieldType;
-	  next->fieldOffset = now->fieldOffset;
+	  order->fieldCategory = now->fieldCategory;
+	  order->fieldType = now->fieldType;
+	  order->fieldOffset = now->fieldOffset;
 	}
-	next = next->nextField;
+	order = order->nextField;
       }
+      //      printf("set order pending %p\n", pendFieldList);
+      nowFieldOrder = pendFieldList;
+    } else {
+      //      printf("set order field %p\n", field);
+      pendFieldOrder = field;
     }
 
     return 0;
-  }
-  
+  };
+  const char* DefineFieldValue(char *name, int isfirst) {
+    if (isfirst) {
+      nowFieldOrder = pendFieldOrder;
+      nowFieldBuffer = (char*)malloc(nowDataClass->fieldLength);
+      //      printf("buffer size %d\n", nowDataClass->fieldLength);
+    } else {
+      nowFieldOrder = nowFieldOrder->nextField;
+
+    }
+
+    if (!nowFieldOrder) {
+
+	// TODO: value number less than field
+      return 0;
+    }
+    
+    if (nowFieldOrder->fieldType == T_STRING) {
+      String strval(name);
+      //      printf("IN fieldvalue %p, %d\n", nowFieldBuffer, nowFieldOrder->fieldOffset);
+      memcpy(nowFieldBuffer + nowFieldOrder->fieldOffset, &strval, sizeof(String));
+
+    } else if (nowFieldOrder->fieldType == T_INT) {
+      Int intval(atoi(name));
+      memcpy(nowFieldBuffer + nowFieldOrder->fieldOffset, &intval, sizeof(Int));
+    }
+    return 0;
+  };
+  const char* DefineFieldLine(int linemode) {
+    if (nowFieldOrder->nextField) {
+    // TODO: verify field number      
+      printf("in error field number \n");
+    }
+
+    ClassTree *now = new ClassTree();
+    now->fieldBuffer = nowFieldBuffer;
+    now->InsertNode(nowTreeNode);
+    
+    // TODO: doing mode
+    return 0;
+  };
+  const char* DefineValueLevel(int level) {
+    return 0;
+  };
   const char* EndofValueClass() {
             RemoveFieldList(pendFieldList); 
     return 0;
@@ -198,7 +252,16 @@ const char* DefineValueOrder(void* classdefinescanner, char* name, int isfirst) 
 };
 const char* DefineClassValue(void* classdefinescanner, char *name, int defaultorder) {
     return ClassDefineFunc->DefineClassValue(name, defaultorder); 
-}
+};
+const char* DefineFieldValue(void* classdefinescanner, char *name, int isfirst) {
+  return ClassDefineFunc->DefineFieldValue(name, isfirst);  
+};
+const char* DefineFieldLine(void* classdefinescanner, int linemode) {
+  return ClassDefineFunc->DefineFieldLine(linemode);
+};
+const char* DefineValueLevel(void* classdefinescanner, int level) {
+  return ClassDefineFunc->DefineValueLevel(level);
+};
 const char* EndofValueClass(void* classdefinescanner) {
   return ClassDefineFunc->EndofValueClass();
 };

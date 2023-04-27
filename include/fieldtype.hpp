@@ -39,25 +39,26 @@ public:
   bool operator != (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) != 0);
   };
-  bool operator <= (Hash256& that) {
-    return (memcmp(val, that.val, sizeof(long) * 4) <= 0);
-  };
-  bool operator < (Hash256& that) {
-    return (memcmp(val, that.val, sizeof(long) * 4) < 0);
+  bool operator > (Hash256& that) {
+    return (memcmp(val, that.val, sizeof(long) * 4) > 0);
   };
   bool operator >= (Hash256& that) {
     return (memcmp(val, that.val, sizeof(long) * 4) >= 0);
   };
-  bool operator > (Hash256& that) {
-    return (memcmp(val, that.val, sizeof(long) * 4) > 0);
+  bool operator < (Hash256& that) {
+    return (memcmp(val, that.val, sizeof(long) * 4) < 0);
+  };  
+  bool operator <= (Hash256& that) {
+    return (memcmp(val, that.val, sizeof(long) * 4) <= 0);
   };
+
   int Compare(Hash256& that) {
     return memcmp(val, that.val, sizeof(long) * 4);
   };
   unsigned char* GetAddress() {
     return (unsigned char*)val;
   };
-  void PrintHash(int len = 0) {
+  void Display(int len = 0) {
     unsigned char *uc = (unsigned char*)val;
     if (len == 0) len = 32;
     for(int i = 0; i < len; i++) {
@@ -79,11 +80,29 @@ public:
     val = str;
     return *this;
   };
-
   String& operator = (String &that) {
     val = that.val;
     return *this;
   };
+  bool operator == (String &that) {
+    return val.compare(that.val) == 0;
+  };
+  bool operator != (String &that) {
+    return val.compare(that.val) != 0;
+  };  
+  bool operator > (String &that) {
+    return val.compare(that.val) > 0;
+  };
+  bool operator >= (String &that) {
+    return val.compare(that.val) >= 0;
+  };
+  bool operator < (String &that) {
+    return val.compare(that.val) < 0;
+  };
+  bool operator <= (String &that) {
+    return val.compare(that.val) <= 0;
+  };
+
   unsigned char* GetAddress() {
     return (unsigned char*)val.c_str();
   };
@@ -113,6 +132,25 @@ public:
     val = that.val;
     return *this;
   };
+  bool operator == (Int &that) {
+    return val == that.val;
+  };
+  bool operator != (Int &that) {
+    return val != that.val;
+  };  
+  bool operator > (Int &that) {
+    return val > that.val;
+  };
+  bool operator >= (Int &that) {
+    return val >= that.val;
+  };
+  bool operator < (Int &that) {
+    return val < that.val;
+  };
+  bool operator <= (Int &that) {
+    return val <= that.val;
+  };
+  
   unsigned char* GetAddress() {
     return (unsigned char*)(&val);
   };

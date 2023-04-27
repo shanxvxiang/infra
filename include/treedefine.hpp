@@ -1,38 +1,39 @@
 #ifndef __RAYMON_SHAN_TREE_DEFINE_HPP
 #define __RAYMON_SHAN_TREE_DEFINE_HPP
 
-#include "infraall.hpp"
+#include "infra.hpp"
 
 #define LAST_NODE       ((TreeNode*)(-1))                 // insert into last
 
+int count = 0, childcount = 0, brothercount = 0;
+static MutexLocker locker;
+
 template <typename HASHCLASS, typename HASH>
 class TreeNode {
+  
 protected:
   TreeNode *parent;
   TreeNode *child;
   TreeNode *brother;
-
+  
+public:
   HASH hashid;
   char* fieldBuffer;
-
-  //  static SpinLocker lock;
+  
+  //  static MutexLocker locker;
 private:
-  void inline chainNode(TreeNode **chain) {
-    do {
-      brother = *chain;
-    } while (!__sync_bool_compare_and_swap(chain, brother, this));
+  bool inline chainNode(TreeNode **chain) {
+
+
+    brother = *chain;
+    return __sync_bool_compare_and_swap(chain, brother, this);
   };
 
 public:
 
-#ifdef  _WITH_TEST_NODE
-  static int count;
-  static SpinInt childcount;
-  static SpinInt brothercount;
-
   int TraversalNode(int level = 0) {
-    //    for (int i = 0; i < level; i++) printf(" ");
-    hashid.Print();
+    for (int i = 0; i < level; i++) printf(" ");
+    hashid.Display();
     count ++;
     if (child) {
       childcount++;
@@ -44,18 +45,39 @@ public:
     }
     return count;
   };
-#endif  // _WITH_TEST_NODE
   
   TreeNode() {
-    parent = child = brother = NULL;
-  }
+  };
+
+  bool InsertNode(TreeNode **par, TreeNode *bro = LAST_NODE) {
+    locker++;
+    if (*par) {
+      parent = *par;
+      child = NULL;
+      TreeNode *first = (*par)->child;
+      if (first) {                                        // with brother
+	(*par)->child = this;
+	brother = first;	
+      } else {                                            // is first node of parent
+	(*par)->child = this;
+	brother = NULL;
+      }
+    } else {                                              // is root
+      parent = NULL;
+      child = NULL;
+      brother = NULL;
+      *par = this;
+    };
+    locker--;
+    return true;
+  };
   
   // par = NULL, is the root node 
   // bro = NULL, is first child. or after the given node, default is last node
   // if hash = NULL, do NOT display the only root node
+  /*
   bool InsertNode(TreeNode *par, TreeNode *bro = LAST_NODE) {
     TreeNode *prev, *next;
-    parent = par;
     
     if (par) {
       if (!bro || !par->child) {          // is the first brother of parent
@@ -75,6 +97,7 @@ public:
     }
     return true;
   };
+  */
 };
 
 
@@ -124,9 +147,7 @@ void TestInsertNode (int thnum, int nodenum) {
 	 (int)TreeNode::childcount, (int)TreeNode::brothercount);  
 }
 
-int TreeNode::count = 0;
-SpinInt TreeNode::childcount = 0;
-SpinInt TreeNode::brothercount = 0;
+
 
 #endif  // _WITH_TEST_NODE
 

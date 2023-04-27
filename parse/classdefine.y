@@ -16,7 +16,7 @@ void classdefineerror(CLASSDEFINELTYPE *yylloc_param, void *yyscanner, const cha
 int classdefinelex (CLASSDEFINESTYPE *yyval_param, CLASSDEFINELTYPE *yylloc_param , void* yyscanner);
 %}
 
-%token K_CLASS K_INHERIT K_AGGREGATION K_UNIQUE K_ESSENTIAL K_ATTRIBUTE
+%token K_CLASS K_INHERIT K_AGGREGATION K_KEY K_UNIQUE K_ESSENTIAL K_ATTRIBUTE
 %token K_VALUE K_DELETED
 %token T_STRING T_INT T_DOUBLE T_MONEY T_HASH T_TIME
 %token D_IDENTIFIER D_STRING D_INT D_DOUBLE D_MONEY D_HASH D_TIME
@@ -60,7 +60,8 @@ defineFieldLine
 	;
 
 categoryDefine
-	: K_UNIQUE				{ DefineFieldCategory(classdefinescanner, K_UNIQUE); }
+	: K_KEY						{ DefineFieldCategory(classdefinescanner, K_KEY); }
+	| K_UNIQUE				{ DefineFieldCategory(classdefinescanner, K_UNIQUE); }
 	| K_ESSENTIAL			{ DefineFieldCategory(classdefinescanner, K_ESSENTIAL); }
 	| K_ATTRIBUTE			{ DefineFieldCategory(classdefinescanner, K_ATTRIBUTE); }
 	;
@@ -75,30 +76,30 @@ typeDefine
 	;
 
 classValue
-	: K_VALUE D_IDENTIFIER 												{ DefineClassValue(classdefinescanner, $2, 1); }
-	| K_VALUE D_IDENTIFIER '(' valueOrder ')'			{ DefineClassValue(classdefinescanner, $2, 0); }
+	: K_VALUE D_IDENTIFIER 												{ DefineClassValue(classdefinescanner, $2, 1);  free($2);}
+	| K_VALUE D_IDENTIFIER '(' valueOrder ')'			{ DefineClassValue(classdefinescanner, $2, 0);  free($2);}
 	;	
 
 valueOrder
-	: D_IDENTIFIER																{ DefineValueOrder(classdefinescanner, $1, 1); }
-	| valueOrder ',' D_IDENTIFIER									{ DefineValueOrder(classdefinescanner, $3, 0); }
+	: D_IDENTIFIER																{ DefineValueOrder(classdefinescanner, $1, 1);  free($1);}
+	| valueOrder ',' D_IDENTIFIER									{ DefineValueOrder(classdefinescanner, $3, 0);  free($3);}
 	;
 
 valueGroup
-	: valueLine																		{ printf("  LEVEL NORMAL 1 %s\n", $1); }
-	| valueGroup valueLine												{ printf("  LEVEL NORMAL 2 %s \n", $2); }
-	| valueGroup '{' valueGroup '}' ';'						{ printf("  LEVELPLUS %s \n", $2); }
-	| valueGroup '{' valueGroup '}'								{ printf("  LEVELPLUS %s \n", $2); }
+	: valueLine																		{ DefineValueLevel(classdefinescanner, 1); }
+	| valueGroup valueLine												{ DefineValueLevel(classdefinescanner, 0); }
+	| valueGroup '{' valueGroup '}' ';'						{ DefineValueLevel(classdefinescanner, -1); }
+	| valueGroup '{' valueGroup '}'								{ DefineValueLevel(classdefinescanner, -1); }
 	;
 	
 valueLine
-	: valueType ';'																{ printf("    NORMAL LINE COMPLETE %s\n", $1); }
-	| K_DELETED valueType ';'											{ printf("    DELETED LINE COMPLETE %s\n", $2); }
+	: valueType ';'																{ DefineFieldLine(classdefinescanner, 0); }
+	| K_DELETED valueType ';'											{ DefineFieldLine(classdefinescanner, K_DELETED); }
 	;
 
 valueType
-	: valueOne 																		{ printf("        value one %s\n", $1); }
-	| valueType ',' valueOne											{ printf("        value two %s, %s\n", $1, $3); }
+	: valueOne 																		{ DefineFieldValue(classdefinescanner, $1, 1);  free($1);}
+	| valueType ',' valueOne											{ DefineFieldValue(classdefinescanner, $3, 0);  free($3);}
 	;
 
 valueOne

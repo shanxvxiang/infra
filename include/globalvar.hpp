@@ -46,6 +46,9 @@ const char* EndofDefineClass(void* classdefinescanner);
 const char* DefineValueOrder(void* classdefinescanner, char *name, int isfirst = 1);
 const char* DefineClassValue(void* classdefinescanner, char *name, int defaultorder = 1);
 
+const char* DefineFieldValue(void* classdefinescanner, char *name, int isfirst = 1);
+const char* DefineFieldLine(void* classdefinescanner, int linemode);
+const char* DefineValueLevel(void* classdefinescanner, int level);
 const char* EndofValueClass(void* classdefinescanner);
 
 

@@ -98,7 +98,7 @@ int main_hashtest(int, char **) {
   StringNode* retnode = NULL;
   do {
     retnode = hash.GetNext(retnode);
-    if (retnode) retnode->PrintHash();
+    if (retnode) retnode->Display();
     printf("\n");
   } while (retnode != NULL);
 

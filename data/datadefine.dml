@@ -1,10 +1,6 @@
 class 行政区划 {
-  unique string 区划代码;
+  key string 区划代码;
   unique string 区划名称;
-  unique int aaabbb;
-  unique double bbbccc;
-  unique int cccddd;
-
 };
 
 class 地址 inherit 行政区划 {

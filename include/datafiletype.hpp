@@ -12,7 +12,7 @@ typedef class TreeNode<SM3Hash, Hash256> ClassTree;
 class DataField {
 public:
   int fieldCategory;            // unique, essential, attribute
-  int fieldType;                // string, int, percent, money, hash, time
+  int fieldType;                // string, int, double, money, hash, time
   int fieldOffset;
   DataField *nextField;
   std::string fieldName;
@@ -40,7 +40,7 @@ public:
   DataClass *inheritClass;
   DataClass *aggregationClass;
   DataField *fieldList;
-  ClassTree  *dataList;
+  ClassTree *dataList;
   int fieldLength;
 public:
   DataClass(String &name, DataClass *inherit, DataClass *aggregation, DataField *field) {
@@ -48,6 +48,7 @@ public:
     aggregationClass = aggregation;
     fieldList = field;
     className = name;
+    dataList = NULL;
 
     fieldLength = 0;
     DataField *next = fieldList;
