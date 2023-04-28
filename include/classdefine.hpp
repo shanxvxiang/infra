@@ -25,14 +25,16 @@ class ClassDefine {
   DataClass *pendingInheritClass;
   DataClass *pendingAggregationClass;
   DataClass *nowDataClass;
+  //  ClassTree *nowTreeNode;  
   DataField *pendFieldList;
   DataField *pendFieldOrder;
   DataField *nowFieldOrder;
   char *nowFieldBuffer;
-  ClassTree **nowTreeNode;
+  ClassTree *nowTreeNode[MAX_TREE_LEVEL];
+  int nowTreeLevel = 0;
+  
   String pendName;
 public:
-  ClassTree *classTreeRoot;
   static ClassHash allClassHash;
 
 public:
@@ -48,8 +50,8 @@ public:
     pendingAggregationClass = NULL;
     pendFieldList = NULL;
     pendName = "";
-    nowTreeNode = NULL;
-    classTreeRoot = NULL;
+
+    //    nowTreeNode = NULL;    
   };
   void ChainFieldList(DataField *field) {
     DataField **pnext = &pendFieldList;
@@ -155,7 +157,7 @@ public:
     // TODO: verify class name
     nowDataClass = ClassDefine::allClassHash.Find(String(name))->value;
     field = nowDataClass->fieldList;
-    nowTreeNode = &(nowDataClass->dataList);
+    nowTreeNode[0] = &(nowDataClass->valueVirtualRoot);
     if (!defaultorder) {
       
       // TODO: confirm field in class
@@ -189,19 +191,15 @@ public:
     }
 
     if (!nowFieldOrder) {
-
 	// TODO: value number less than field
       return 0;
     }
-    
-    if (nowFieldOrder->fieldType == T_STRING) {
-      String strval(name);
-      //      printf("IN fieldvalue %p, %d\n", nowFieldBuffer, nowFieldOrder->fieldOffset);
-      memcpy(nowFieldBuffer + nowFieldOrder->fieldOffset, &strval, sizeof(String));
 
+    // new in given address  // new (address) T()
+    if (nowFieldOrder->fieldType == T_STRING) {
+      new(nowFieldBuffer + nowFieldOrder->fieldOffset)String(name);
     } else if (nowFieldOrder->fieldType == T_INT) {
-      Int intval(atoi(name));
-      memcpy(nowFieldBuffer + nowFieldOrder->fieldOffset, &intval, sizeof(Int));
+      new(nowFieldBuffer + nowFieldOrder->fieldOffset)Int(atoi(name));
     }
     return 0;
   };
@@ -211,18 +209,38 @@ public:
       printf("in error field number \n");
     }
 
-    ClassTree *now = new ClassTree();
-    now->fieldBuffer = nowFieldBuffer;
-    now->InsertNode(nowTreeNode);
-    
     // TODO: doing mode
     return 0;
   };
+
+
+  /*
+  ClassTree *nowTreeNode[MAX_TREE_LEVEL];
+  int nowTreeLevel = 0;
+  */
   const char* DefineValueLevel(int level) {
+
+    ClassTree *now = new ClassTree();
+    now->fieldBuffer = nowFieldBuffer;
+    now->InsertNode(nowTreeNode[nowTreeLevel]);
+    
+    printf("in change level %d\n", level);
+    if (level == 1) {
+      nowTreeLevel++;
+      nowTreeNode[nowTreeLevel] = now;
+    } else if (level == -1) {
+      nowTreeLevel--;
+    }
     return 0;
   };
+  
   const char* EndofValueClass() {
-            RemoveFieldList(pendFieldList); 
+    
+    RemoveFieldList(pendFieldList);
+
+    DataClass *nowDataClass = ClassDefine::allClassHash.Find(String("行政区划"))->value;
+    nowDataClass->DisplayValue();
+	    
     return 0;
   };
   

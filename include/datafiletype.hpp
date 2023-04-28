@@ -40,7 +40,7 @@ public:
   DataClass *inheritClass;
   DataClass *aggregationClass;
   DataField *fieldList;
-  ClassTree *dataList;
+  ClassTree valueVirtualRoot;
   int fieldLength;
 public:
   DataClass(String &name, DataClass *inherit, DataClass *aggregation, DataField *field) {
@@ -48,7 +48,7 @@ public:
     aggregationClass = aggregation;
     fieldList = field;
     className = name;
-    dataList = NULL;
+    valueVirtualRoot.parent = valueVirtualRoot.child = valueVirtualRoot.brother = NULL;
 
     fieldLength = 0;
     DataField *next = fieldList;
@@ -77,6 +77,14 @@ public:
       (*pnext)->Display();
       pnext = &((*pnext)->nextField);
     }
+    return;
+  };
+  void DisplayValue(void) {
+    return DisplayValue(fieldList, valueVirtualRoot.child);
+  };
+  void DisplayValue(DataField *field, ClassTree *value) {
+    value->TraversalNode();
+    return;
   };
 };
 

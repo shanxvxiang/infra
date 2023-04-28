@@ -2,6 +2,7 @@
 #define __RAYMON_SHAN_TREE_DEFINE_HPP
 
 #include "infra.hpp"
+#include "fieldtype.hpp"
 
 #define LAST_NODE       ((TreeNode*)(-1))                 // insert into last
 
@@ -11,7 +12,7 @@ static MutexLocker locker;
 template <typename HASHCLASS, typename HASH>
 class TreeNode {
   
-protected:
+public:
   TreeNode *parent;
   TreeNode *child;
   TreeNode *brother;
@@ -31,28 +32,51 @@ private:
 
 public:
 
-  int TraversalNode(int level = 0) {
+  void TraversalNode(int level = 0) {
     for (int i = 0; i < level; i++) printf(" ");
-    hashid.Display();
-    count ++;
+    String *nowstr = (String*)fieldBuffer;
+    nowstr->Display();
+    printf("\n");
+    // hashid.Display();
     if (child) {
-      childcount++;
+      //      printf("c ");
       child->TraversalNode(level + 1);
     }
     if (brother) {
-      brothercount++;
-      return brother->TraversalNode(level);
+      //      printf("b ");      
+      brother->TraversalNode(level);
     }
-    return count;
+    return;
   };
   
   TreeNode() {
   };
+  bool InsertNode(TreeNode *par, TreeNode *bro = LAST_NODE) {
+    locker++;
+    parent = par;
+    child = NULL;
+    TreeNode *first = par->child;
+    if (first) {                                        // with brother
+      while (first->brother && first != bro) {
+	first = first->brother;
+      };
+      
+      brother = first->brother;
+      first->brother = this;
+    } else {                                            // is first node of parent
+      par->child = this;
+      brother = NULL;
+    } 
 
+    
+    locker--;
+    return true;
+  }
+  /*
   bool InsertNode(TreeNode **par, TreeNode *bro = LAST_NODE) {
     locker++;
     if (*par) {
-      parent = *par;
+      parent = (*par)->parent;
       child = NULL;
       TreeNode *first = (*par)->child;
       if (first) {                                        // with brother
@@ -71,6 +95,7 @@ public:
     locker--;
     return true;
   };
+  */
   
   // par = NULL, is the root node 
   // bro = NULL, is first child. or after the given node, default is last node

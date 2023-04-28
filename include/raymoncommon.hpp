@@ -25,4 +25,6 @@ typedef union {
 
 #define CLASS_HASH_BUCKET_NUMBER 128
 
+#define MAX_TREE_LEVEL           32                       // MAX level of TreeNode
+
 #endif  // __RAYMON_SHAN_COMMON_HPP

@@ -112,19 +112,22 @@ public:
   int GetSize() {
     return sizeof(String);
   }
+  void Display() {
+  	printf("%s", val.c_str());
+  }
 };
 
 class Int : public ValueType {
 public:
-  int val;
+  long val;
 public:
   Int() {
     val = 0;
   };
-  Int(int i) {
+  Int(long i) {
     val = i;
   };
-  Int& operator = (int i) {
+  Int& operator = (long i) {
     val = i;
     return *this;
   };
@@ -160,6 +163,9 @@ public:
   int GetSize() {
     return sizeof(Int);
   };
+   void Display() {
+  	printf("%ld", val);
+  }
 };
 
 class SM3Hash {
