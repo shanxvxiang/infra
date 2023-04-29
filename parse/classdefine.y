@@ -86,19 +86,19 @@ valueOrder
 	;
 
 valueGroup
-	: valueLine																		{ printf("level + 1 %s\n", $1); DefineValueLevel(classdefinescanner, 1); }
+	: valueLine																		{ printf("level + 1\n"); DefineValueLevel(classdefinescanner, 1); }
 	| valueGroup valueLine												{ printf("level ===\n"); DefineValueLevel(classdefinescanner, 0); }
 	| valueGroup '{' valueGroup '}' ';'						{ printf("level - 1\n"); DefineValueLevel(classdefinescanner, -1); }
 	| valueGroup '{' valueGroup '}'								{ printf("level - 1\n"); DefineValueLevel(classdefinescanner, -1); }
 	;
 	
 valueLine
-	: valueType ';'																{ printf("line end normal \n"); DefineFieldLine(classdefinescanner, 0); }
-	| K_DELETED valueType ';'											{ printf("line end delete \n"); DefineFieldLine(classdefinescanner, K_DELETED); }
+	: valueType ';'																{ DefineFieldLine(classdefinescanner, 0); }
+	| K_DELETED valueType ';'											{ DefineFieldLine(classdefinescanner, K_DELETED); }
 	;
 
 valueType
-	: valueOne 																		{ printf("value %s\n", $1); DefineFieldValue(classdefinescanner, $1, 1);  free($1);}
+	: valueOne 																		{ DefineFieldValue(classdefinescanner, $1, 1);  free($1);}
 	| valueType ',' valueOne											{ printf("value two %s\n", $3); DefineFieldValue(classdefinescanner, $3, 0);  free($3);}
 	;
 

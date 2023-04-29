@@ -31,7 +31,11 @@ class ClassDefine {
   DataField *nowFieldOrder;
   char *nowFieldBuffer;
   ClassTree *nowTreeNode[MAX_TREE_LEVEL];
+  ClassTree *nowNewNode;
   int nowTreeLevel = 0;
+
+
+
   
   String pendName;
 public:
@@ -210,6 +214,10 @@ public:
     }
 
     // TODO: doing mode
+
+    nowNewNode = new ClassTree();
+    nowNewNode->fieldBuffer = nowFieldBuffer;
+    //   nowNewNode->InsertNode(nowTreeNode[nowTreeLevel]);
     return 0;
   };
 
@@ -219,18 +227,17 @@ public:
   int nowTreeLevel = 0;
   */
   const char* DefineValueLevel(int level) {
-
-    ClassTree *now = new ClassTree();
-    now->fieldBuffer = nowFieldBuffer;
-    now->InsertNode(nowTreeNode[nowTreeLevel]);
-    
-    printf("in change level %d\n", level);
+    if (level == -1) {
+      nowTreeLevel--;
+      return 0;
+    }
     if (level == 1) {
       nowTreeLevel++;
-      nowTreeNode[nowTreeLevel] = now;
-    } else if (level == -1) {
-      nowTreeLevel--;
     }
+    nowTreeNode[nowTreeLevel] = nowNewNode;
+    //    nowNewNode->InsertNode(nowTreeNode[nowTreeLevel - 1]);
+    nowNewNode->InsertNodeOrder
+      (nowTreeNode[nowTreeLevel - 1], nowDataClass->cmpField, nowDataClass->keyOffset);
     return 0;
   };
   

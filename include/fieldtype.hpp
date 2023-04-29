@@ -111,10 +111,14 @@ public:
   };
   int GetSize() {
     return sizeof(String);
-  }
+  };
   void Display() {
-  	printf("%s", val.c_str());
-  }
+    printf("%s", val.c_str());
+  };
+  static int Compare(String *val1, String *val2) {
+    printf("in comp");
+    return val1->val.compare(val2->val);
+  };
 };
 
 class Int : public ValueType {
@@ -153,6 +157,11 @@ public:
   bool operator <= (Int &that) {
     return val <= that.val;
   };
+  static int Compare(Int *val1, Int *val2) {
+    if (val1->val == val2->val) return 0;
+    else if (val1->val > val2->val) return 1;
+    else return -1;
+  }
   
   unsigned char* GetAddress() {
     return (unsigned char*)(&val);

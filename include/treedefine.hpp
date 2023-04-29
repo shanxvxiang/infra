@@ -9,6 +9,8 @@
 int count = 0, childcount = 0, brothercount = 0;
 static MutexLocker locker;
 
+typedef int (*ComFunc)(char*, char*);
+
 template <typename HASHCLASS, typename HASH>
 class TreeNode {
   
@@ -56,73 +58,49 @@ public:
     parent = par;
     child = NULL;
     TreeNode *first = par->child;
-    if (first) {                                        // with brother
+    if (first) {                                          // with brother
       while (first->brother && first != bro) {
 	first = first->brother;
       };
       
       brother = first->brother;
       first->brother = this;
-    } else {                                            // is first node of parent
+    } else {                                              // is first node of parent
       par->child = this;
       brother = NULL;
     } 
 
-    
     locker--;
     return true;
   }
-  /*
-  bool InsertNode(TreeNode **par, TreeNode *bro = LAST_NODE) {
+
+  bool InsertNodeOrder(TreeNode *par, ComFunc func, int offset ) {;
     locker++;
-    if (*par) {
-      parent = (*par)->parent;
-      child = NULL;
-      TreeNode *first = (*par)->child;
-      if (first) {                                        // with brother
-	(*par)->child = this;
-	brother = first;	
-      } else {                                            // is first node of parent
-	(*par)->child = this;
-	brother = NULL;
+    parent = par;
+    child = NULL;
+    
+    TreeNode *first = par->child;
+    if (first) {
+      if (func(fieldBuffer+offset, first->fieldBuffer+offset) < 0) {
+	brother = first;                                  // new node is first
+	par->child = this;
+      } else {
+	while (first->brother) {
+	  if (func(fieldBuffer+offset, first->brother->fieldBuffer+offset) > 0) {
+	    first = first->brother;
+	  } else break;
+	}
+	brother = first->brother;                         // chain into brother
+	first->brother = this;
       }
-    } else {                                              // is root
-      parent = NULL;
-      child = NULL;
+    } else /* first */{                                   // is first child of parent
+      par->child = this;
       brother = NULL;
-      *par = this;
-    };
+    } 
+
     locker--;
     return true;
-  };
-  */
-  
-  // par = NULL, is the root node 
-  // bro = NULL, is first child. or after the given node, default is last node
-  // if hash = NULL, do NOT display the only root node
-  /*
-  bool InsertNode(TreeNode *par, TreeNode *bro = LAST_NODE) {
-    TreeNode *prev, *next;
-    
-    if (par) {
-      if (!bro || !par->child) {          // is the first brother of parent
-	chainNode(&(par->child));
-      } else {
-	next = par->child;
-	while (next) {
-	  if (bro == next) {
-	    chainNode(&(next->brother));
-	    return true;
-	  }
-	  prev = next;
-	  next = next->brother;
-	}
-	chainNode(&(prev->brother));
-      }
-    }
-    return true;
-  };
-  */
+  }
 };
 
 

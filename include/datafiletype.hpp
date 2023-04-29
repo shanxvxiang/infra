@@ -8,14 +8,17 @@
 int FIELDOFFSET[T_TIME - T_STRING + 1] = {sizeof(String), sizeof(Int)};
 
 typedef class TreeNode<SM3Hash, Hash256> ClassTree;
+typedef int (*ComFunc)(char*, char*);
 
 class DataField {
 public:
-  int fieldCategory;            // unique, essential, attribute
+  int fieldCategory;            // key, unique, essential, attribute
   int fieldType;                // string, int, double, money, hash, time
   int fieldOffset;
   DataField *nextField;
   std::string fieldName;
+  ComFunc cmpField;
+  
 public:
   DataField() {
     fieldCategory = 0;
@@ -27,11 +30,21 @@ public:
     fieldType = type;
     fieldOffset = offset;
     fieldName = name;
-    nextField = NULL;    
+    nextField = NULL;
+    if (type == T_STRING) cmpField = CompareString;
+    else if (type == T_INT) cmpField = CompareInt;
+    else cmpField = NULL;
   };
   void Display(void) {
     printf("FIELD %s, %d, %d, %d\n", fieldName.c_str(), fieldCategory, fieldType, fieldOffset);
   };
+
+  static int CompareString(char *val1, char *val2) {
+    return String::Compare((String*)val1, (String*)val2);
+  }
+  static int CompareInt(char *val1, char *val2) {
+    return Int::Compare((Int*)val1, (Int*)val2);
+  }
 };
 
 class DataClass {
@@ -42,6 +55,9 @@ public:
   DataField *fieldList;
   ClassTree valueVirtualRoot;
   int fieldLength;
+
+  ComFunc cmpField;
+  int keyOffset;
 public:
   DataClass(String &name, DataClass *inherit, DataClass *aggregation, DataField *field) {
     inheritClass = inherit;
@@ -53,6 +69,10 @@ public:
     fieldLength = 0;
     DataField *next = fieldList;
     while (next != NULL) {
+      if (next->fieldCategory == K_KEY) {
+	cmpField = next->cmpField;
+	keyOffset = fieldLength;
+      }
       fieldLength += FIELDOFFSET[next->fieldType - T_STRING];
       next = next->nextField;
     }
