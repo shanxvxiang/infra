@@ -130,6 +130,9 @@ public:
   void SerializeNode(std::string &str, ClassTree* node, int level) {
     DataField *next = fieldList;
     str += std::string(level * 2, ' ');
+    if (node->lineMode == K_DELETED) {
+      str += "deleted ";
+    }
     while (next != NULL) {
       char* nowoffset = node->fieldBuffer + next->fieldOffset;
       if (next->fieldType == T_STRING) {

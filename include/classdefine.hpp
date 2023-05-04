@@ -22,6 +22,7 @@ class ClassDefine {
   int pendingFieldCategory;
   int pendingFieldType;
   int pendingFieldOffset;
+  int pendingLineMode;
   DataClass *pendingInheritClass;
   DataClass *pendingAggregationClass;
   DataClass *nowDataClass;
@@ -33,9 +34,6 @@ class ClassDefine {
   ClassTree *nowTreeNode[MAX_TREE_LEVEL];
   ClassTree *nowNewNode;
   int nowTreeLevel = 0;
-
-
-
   
   String pendName;
 public:
@@ -215,7 +213,7 @@ public:
     }
 
     // TODO: doing mode
-
+    pendingLineMode = linemode;
     nowNewNode = new ClassTree();
     nowNewNode->fieldBuffer = nowFieldBuffer;
     //   nowNewNode->InsertNode(nowTreeNode[nowTreeLevel]);
@@ -228,6 +226,7 @@ public:
   int nowTreeLevel = 0;
   */
   const char* DefineValueLevel(int level) {
+    ClassTree *nowOldNode;
     if (level == -1) {
       nowTreeLevel--;
       return 0;
@@ -235,17 +234,23 @@ public:
     if (level == 1) {
       nowTreeLevel++;
     }
-    nowTreeNode[nowTreeLevel] = nowNewNode;
+
     //    nowNewNode->InsertNode(nowTreeNode[nowTreeLevel - 1]);
-    nowNewNode->InsertNodeOrder
-      (nowTreeNode[nowTreeLevel - 1], nowDataClass->cmpField, nowDataClass->keyOffset);
+    printf("level: %d\n", nowTreeLevel);
+    nowOldNode = nowNewNode->InsertNodeOrder
+      (nowTreeNode[nowTreeLevel - 1], nowDataClass->cmpField, nowDataClass->keyOffset, pendingLineMode);
+    if (nowNewNode != nowOldNode) {
+      delete nowNewNode;
+    }
+    nowTreeNode[nowTreeLevel] = nowOldNode;
     return 0;
   };
-  
+
   const char* EndofValueClass() {
     
     RemoveFieldList(pendFieldList);
-
+    //    nowTreeLevel--;
+    
     DataClass *nowDataClass = ClassDefine::allClassHash.Find(String("行政区划"))->value;
     //    nowDataClass->DisplayValue();
     std::string str;

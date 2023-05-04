@@ -34,7 +34,7 @@ sentence
 	: classDefine
 	| classValue
 	| '{' classGroup '}'								{ EndofDefineClass(classdefinescanner); }
-	| '{' valueGroup '}' 								{ EndofValueClass(classdefinescanner); }
+	| '{' valueGroup '}' 								{ DefineValueLevel(classdefinescanner, -1); EndofValueClass(classdefinescanner); }
 	;
 
 classDefine

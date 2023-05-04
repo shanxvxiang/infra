@@ -21,6 +21,7 @@ public:
   
 public:
   HASH hashid;
+  int lineMode;
   char* fieldBuffer;
   
   //  static MutexLocker locker;
@@ -53,6 +54,7 @@ public:
   
   TreeNode() {
   };
+  /*
   bool InsertNode(TreeNode *par, TreeNode *bro = LAST_NODE) {
     locker++;
     parent = par;
@@ -73,33 +75,48 @@ public:
     locker--;
     return true;
   }
+  */
 
-  bool InsertNodeOrder(TreeNode *par, ComFunc func, int offset ) {;
+  TreeNode* InsertNodeOrder(TreeNode *par, ComFunc func, int offset, int linemode ) {
+    int cmpresult;
     locker++;
+    lineMode = linemode;
     parent = par;
     child = NULL;
     
     TreeNode *first = par->child;
     if (first) {
-      if (func(fieldBuffer+offset, first->fieldBuffer+offset) < 0) {
+      cmpresult = func(fieldBuffer+offset, first->fieldBuffer+offset);
+      if (cmpresult == 0) {
+	// TODO: key is same, other is different
+	locker--;
+	return first;                                     // same with first node
+      }
+      if (cmpresult < 0) {
 	brother = first;                                  // new node is first
 	par->child = this;
-      } else {
+      } else /* (cmpresult < 0) */ {
 	while (first->brother) {
-	  if (func(fieldBuffer+offset, first->brother->fieldBuffer+offset) > 0) {
+	  cmpresult = func(fieldBuffer+offset, first->brother->fieldBuffer+offset);
+	  if (cmpresult == 0) {
+	    // TODO: key is same, other is different	    
+	    locker--;
+	    return first->brother;
+	  }
+	  if (cmpresult > 0) {
 	    first = first->brother;
 	  } else break;
 	}
 	brother = first->brother;                         // chain into brother
 	first->brother = this;
       }
-    } else /* first */{                                   // is first child of parent
+    } else /* first */ {                                  // is first child of parent
       par->child = this;
       brother = NULL;
     } 
 
     locker--;
-    return true;
+    return this;
   }
 };
 

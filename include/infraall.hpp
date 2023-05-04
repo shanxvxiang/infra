@@ -12,7 +12,7 @@
 #include "vectormap.hpp"
 #include "configurefile.hpp"
 #include "treedefine.hpp"
-#include "datafiletype.hpp"
+#include "dataclass.hpp"
 #include "classdefine.hpp"
 #include "voucher.hpp"
 
