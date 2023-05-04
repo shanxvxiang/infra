@@ -6,6 +6,8 @@
 // depend classdefine.y
 // %token T_STRING T_INT T_DOUBLE T_MONEY T_HASH T_TIME
 int FIELDOFFSET[T_TIME - T_STRING + 1] = {sizeof(String), sizeof(Int)};
+std::string FIELDTYPE[T_TIME - T_STRING + 1] = {"string", "int", "double", "money", "hash", "time"};
+std::string FIELDCATEGORY[K_ATTRIBUTE - K_KEY + 1] = {"key", "unique", "essential", "attribute"};
 
 typedef class TreeNode<SM3Hash, Hash256> ClassTree;
 typedef int (*ComFunc)(char*, char*);
@@ -89,7 +91,62 @@ public:
   ~DataClass() {
     FreeAllFieldList(fieldList);    
   };
-  
+  void SerializeStruct(std::string &str) {
+    str = String::Format("class %s ", className.GetAddress());
+    if (inheritClass) str += String::Format("inherit %s ", inheritClass->className.GetAddress());
+    if (aggregationClass) str += String::Format("aggregation %s ", aggregationClass->className.GetAddress());
+    str += "{\n";
+
+    DataField *next = fieldList;
+    while (next != NULL) {
+      str += String::Format("  %s %s %s;\n",
+			    FIELDCATEGORY[next->fieldCategory - K_KEY].c_str(),
+			    FIELDTYPE[next->fieldType - T_STRING].c_str(),
+			    next->fieldName.c_str());
+      next = next->nextField;
+    }    
+    str += "};\n";
+    return;
+  };
+  void Serialize(std::string &str) {
+    str = String::Format("value %s \n{\n", className.GetAddress());
+    Serialize(str, valueVirtualRoot.child, 1);
+    str += "};\n";
+    return;
+  };
+  void Serialize(std::string &str, ClassTree* node, int level) {
+    SerializeNode(str, node, level);
+    if (node->child) {
+      str += std::string(level * 2, ' ');
+      str += "{\n";
+      Serialize(str, node->child, level + 1);
+      str += std::string(level * 2, ' ');
+      str += "};\n";
+    }
+    if (node->brother) {
+      Serialize(str, node->brother, level);
+    }
+  };
+  void SerializeNode(std::string &str, ClassTree* node, int level) {
+    DataField *next = fieldList;
+    str += std::string(level * 2, ' ');
+    while (next != NULL) {
+      char* nowoffset = node->fieldBuffer + next->fieldOffset;
+      if (next->fieldType == T_STRING) {
+	String *nowstr = (String*)nowoffset;
+	str += String::Format("\"%s\"",  nowstr->val.c_str());
+      } else if (next->fieldType == T_INT) {
+	Int *nowint = (Int*)nowoffset;
+	str += String::Format("\"%ld\"",  nowint->val);
+      }
+      if (next->nextField) {
+	str += ", ";
+	next = next->nextField;
+      } else break;
+    }
+    str += ";\n";
+  };
+
   void Display(void) {
     printf("CLASS %s, size:%d\n", className.GetAddress(), fieldLength);
     DataField **pnext = &fieldList;
@@ -107,6 +164,10 @@ public:
     return;
   };
 };
+
+
+
+
 
 /*
 聚合关系（Aggregation） 树木 --o 森林

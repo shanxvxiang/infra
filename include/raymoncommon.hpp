@@ -19,6 +19,8 @@ typedef union {
 
 #define SMALL_CHAR_LENGTH       32
 #define NORMAL_CHAR_LENGTH      128
+
+#define NORMAL_BUFFER_LENGTH    65535
 //#define 
 #define CACHE_LINE_SIZE         64
 

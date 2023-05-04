@@ -116,8 +116,21 @@ public:
     printf("%s", val.c_str());
   };
   static int Compare(String *val1, String *val2) {
-    printf("in comp");
     return val1->val.compare(val2->val);
+  };
+  
+  template< typename... Args >
+  static std::string Format(const char* format, Args... args) {
+    int length = std::snprintf(nullptr, 0, format, args...);
+    if (length <= 0) {
+        return "";
+    }
+    char* buf = new char[length + 1];
+    std::snprintf(buf, length + 1, format, args...);
+
+    std::string str(buf);
+    delete[] buf;
+    return std::move(str);
   };
 };
 

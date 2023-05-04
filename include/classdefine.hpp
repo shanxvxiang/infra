@@ -201,6 +201,7 @@ public:
 
     // new in given address  // new (address) T()
     if (nowFieldOrder->fieldType == T_STRING) {
+      STools::RemoveEscapeChar(name);
       new(nowFieldBuffer + nowFieldOrder->fieldOffset)String(name);
     } else if (nowFieldOrder->fieldType == T_INT) {
       new(nowFieldBuffer + nowFieldOrder->fieldOffset)Int(atoi(name));
@@ -246,7 +247,17 @@ public:
     RemoveFieldList(pendFieldList);
 
     DataClass *nowDataClass = ClassDefine::allClassHash.Find(String("行政区划"))->value;
-    nowDataClass->DisplayValue();
+    //    nowDataClass->DisplayValue();
+    std::string str;
+    TimeSpend ts;
+    ts.TimeStart();
+    nowDataClass->SerializeStruct(str);
+    std::cout << str;    
+    nowDataClass->Serialize(str);
+    int sp = ts.TimeClick();
+    //    printf("spend time %d us\n", sp);
+    
+    std::cout << str;
 	    
     return 0;
   };

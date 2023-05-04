@@ -86,10 +86,10 @@ valueOrder
 	;
 
 valueGroup
-	: valueLine																		{ printf("level + 1\n"); DefineValueLevel(classdefinescanner, 1); }
-	| valueGroup valueLine												{ printf("level ===\n"); DefineValueLevel(classdefinescanner, 0); }
-	| valueGroup '{' valueGroup '}' ';'						{ printf("level - 1\n"); DefineValueLevel(classdefinescanner, -1); }
-	| valueGroup '{' valueGroup '}'								{ printf("level - 1\n"); DefineValueLevel(classdefinescanner, -1); }
+	: valueLine																		{ DefineValueLevel(classdefinescanner, 1); }
+	| valueGroup valueLine												{ DefineValueLevel(classdefinescanner, 0); }
+	| valueGroup '{' valueGroup '}' ';'						{ DefineValueLevel(classdefinescanner, -1); }
+	| valueGroup '{' valueGroup '}'								{ DefineValueLevel(classdefinescanner, -1); }
 	;
 	
 valueLine
@@ -98,20 +98,20 @@ valueLine
 	;
 
 valueType
-	: valueOne 																		{ DefineFieldValue(classdefinescanner, $1, 1);  free($1);}
-	| valueType ',' valueOne											{ printf("value two %s\n", $3); DefineFieldValue(classdefinescanner, $3, 0);  free($3);}
+	: valueOne 																		{ DefineFieldValue(classdefinescanner, $1, 1);  free($1); }
+	| valueType ',' valueOne											{ DefineFieldValue(classdefinescanner, $3, 0);  free($3); }
 	;
 
 valueOne
-	: strings																			{}// printf("ONESTRING %s \n", $1); }
-	| D_INT																				{ printf("ONEINT %s \n", $1); }
-	| D_DOUBLE																		{ printf("ONEDOUBLE %s \n", $1); }
-	| D_MONEY 																		{ printf("ONEMONEY %s \n", $1); }
-	| D_HASH  																		{ printf("ONEHASH %s \n", $1); }
-	| D_TIME  																		{ printf("ONETIME %s \n", $1); }
+	: strings																			{ }
+	| D_INT																				{ }
+	| D_DOUBLE																		{ }
+	| D_MONEY 																		{ }
+	| D_HASH  																		{ }
+	| D_TIME  																		{ }
 	;
 
 strings
-	: D_STRING
-	| strings D_STRING
+	: D_STRING  																	{ }
+	| strings D_STRING 														{ yyval = (char*)malloc(strlen($1)+strlen($2)+1); strcpy(yyval, $1); *(yyval+strlen($1)-1) = 0; strcat(yyval, $2+1); free($1); free($2); }
 
