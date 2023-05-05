@@ -81,9 +81,13 @@ classValue
 	;	
 
 valueOrder
-	: D_IDENTIFIER																{ DefineValueOrder(classdefinescanner, $1, 1);  free($1);}
-	| valueOrder ',' D_IDENTIFIER									{ DefineValueOrder(classdefinescanner, $3, 0);  free($3);}
+	: valueOrderName															{ DefineValueOrder(classdefinescanner, $1, 1);  free($1);}
+	| valueOrder ',' valueOrderName								{ DefineValueOrder(classdefinescanner, $3, 0);  free($3);}
 	;
+
+valueOrderName
+	: D_IDENTIFIER
+	| D_IDENTIFIER '.' D_IDENTIFIER
 
 valueGroup
 	: valueLine																		{ DefineValueLevel(classdefinescanner, 1); }

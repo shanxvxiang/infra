@@ -26,7 +26,8 @@ class ClassDefine {
   DataClass *pendingInheritClass;
   DataClass *pendingAggregationClass;
   DataClass *nowDataClass;
-  //  ClassTree *nowTreeNode;  
+  String pendName;  
+
   DataField *pendFieldList;
   DataField *pendFieldOrder;
   DataField *nowFieldOrder;
@@ -34,8 +35,7 @@ class ClassDefine {
   ClassTree *nowTreeNode[MAX_TREE_LEVEL];
   ClassTree *nowNewNode;
   int nowTreeLevel = 0;
-  
-  String pendName;
+
 public:
   static ClassHash allClassHash;
 
@@ -117,6 +117,8 @@ public:
   };
 
   const char* DefineClass(const char* name, const char* base, const char* summary) {
+
+    printf("DefineClass %s \n", name);    
     // TODO not found class
     ClassNode *node;
     pendName = name;
@@ -132,6 +134,7 @@ public:
   };
 
   const char* EndofDefineClass() {
+    printf("EndofDefineClass %s \n", pendName.GetAddress());       
     ClassNode *node;
     DataClass *newclass =
       new DataClass(pendName, pendingInheritClass, pendingAggregationClass, pendFieldList);
@@ -155,8 +158,9 @@ public:
   const char* DefineClassValue(char *name, int defaultorder) {
     DataField *field;
     DataField *order, *now;
-
+    printf("DefineClassValue %s \n", name);    
     // TODO: verify class name
+
     nowDataClass = ClassDefine::allClassHash.Find(String(name))->value;
     field = nowDataClass->fieldList;
     nowTreeNode[0] = &(nowDataClass->valueVirtualRoot);
@@ -235,8 +239,6 @@ public:
       nowTreeLevel++;
     }
 
-    //    nowNewNode->InsertNode(nowTreeNode[nowTreeLevel - 1]);
-    printf("level: %d\n", nowTreeLevel);
     nowOldNode = nowNewNode->InsertNodeOrder
       (nowTreeNode[nowTreeLevel - 1], nowDataClass->cmpField, nowDataClass->keyOffset, pendingLineMode);
     if (nowNewNode != nowOldNode) {
@@ -247,11 +249,17 @@ public:
   };
 
   const char* EndofValueClass() {
+
+    printf("EndofValueClass %s \n", pendName.GetAddress());
+    //    DefineValueLevel(-1);
     
     RemoveFieldList(pendFieldList);
     //    nowTreeLevel--;
-    
-    DataClass *nowDataClass = ClassDefine::allClassHash.Find(String("行政区划"))->value;
+    auto node =  ClassDefine::allClassHash.Find(String("地址"));
+    //    if (node) {
+      
+    nowDataClass = ClassDefine::allClassHash.Find(String("地址"))->value;
+    //    }
     //    nowDataClass->DisplayValue();
     std::string str;
     TimeSpend ts;
