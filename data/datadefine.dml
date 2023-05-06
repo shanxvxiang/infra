@@ -1,17 +1,10 @@
-class 地址 {
-  key string 具体地址;
-};
-
-value 地址
-{
-	"abcdefg";
-	"AFAFSADFSDFASDF";
-};
-
-
 class 行政区划 {
   key string 区划代码;
   unique string 区划名称;
+};
+
+class 地址 {
+  key string 具体地址;
 };
 
 value 行政区划 
@@ -364,6 +357,13 @@ value 行政区划
       deleted "329006", "宿迁市";
     };
   };
+};
+
+
+value 地址 (行政区划.区划代码, 具体地址)
+{
+	"321301", "abcdefg";
+	"321324", "AFAFSADFSDFASDF";
 };
 
 

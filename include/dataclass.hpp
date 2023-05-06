@@ -115,6 +115,7 @@ public:
     return;
   };
   void Serialize(std::string &str, ClassTree* node, int level) {
+    if (!node) return;
     SerializeNode(str, node, level);
     if (node->child) {
       str += std::string(level * 2, ' ');

@@ -51,14 +51,7 @@ int main(int, char **) {
 //  ClassDefine *gClassDefine = new ClassDefine(classdefine, strlen(classdefine));
   ClassDefine *gClassDefine = new ClassDefine();
 
-  ClassNode *node = NULL;
-  do {
-    node = ClassDefine::allClassHash.GetNext(node);
-    if (node) {
-      node->value->Display();
-    }
-  } while (node);
-  
+
 
   delete gSignalHandle;
   delete gThreadInfo;

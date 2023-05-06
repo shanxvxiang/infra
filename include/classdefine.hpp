@@ -118,7 +118,6 @@ public:
 
   const char* DefineClass(const char* name, const char* base, const char* summary) {
 
-    printf("DefineClass %s \n", name);    
     // TODO not found class
     ClassNode *node;
     pendName = name;
@@ -134,7 +133,6 @@ public:
   };
 
   const char* EndofDefineClass() {
-    printf("EndofDefineClass %s \n", pendName.GetAddress());       
     ClassNode *node;
     DataClass *newclass =
       new DataClass(pendName, pendingInheritClass, pendingAggregationClass, pendFieldList);
@@ -158,7 +156,6 @@ public:
   const char* DefineClassValue(char *name, int defaultorder) {
     DataField *field;
     DataField *order, *now;
-    printf("DefineClassValue %s \n", name);    
     // TODO: verify class name
 
     nowDataClass = ClassDefine::allClassHash.Find(String(name))->value;
@@ -224,11 +221,6 @@ public:
     return 0;
   };
 
-
-  /*
-  ClassTree *nowTreeNode[MAX_TREE_LEVEL];
-  int nowTreeLevel = 0;
-  */
   const char* DefineValueLevel(int level) {
     ClassTree *nowOldNode;
     if (level == -1) {
@@ -249,29 +241,28 @@ public:
   };
 
   const char* EndofValueClass() {
-
-    printf("EndofValueClass %s \n", pendName.GetAddress());
     //    DefineValueLevel(-1);
-    
+
     RemoveFieldList(pendFieldList);
     //    nowTreeLevel--;
-    auto node =  ClassDefine::allClassHash.Find(String("µØÖ·"));
-    //    if (node) {
-      
-    nowDataClass = ClassDefine::allClassHash.Find(String("µØÖ·"))->value;
-    //    }
-    //    nowDataClass->DisplayValue();
-    std::string str;
+
+    ClassNode *node = NULL;
+    std::string str;    
+    do {
+      node =  ClassDefine::allClassHash.GetNext(node);
+      if (node) {
+	auto dclass = node->value;
+	dclass->SerializeStruct(str);
+	//	std::cout << str;	
+	dclass->Serialize(str);
+	//	std::cout << str;	
+      }
+    } while (node);
+
     TimeSpend ts;
     ts.TimeStart();
-    nowDataClass->SerializeStruct(str);
-    std::cout << str;    
-    nowDataClass->Serialize(str);
     int sp = ts.TimeClick();
     //    printf("spend time %d us\n", sp);
-    
-    std::cout << str;
-	    
     return 0;
   };
   
